@@ -4,18 +4,19 @@
 
 <br>
 
-[![React](https://img.shields.io/badge/React-18.2+-61DAFB.svg?style=for-the-badge&logo=react)](https://reactjs.org/)
-[![Tone.js](https://img.shields.io/badge/Tone.js-Web_Audio_API-black.svg?style=for-the-badge&logo=webaudio)](https://tonejs.github.io/)
-[![Python](https://img.shields.io/badge/Python-3.10+-blue.svg?style=for-the-badge&logo=python)](https://www.python.org/)
-[![FastAPI](https://img.shields.io/badge/FastAPI-0.100+-green.svg?style=for-the-badge&logo=fastapi)](https://fastapi.tiangolo.com/)
-[![Pandas](https://img.shields.io/badge/Pandas-Data_Analysis-150458.svg?style=for-the-badge&logo=pandas)](https://pandas.pydata.org/)
-[![NumPy](https://img.shields.io/badge/NumPy-Math_Logic-013243.svg?style=for-the-badge&logo=numpy)](https://numpy.org/)
-[![Prism Engine](https://img.shields.io/badge/Prism_Engine-Custom_Sonification-FF4500.svg?style=for-the-badge&logo=audiomack)](#)
-[![License](https://img.shields.io/badge/License-Apache_2.0-yellow.svg?style=for-the-badge)](LICENSE)
+[![React](https://img.shields.io/badge/React-18.2+-61DAFB.svg?style=flat&logo=react)](https://reactjs.org/)
+[![Tone.js](https://img.shields.io/badge/Tone.js-Web_Audio_API-black.svg?style=flat&logo=webaudio)](https://tonejs.github.io/)
+[![Python](https://img.shields.io/badge/Python-3.10+-blue.svg?style=flat&logo=python)](https://www.python.org/)
+[![FastAPI](https://img.shields.io/badge/FastAPI-0.100+-green.svg?style=flat&logo=fastapi)](https://fastapi.tiangolo.com/)
+[![Pandas](https://img.shields.io/badge/Pandas-Data_Analysis-150458.svg?style=flat&logo=pandas)](https://pandas.pydata.org/)
+[![NumPy](https://img.shields.io/badge/NumPy-Math_Logic-013243.svg?style=flat&logo=numpy)](https://numpy.org/)
+[![Prism Engine](https://img.shields.io/badge/Prism_Engine-Custom_Sonification-FF4500.svg?style=flat&logo=audiomack)](#)
+[![License](https://img.shields.io/badge/License-Apache_2.0-yellow.svg?style=flat)](LICENSE)
 
 ## Table of Contents
 
 - [Overview](#-overview)
+- [Meet the Team](#-meet-the-team)
 - [Features](#-features)
 - [Technology Stack](#-technology-stack)
 - [System Architecture](#-system-architecture)
@@ -24,7 +25,6 @@
 - [Usage](#-usage)
 - [Project Structure](#-project-structure)
 - [Accessibility Protocol](#-accessibility-protocol)
-- [Meet the Team](#-meet-the-team)
 
 ## Overview
 
@@ -32,6 +32,13 @@
 
 By utilizing the **Web Audio API** and a custom **FastAPI harmonization engine**, Prism Tone acts as an "Earth Jukebox". It ingests multi-decade datasets from 4 distinct NASA sources and dynamically maps climate anomalies (temperature, precipitation, active fires, and water storage) into specific musical parameters. The result is a real-time, data-driven symphony where users can literally *hear* the changing planet.
 
+## Meet the Team (Cosmic Cloud)
+-   **Anika Binta Azad Shifa** — _Project Lead (UI/UX Design & Frontend Engineering)_
+-   **Sejuti Humyra** — _Backend & ML Engineer (Backend Architecture, API Engineering)_
+-   **Samiha Tasnim** — _Data Scientist & Sonification Specialist (Signal Mapping)_
+-   **Tousif Tasrik** — _System Architect & AI Engineer (System Architecture, Backend)_
+-   **Abu Saleh Md Nahian** — _Visual Experience & Motion Design Engineer (WebGL, VFX)_
+    
 ## Features
 
 ###  Real-Time Parametric Sonification
@@ -49,14 +56,6 @@ By utilizing the **Web Audio API** and a custom **FastAPI harmonization engine**
 - **Live Text Captions**: Real-time plain English translation of the audio (e.g., *"Intense percussion indicates severe wildfire activity"*).
 - **The Screen-Off Guarantee**: The platform delivers its complete scientific narrative even if the user's monitor is entirely turned off.
 
-
-## Meet the Team (Cosmic Cloud)
--   **Anika Binta Azad Shifa** — _Project Lead (UI/UX Design & Frontend Engineering)_
--   **Sejuti Humyra** — _Backend & ML Engineer (Backend Architecture, API Engineering)_
--   **Samiha Tasnim** — _Data Scientist & Sonification Specialist (Signal Mapping)_
--   **Tousif Tasrik** — _System Architect & AI Engineer (System Architecture, Backend)_
--   **Abu Saleh Md Nahian** — _Visual Experience & Motion Design Engineer (WebGL, VFX)_
-    
 
 ##  Technology Stack
 
@@ -234,4 +233,4 @@ Accessibility is the core metric of Prism Tone. Our UI ensures:
 
 ## License
 
-This project is licensed under the **Apache-2.0 License** - see the [LICENSE](https://www.google.com/search?q=LICENSE&utm_source=gemini) file for details. All NASA datasets are utilized under public domain open-data policies.
+This project is licensed under the **Apache-2.0 License** - see the [LICENSE]() file for details. All NASA datasets are utilized under public domain open-data policies.
