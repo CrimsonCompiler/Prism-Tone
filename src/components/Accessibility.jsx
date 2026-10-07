@@ -2,73 +2,124 @@ import { motion } from 'motion/react'
 import { Fade } from './ui'
 
 function ListenerIllustration() {
-  const strokeStyle = {
-    fill: 'none',
-    stroke: '#e6d8b8',
-    strokeWidth: 1.5,
-    strokeLinecap: 'round',
-    strokeLinejoin: 'round',
-  }
-
   return (
-    <div className="relative mx-auto flex items-center justify-center w-full max-w-[340px] md:max-w-[380px] aspect-[360/420]">
-      {/* Soft circular ambient glow behind head */}
-      <div
-        className="absolute top-[35px] left-1/2 -translate-x-1/2 w-[280px] h-[280px] rounded-full pointer-events-none"
-        style={{
-          background:
-            'radial-gradient(circle at center, rgba(220, 200, 160, 0.22) 0%, rgba(220, 200, 160, 0.08) 42%, transparent 72%)',
-          filter: 'blur(14px)',
-        }}
+    <svg
+      viewBox="0 0 200 280"
+      xmlns="http://www.w3.org/2000/svg"
+      className="w-full h-full"
+    >
+      <defs>
+        <radialGradient id="figGlow" cx="50%" cy="40%" r="60%">
+          <stop offset="0%" stopColor="rgba(244,236,225,0.12)" />
+          <stop offset="100%" stopColor="rgba(244,236,225,0)" />
+        </radialGradient>
+      </defs>
+
+      <ellipse cx={100} cy={80} rx={60} ry={70} fill="url(#figGlow)" />
+
+      {/* Head outline */}
+      <ellipse
+        cx={100}
+        cy={80}
+        rx={34}
+        ry={40}
+        fill="none"
+        stroke="rgba(244,236,225,0.7)"
+        strokeWidth={1.5}
       />
 
-      <svg
-        viewBox="0 0 360 420"
-        xmlns="http://www.w3.org/2000/svg"
-        className="relative z-10 w-full h-full"
-      >
-        {/* Left sound waves */}
-        <g>
-          <path {...strokeStyle} strokeWidth={1.2} opacity={0.75} d="M 70 195 Q 55 210 70 225" />
-          <path {...strokeStyle} strokeWidth={1.2} opacity={0.5} d="M 55 180 Q 35 210 55 240" />
-          <path {...strokeStyle} strokeWidth={1.2} opacity={0.35} d="M 40 165 Q 15 210 40 255" />
-        </g>
+      {/* Left eye */}
+      <path
+        d="M 85 80 Q 88 83, 91 80"
+        fill="none"
+        stroke="rgba(244,236,225,0.6)"
+        strokeWidth={1}
+        strokeLinecap="round"
+      />
 
-        {/* Right sound waves */}
-        <g>
-          <path {...strokeStyle} strokeWidth={1.2} opacity={0.75} d="M 290 195 Q 305 210 290 225" />
-          <path {...strokeStyle} strokeWidth={1.2} opacity={0.5} d="M 305 180 Q 325 210 305 240" />
-          <path {...strokeStyle} strokeWidth={1.2} opacity={0.35} d="M 320 165 Q 345 210 320 255" />
-        </g>
+      {/* Right eye */}
+      <path
+        d="M 109 80 Q 112 83, 115 80"
+        fill="none"
+        stroke="rgba(244,236,225,0.6)"
+        strokeWidth={1}
+        strokeLinecap="round"
+      />
 
-        {/* Head */}
-        <circle cx={180} cy={170} r={60} {...strokeStyle} />
+      {/* Headband */}
+      <path
+        d="M 66 70 Q 100 36, 134 70"
+        fill="none"
+        stroke="rgba(244,236,225,0.8)"
+        strokeWidth={1.8}
+        strokeLinecap="round"
+      />
 
-        {/* Headband */}
-        <path {...strokeStyle} d="M 122 158 Q 180 100 238 158" />
+      {/* Left earcup */}
+      <ellipse
+        cx={62}
+        cy={85}
+        rx={10}
+        ry={14}
+        fill="rgba(244,236,225,0.1)"
+        stroke="rgba(244,236,225,0.7)"
+        strokeWidth={1.5}
+      />
 
-        {/* Earcups */}
-        <ellipse cx={120} cy={175} rx={14} ry={22} {...strokeStyle} />
-        <ellipse cx={240} cy={175} rx={14} ry={22} {...strokeStyle} />
+      {/* Right earcup */}
+      <ellipse
+        cx={138}
+        cy={85}
+        rx={10}
+        ry={14}
+        fill="rgba(244,236,225,0.1)"
+        stroke="rgba(244,236,225,0.7)"
+        strokeWidth={1.5}
+      />
 
-        {/* Closed eyes */}
-        <path {...strokeStyle} d="M 152 175 Q 162 182 172 175" />
-        <path {...strokeStyle} d="M 188 175 Q 198 182 208 175" />
+      {/* Speaker grille lines */}
+      <line x1={58} y1={85} x2={66} y2={85} stroke="rgba(244,236,225,0.5)" strokeWidth={0.8} />
+      <line x1={134} y1={85} x2={142} y2={85} stroke="rgba(244,236,225,0.5)" strokeWidth={0.8} />
 
-        {/* Nose hint */}
-        <path {...strokeStyle} d="M 180 195 Q 180 200 178 205" />
+      {/* Neck */}
+      <line x1={100} y1={120} x2={100} y2={135} stroke="rgba(244,236,225,0.5)" strokeWidth={1.5} />
 
-        {/* Neck */}
-        <line x1={165} y1={228} x2={165} y2={260} {...strokeStyle} />
-        <line x1={195} y1={228} x2={195} y2={260} {...strokeStyle} />
+      {/* Body / shoulders */}
+      <path
+        d="M 60 175 Q 60 145, 100 135 Q 140 145, 140 175 L 140 200 L 60 200 Z"
+        fill="rgba(244,236,225,0.04)"
+        stroke="rgba(244,236,225,0.6)"
+        strokeWidth={1.5}
+      />
 
-        {/* Body / shoulders */}
-        <path
-          {...strokeStyle}
-          d="M 165 260 Q 165 255 180 255 Q 195 255 195 260 L 230 295 Q 245 310 245 330 L 245 400 L 115 400 L 115 330 Q 115 310 130 295 Z"
+      {/* Left animated sound waves */}
+      {[1, 2, 3, 4, 5].map((i) => (
+        <motion.path
+          key={`l-${i}`}
+          d={`M ${42 - i * 6} ${85 - i * 3} Q ${42 - i * 8} 85, ${42 - i * 6} ${85 + i * 3}`}
+          fill="none"
+          stroke="rgba(244,236,225,0.4)"
+          strokeWidth={0.8}
+          initial={{ opacity: 0, pathLength: 0 }}
+          animate={{ opacity: [0, 0.5, 0], pathLength: [0, 1, 1] }}
+          transition={{ duration: 2.4, delay: i * 0.3, repeat: Infinity, ease: 'easeOut' }}
         />
-      </svg>
-    </div>
+      ))}
+
+      {/* Right animated sound waves */}
+      {[1, 2, 3, 4, 5].map((i) => (
+        <motion.path
+          key={`r-${i}`}
+          d={`M ${158 + i * 6} ${85 - i * 3} Q ${158 + i * 8} 85, ${158 + i * 6} ${85 + i * 3}`}
+          fill="none"
+          stroke="rgba(244,236,225,0.4)"
+          strokeWidth={0.8}
+          initial={{ opacity: 0, pathLength: 0 }}
+          animate={{ opacity: [0, 0.5, 0], pathLength: [0, 1, 1] }}
+          transition={{ duration: 2.4, delay: i * 0.3 + 0.4, repeat: Infinity, ease: 'easeOut' }}
+        />
+      ))}
+    </svg>
   )
 }
 
@@ -152,7 +203,9 @@ export default function Accessibility() {
         {/* Right Column: Cartoon / Vector Illustration */}
         <div className="flex items-center justify-center lg:col-span-5">
           <Fade delay={0.25}>
-            <ListenerIllustration />
+            <div className="w-[420px] md:w-[480px] lg:w-[520px] aspect-[200/280]">
+              <ListenerIllustration />
+            </div>
           </Fade>
         </div>
       </div>
