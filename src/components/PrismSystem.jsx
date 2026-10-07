@@ -13,7 +13,7 @@ export default function PrismSystem() {
   return (
     <section id="system" className="relative border-t border-ivory/10 px-6 py-32 md:px-12 md:py-44 lg:px-20">
       <Fade>
-        <Rule index="03" label="The Prism System" meta="one signal — five voices" />
+        <Rule index="02" label="The Prism System" meta="one signal — five voices" />
       </Fade>
 
       <div className="mt-16 grid items-end gap-14 md:mt-24 lg:grid-cols-12">

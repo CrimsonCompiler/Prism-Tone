@@ -3,11 +3,10 @@ import { motion, useMotionValueEvent, useScroll } from 'motion/react'
 import { EASE } from './ui'
 
 const LINKS = [
-  ['Concept', '#data'],
-  ['Prism System', '#system'],
-  ['Team', '#team'],
-  ['Preview', '#experience'],
   ['Phenomena', '#translation'],
+  ['Prism System', '#system'],
+  ['Preview', '#experience'],
+  ['Team', '#team'],
   ['Stories', 'stories.html'],
 ]
 
