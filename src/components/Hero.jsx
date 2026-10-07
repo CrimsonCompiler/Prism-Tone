@@ -39,7 +39,7 @@ export default function Hero() {
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1.2, delay: 1.0, ease: EASE }}
-          className="pt-36 md:pt-56 lg:pt-64 xl:pt-72 pointer-events-auto"
+          className="pt-[20vh] md:pt-[25vh] lg:pt-[28vh] pointer-events-auto"
         >
           <Kicker>
             THE EARTH INFORMATION JUKEBOX
@@ -51,7 +51,7 @@ export default function Hero() {
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1.2, delay: 1.35, ease: EASE }}
-          className="pb-24 md:pb-28 lg:pb-32 font-elegant text-[12px] md:text-[13px] lg:text-[14.5px] uppercase tracking-[0.36em] md:tracking-[0.44em] text-cream/90 pointer-events-auto"
+          className="pb-20 md:pb-24 lg:pb-28 font-elegant text-[12px] md:text-[13px] lg:text-[14.5px] uppercase tracking-[0.36em] md:tracking-[0.44em] text-cream/90 pointer-events-auto"
         >
           Making the Invisible - Audible
         </motion.p>

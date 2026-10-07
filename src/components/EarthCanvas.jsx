@@ -154,7 +154,24 @@ function Earth({ variant = 'hero' }) {
   const group = useRef()
   const clouds = useRef()
   const gl = useThree((s) => s.gl)
+  const size = useThree((s) => s.size)
   const [tex, setTex] = useState(null)
+
+  const { earthScale, earthY } = useMemo(() => {
+    if (variant !== 'hero') {
+      return { earthScale: 1, earthY: -1.55 }
+    }
+    // Baseline reference: 1920x940 desktop
+    const hRatio = size.height / 940
+    const wRatio = size.width / 1550
+    // Proportional scale factor with smooth safe clamping
+    const scale = Math.min(1.05, Math.max(0.58, Math.min(hRatio, wRatio)))
+    // Keep Earth top crest at consistent screen height (~0.50 down from camera center)
+    const topTarget = 0.50 - (1 - scale) * 0.12
+    const y = topTarget - 2.55 * scale
+    return { earthScale: scale, earthY: y }
+  }, [variant, size.width, size.height])
+
   const atmoUniforms = useMemo(
     () => ({
       uTime: { value: 0 },
@@ -192,7 +209,8 @@ function Earth({ variant = 'hero' }) {
   return (
     <group
       ref={group}
-      position={[0, variant === 'hero' ? -2.05 : -1.55, 0]}
+      position={[0, earthY, 0]}
+      scale={[earthScale, earthScale, earthScale]}
       rotation={[0, 2.35, 0.09]}
     >
       <mesh>
