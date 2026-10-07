@@ -1,5 +1,6 @@
 import { motion } from 'motion/react'
 import { Fade } from './ui'
+import { Waveform } from './Canvases'
 
 function ListenerIllustration() {
   return (
@@ -207,6 +208,48 @@ export default function Accessibility() {
               <ListenerIllustration />
             </div>
           </Fade>
+        </div>
+      </div>
+
+      {/* Continuous Team & Closing Footer — compact, no divider, waveform brought up */}
+      <div
+        id="team"
+        className="mt-14 md:mt-20 text-center flex flex-col items-center w-full"
+      >
+
+        {/* Waveform and technical telemetry footer */}
+        <div className="mt-8 md:mt-10 w-full">
+          <Waveform className="h-14 w-full opacity-75" />
+          <div className="mt-8 md:mt-10 flex flex-col items-start justify-between gap-6 border-t border-ivory/10 pt-9 md:pt-12 font-data text-[10px] md:text-[10.5px] uppercase tracking-[0.16em] text-[#f9eed8] md:flex-row md:items-center">
+            {/* Left: Challenge info */}
+            <div className="flex items-start gap-2.5 text-left">
+              <span
+                className="mt-1 inline-block h-1.5 w-1.5 rounded-full bg-current shrink-0"
+                aria-hidden="true"
+              />
+              <div className="leading-tight">
+                <p>DEVELOPED FOR NASA SPACE APPS</p>
+                <p className="mt-0.5">CHALLENGE 2026</p>
+              </div>
+            </div>
+
+            {/* Middle: Data sources & Audio engine */}
+            <div className="text-left md:text-center leading-tight">
+              <p>DATA SOURCES: NASA EOSDIS • MODIS • CYGNSS • GPM • ICESAT-2</p>
+              <p className="mt-2.5">AUDIO ENGINE: WEB AUDIO API SYNTHESIS</p>
+            </div>
+
+            {/* Right: Copyright */}
+            <div className="text-left md:text-right leading-tight">
+              <p className="flex items-center md:justify-end gap-1.5">
+                <svg className="w-3 h-3 shrink-0" viewBox="0 0 16 16" fill="none" aria-label="Copyright">
+                  <circle cx="8" cy="8" r="6.5" stroke="currentColor" strokeWidth="1.2" />
+                  <text x="8" y="10.8" textAnchor="middle" fontSize="8.5" fill="currentColor" fontFamily="system-ui, sans-serif" fontWeight="600">C</text>
+                </svg>
+                <span>PRISM TONE • COSMIC CLOUD</span>
+              </p>
+            </div>
+          </div>
         </div>
       </div>
     </section>

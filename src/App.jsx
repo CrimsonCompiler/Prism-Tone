@@ -8,7 +8,6 @@ import PhenomenologicalConversion from './components/PhenomenologicalConversion'
 import Translation from './components/Translation'
 import ExperiencePreview from './components/ExperiencePreview'
 import Accessibility from './components/Accessibility'
-import FinalCTA from './components/FinalCTA'
 import BackgroundEffects from './components/BackgroundEffects'
 
 function Grain() {
@@ -83,7 +82,6 @@ export default function App() {
         <Translation />
         <ExperiencePreview />
         <Accessibility />
-        <FinalCTA />
       </main>
     </MotionConfig>
   )
