@@ -6,7 +6,7 @@ const LINKS = [
   ['Concept', '#concept'],
   ['Translation', '#translation'],
   ['Experience', '#experience'],
-  ['Prism System', 'system.html'],
+  ['Access', '#access'],
   ['Team', '#team'],
   ['Stories', 'stories.html'],
 ]

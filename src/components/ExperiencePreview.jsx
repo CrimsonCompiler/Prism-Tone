@@ -79,34 +79,40 @@ function Timecode() {
 export default function ExperiencePreview() {
   return (
     <section id="experience" className="stack-card z-30 px-6 pt-10 pb-28 md:px-12 md:pt-12 md:pb-36 lg:px-20 lg:pt-14 lg:pb-40">
-      {/* Left-aligned caption heading matching section 01 & 02 without top border divider */}
-      <div className="flex items-center justify-between gap-6 mb-6 md:mb-8">
-        <div className="flex items-center gap-3">
-          <span
-            className="font-meno text-[11px] md:text-[12px] uppercase tracking-[0.26em] text-beige font-normal"
-            style={{ fontFamily: '"Meno Banner", "Bodoni Moda", "Source Serif 4", Georgia, serif' }}
-          >
-            03 / THE EXPERIENCE
-          </span>
-          <span className="h-px w-14 md:w-20 bg-ivory/25 inline-block" aria-hidden="true" />
-        </div>
-        <span className="font-stencil text-[10px] md:text-[11px] uppercase tracking-[0.26em] text-parchment/80">
-          CONCEPT INTERFACE — 2026
+      {/* Caption heading matching image */}
+      <div className="flex items-center gap-3 mb-6 md:mb-8">
+        <span
+          className="font-meno text-[11px] md:text-[12px] uppercase tracking-[0.26em] text-beige font-normal"
+          style={{ fontFamily: '"Meno Banner", "Bodoni Moda", "Source Serif 4", Georgia, serif' }}
+        >
+          03 / The Interface
         </span>
+        <span className="h-px w-14 md:w-20 bg-ivory/25 inline-block" aria-hidden="true" />
       </div>
 
-      <h2
-        className="mt-10 md:mt-14 font-meno font-light leading-[0.92] text-ivory text-[clamp(2.2rem,4.6vw,4.8rem)] tracking-[-0.015em]"
-        style={{ fontFamily: '"Meno Banner", Georgia, serif' }}
-      >
-        <Reveal delay={0.05}>A PLANET,</Reveal>
-        <Reveal delay={0.16}>
-          <em className="italic text-cream font-light">PLAYED LIVE.</em>
-        </Reveal>
-      </h2>
+      <br /> <br />
+
+      {/* Main heading and intro narrative from reference image */}
+      <div className="grid gap-10 lg:grid-cols-12 lg:gap-12 items-end mt-8 md:mt-10">
+        <div className="lg:col-span-7">
+          <h2
+            className="font-meno font-light leading-[0.92] text-ivory text-[clamp(2.4rem,5vw,5rem)] tracking-[-0.015em]"
+            style={{ fontFamily: 'Meno Banner' }}
+          >
+            <span className="block whitespace-nowrap">EXPERIENCE</span>
+            <span className="block whitespace-nowrap">PREVIEW</span>
+          </h2>
+        </div>
+
+        <div className="flex flex-col justify-end lg:col-span-5 lg:pl-8 xl:pl-14 pb-1.5">
+          <p className="max-w-md font-elegant text-[15.5px] leading-relaxed text-cream/85 md:text-[16.5px]">
+            Not a corporate dashboard. A living scientific listening post. Explore real-time planetary telemetry translated into pure acoustic vibration.
+          </p>
+        </div>
+      </div>
 
       <Fade delay={0.25}>
-        <div className="mt-12 grid border border-ivory/10 md:mt-16 lg:grid-cols-12">
+        <div className="mt-16 grid border border-ivory/10 md:mt-20 lg:mt-24 lg:grid-cols-12">
           {/* left — orbital sweep */}
           <div className="flex flex-col border-b border-ivory/10 p-8 lg:col-span-3 lg:border-b-0 lg:border-r">
             <div className="flex items-baseline justify-between">
