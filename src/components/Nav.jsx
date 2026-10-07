@@ -24,7 +24,7 @@ export default function Nav({ page = 'index' }) {
       initial={{ y: -18, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 1, delay: 0.5, ease: EASE }}
-      className={`fixed inset-x-0 top-0 z-40 transition-colors duration-500 ${solid
+      className={`fixed inset-x-0 top-0 z-[80] transition-colors duration-500 ${solid
         ? 'border-b border-ivory/10 bg-ink/90 backdrop-blur-md shadow-lg shadow-black/20'
         : 'border-b border-transparent bg-transparent'
         }`}

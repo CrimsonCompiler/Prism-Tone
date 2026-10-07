@@ -21,7 +21,7 @@ function ProgressLine() {
   return (
     <motion.div
       style={{ scaleY: scrollYProgress }}
-      className="fixed left-0 top-0 z-40 h-full w-px origin-top bg-ivory/30"
+      className="fixed left-0 top-0 z-[85] h-full w-px origin-top bg-ivory/30"
       aria-hidden="true"
     />
   )

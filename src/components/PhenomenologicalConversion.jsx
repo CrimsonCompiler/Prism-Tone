@@ -247,9 +247,9 @@ export default function PhenomenologicalConversion() {
   }
 
   return (
-    <section id="concept" className="relative border-t border-ivory/10 px-6 pt-12 pb-24 md:px-12 md:pt-16 md:pb-28 lg:px-20 lg:pt-16 lg:pb-32">
+    <section id="concept" className="stack-card z-10 px-6 pt-20 pb-28 md:px-12 md:pt-24 md:pb-36 lg:px-20 lg:pt-28 lg:pb-40">
       {/* Left-aligned caption heading with Meno Banner */}
-      <div className="flex items-center gap-3 mb-6">
+      <div className="flex items-center gap-3 mb-10 md:mb-14">
         <span
           className="font-meno text-[11px] md:text-[12px] uppercase tracking-[0.26em] text-beige font-normal"
           style={{ fontFamily: '"Meno Banner", "Bodoni Moda", "Source Serif 4", Georgia, serif' }}
@@ -259,7 +259,7 @@ export default function PhenomenologicalConversion() {
         <span className="h-px w-14 md:w-20 bg-ivory/25 inline-block" aria-hidden="true" />
       </div>
 
-      <br /> <br /> <br /> <br /> <br />
+      <br /> <br /> <br /> <br />
 
       {/* Main heading and intro narrative */}
       <div className="grid gap-10 lg:grid-cols-12 lg:gap-12 items-end">

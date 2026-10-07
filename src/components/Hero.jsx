@@ -11,7 +11,7 @@ export default function Hero() {
   const scale = useTransform(scrollYProgress, [0, 1], [1, 1.07])
 
   return (
-    <section ref={ref} id="top" className="relative h-[100svh] min-h-[640px] overflow-hidden">
+    <section ref={ref} id="top" className="sticky top-[-45vh] z-0 h-[100svh] min-h-[640px] overflow-hidden">
       {/* Earth */}
       <motion.div style={{ scale }} className="absolute inset-0">
         <motion.div
