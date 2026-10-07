@@ -41,7 +41,7 @@ export default function Nav({ page = 'index' }) {
             className="h-11 w-auto md:h-14 object-contain transition-transform duration-300 group-hover:scale-[1.02]"
           />
           <span className="whitespace-nowrap font-stencil text-[8.5px] md:text-[10px] uppercase tracking-[0.25em] text-[#f9eed8]/80 transition-colors duration-300 group-hover:text-[#f9eed8]">
-            [N · 37.7749° / W · 122.4194° ORBIT ALT 408 KM]
+            [N · 37.7749° / W · 122.4194°]
           </span>
         </a>
 
@@ -51,8 +51,8 @@ export default function Nav({ page = 'index' }) {
               key={label}
               href={hrefFor(href)}
               className={`font-ui text-[13px] md:text-[14px] uppercase tracking-[0.22em] font-medium transition-colors duration-300 ${page === 'stories' && label === 'Stories'
-                  ? 'text-[#f9eed8]'
-                  : 'text-[#f9eed8]/80 hover:text-[#f9eed8]'
+                ? 'text-[#f9eed8]'
+                : 'text-[#f9eed8]/80 hover:text-[#f9eed8]'
                 }`}
             >
               {label}
