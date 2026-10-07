@@ -4,7 +4,7 @@ const MODES = ['sonified', 'captioned', 'haptic']
 
 export default function Accessibility() {
   return (
-    <section id="access" className="stack-card z-50 px-6 py-28 md:py-40">
+    <section id="access" className="stack-card z-50 px-6 pt-14 pb-28 md:pt-20 md:pb-40">
       <div className="mx-auto max-w-4xl text-center">
         <Fade>
           <Kicker center>06 — Access</Kicker>

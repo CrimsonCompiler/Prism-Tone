@@ -66,7 +66,6 @@ function SensorVisual({ type }) {
           strokeLinecap="round"
         />
         <circle cx="255" cy="24" r="3.5" fill="#c19a5b" />
-        <circle cx="255" cy="24" r="7" fill="none" stroke="#c19a5b" strokeWidth="1" opacity="0.6" className="animate-ping" />
       </svg>
     )
   }
@@ -247,14 +246,14 @@ export default function PhenomenologicalConversion() {
   }
 
   return (
-    <section id="concept" className="stack-card z-10 px-6 pt-20 pb-28 md:px-12 md:pt-24 md:pb-36 lg:px-20 lg:pt-28 lg:pb-40">
+    <section id="concept" className="stack-card z-10 px-6 pt-10 pb-28 md:px-12 md:pt-12 md:pb-36 lg:px-20 lg:pt-14 lg:pb-40">
       {/* Left-aligned caption heading with Meno Banner */}
-      <div className="flex items-center gap-3 mb-10 md:mb-14">
+      <div className="flex items-center gap-3 mb-6 md:mb-8">
         <span
           className="font-meno text-[11px] md:text-[12px] uppercase tracking-[0.26em] text-beige font-normal"
           style={{ fontFamily: '"Meno Banner", "Bodoni Moda", "Source Serif 4", Georgia, serif' }}
         >
-          01 // PHENOMENOLOGICAL CONVERSION
+          01 / PHENOMENOLOGICAL CONVERSION
         </span>
         <span className="h-px w-14 md:w-20 bg-ivory/25 inline-block" aria-hidden="true" />
       </div>
@@ -333,6 +332,18 @@ export default function PhenomenologicalConversion() {
             </div>
           </Fade>
         ))}
+      </div>
+
+      {/* Telemetry Audition Status bar */}
+      <div className="mt-12 md:mt-16 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+        <div className="flex items-center gap-2.5 font-stencil text-[10px] md:text-[11px] uppercase tracking-[0.22em] text-parchment">
+          <span className="h-1.5 w-1.5 rounded-full bg-ember inline-block animate-pulse" />
+          <span>SONIFICATION PROTOCOL: ISO/IEC 14496 ACOUSTIC METRICS MAPPING</span>
+        </div>
+
+        <div className="border border-ivory/20 px-4 py-2 font-stencil text-[9.5px] md:text-[10.5px] uppercase tracking-[0.26em] text-cream/90 bg-coal/40">
+          CLICK ANY TELEMETRY INSTRUMENT TO AUDITION SONIC TRANSLATION
+        </div>
       </div>
     </section>
   )

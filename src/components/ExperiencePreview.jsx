@@ -74,7 +74,7 @@ function Timecode() {
 
 export default function ExperiencePreview() {
   return (
-    <section id="experience" className="stack-card z-40 px-6 py-28 md:px-12 md:py-36 lg:px-20 lg:py-40">
+    <section id="experience" className="stack-card z-40 px-6 pt-14 pb-28 md:px-12 md:pt-18 md:pb-36 lg:px-20 lg:pt-20 lg:pb-40">
       <Fade>
         <Rule index="04" label="The Experience" meta="concept interface — 2026" />
       </Fade>
