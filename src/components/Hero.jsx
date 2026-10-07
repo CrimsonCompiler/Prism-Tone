@@ -1,7 +1,7 @@
 import { useRef } from 'react'
 import { motion, useScroll, useTransform } from 'motion/react'
 import EarthCanvas from './EarthCanvas'
-import { Annot, EASE, Kicker, Reveal } from './ui'
+import { Annot, EASE, Kicker } from './ui'
 
 export default function Hero() {
   const ref = useRef(null)
@@ -11,7 +11,7 @@ export default function Hero() {
   const scale = useTransform(scrollYProgress, [0, 1], [1, 1.07])
 
   return (
-    <section ref={ref} id="top" className="sticky top-[-45vh] z-0 h-[100svh] min-h-[640px] overflow-hidden">
+    <section ref={ref} id="top" className="sticky top-[-45vh] z-0 h-[100svh] min-h-[500px] md:min-h-[560px] lg:min-h-[620px] overflow-hidden">
       {/* Earth */}
       <motion.div style={{ scale }} className="absolute inset-0">
         <motion.div
@@ -30,32 +30,28 @@ export default function Hero() {
       {/* Titles */}
       <motion.div
         style={{ y: yText, opacity: fade }}
-        className="relative z-10 flex h-full flex-col items-center justify-center px-6 text-center"
+        className="pointer-events-none relative z-10 flex h-full flex-col items-center justify-between px-6 text-center"
       >
+        <h1 className="sr-only">Prism Tone — The Earth Information Jukebox</h1>
+
+        {/* Top Kicker — in the open sky, comfortably below header on all devices */}
         <motion.div
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1.2, delay: 1.0, ease: EASE }}
+          className="pt-36 md:pt-56 lg:pt-64 xl:pt-72 pointer-events-auto"
         >
-          <Kicker className="mb-8 md:mb-12">
+          <Kicker>
             THE EARTH INFORMATION JUKEBOX
           </Kicker>
         </motion.div>
 
-        <h1 className="font-display font-light leading-[0.84] tracking-[-0.01em] text-ivory text-[clamp(4.2rem,16.5vw,15rem)]">
-          <Reveal delay={0.6} className="pr-[5vw] md:pr-[9vw]">
-            PRISM
-          </Reveal>
-          <Reveal delay={0.75}>
-            <span className="italic text-cream">TONE</span>
-          </Reveal>
-        </h1>
-
+        {/* Bottom narrative over the lower Earth arc, safely spaced above scroll cue */}
         <motion.p
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1.2, delay: 1.35, ease: EASE }}
-          className="mt-9 font-elegant text-[13px] uppercase tracking-[0.44em] text-cream/90 md:mt-12 md:text-[15px]"
+          className="pb-24 md:pb-28 lg:pb-32 font-elegant text-[12px] md:text-[13px] lg:text-[14.5px] uppercase tracking-[0.36em] md:tracking-[0.44em] text-cream/90 pointer-events-auto"
         >
           Making the Invisible - Audible
         </motion.p>
@@ -66,18 +62,18 @@ export default function Hero() {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 1.4, delay: 1.9 }}
-        className="absolute inset-x-0 bottom-0 z-10 flex items-end justify-between px-6 pb-6 md:px-12"
+        className="pointer-events-none absolute inset-x-0 bottom-0 z-10 flex items-end justify-between px-5 pb-4 md:px-10 md:pb-6"
       >
-        <div className="space-y-1.5 text-left">
+        <div className="space-y-1 text-left">
           <Annot>Fig. 01 - Earth, night side</Annot>
           <Annot>Src · NASA Visible Earth - VIIRS</Annot>
         </div>
 
-        <div className="absolute bottom-6 left-1/2 flex -translate-x-1/2 flex-col items-center gap-3">
-          <span className="font-stencil text-[9px] uppercase tracking-[0.4em] text-beige">
+        <div className="absolute bottom-4 left-1/2 flex -translate-x-1/2 flex-col items-center gap-2 md:bottom-6 md:gap-3">
+          <span className="font-stencil text-[8.5px] uppercase tracking-[0.38em] text-beige md:text-[9px]">
             Scroll to explore
           </span>
-          <span className="relative block h-12 w-px overflow-hidden bg-ivory/15">
+          <span className="relative block h-8 w-px overflow-hidden bg-ivory/15 md:h-11">
             <motion.span
               animate={{ y: ['-110%', '110%'] }}
               transition={{ duration: 2.1, repeat: Infinity, ease: 'easeInOut', repeatDelay: 0.5 }}
@@ -86,7 +82,7 @@ export default function Hero() {
           </span>
         </div>
 
-        <div className="space-y-1.5 text-right">
+        <div className="space-y-1 text-right">
           <Annot>Alt 766 km - LEO</Annot>
           <Annot>Signal · 48 kHz, stereo</Annot>
         </div>

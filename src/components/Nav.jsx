@@ -33,28 +33,28 @@ export default function Nav({ page = 'index' }) {
         : 'border-b border-transparent bg-transparent'
         }`}
     >
-      <nav className="flex h-24 md:h-28 items-center justify-between px-6 md:px-12 lg:px-16">
+      <nav className="flex h-20 md:h-22 lg:h-24 items-center justify-between px-5 md:px-8 lg:px-12 xl:px-16">
         <a
           href={page === 'index' ? '#top' : 'index.html#top'}
-          className="group flex flex-col justify-center gap-1.5 focus:outline-none"
+          className="group flex flex-col justify-center gap-1 focus:outline-none"
           aria-label="Prism Tone — back to top"
         >
           <img
             src="/images/prism-tone-logo.png"
             alt="Prism Tone"
-            className="h-11 w-auto md:h-14 object-contain transition-transform duration-300 group-hover:scale-[1.02]"
+            className="h-9 w-auto md:h-11 lg:h-13 object-contain transition-transform duration-300 group-hover:scale-[1.02]"
           />
-          <span className="whitespace-nowrap font-stencil text-[8.5px] md:text-[10px] uppercase tracking-[0.25em] text-[#f9eed8]/80 transition-colors duration-300 group-hover:text-[#f9eed8]">
+          <span className="whitespace-nowrap font-stencil text-[8px] md:text-[9px] lg:text-[10px] uppercase tracking-[0.25em] text-[#f9eed8]/80 transition-colors duration-300 group-hover:text-[#f9eed8]">
             [N · 37.7749° / W · 122.4194°]
           </span>
         </a>
 
-        <div className="hidden items-center gap-8 lg:flex xl:gap-10">
+        <div className="hidden items-center gap-3.5 md:gap-4 lg:flex lg:gap-5 xl:gap-8 2xl:gap-10">
           {LINKS.map(([label, href]) => (
             <a
               key={label}
               href={hrefFor(href)}
-              className={`font-ui text-[13px] md:text-[14px] uppercase tracking-[0.22em] font-medium transition-colors duration-300 ${isActive(label)
+              className={`font-ui text-[11px] lg:text-[12px] xl:text-[13.5px] uppercase tracking-[0.15em] lg:tracking-[0.18em] xl:tracking-[0.22em] font-medium transition-colors duration-300 ${isActive(label)
                 ? 'text-[#f9eed8]'
                 : 'text-[#f9eed8]/80 hover:text-[#f9eed8]'
                 }`}
