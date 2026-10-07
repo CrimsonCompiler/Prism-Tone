@@ -38,9 +38,7 @@ export default function Hero() {
           transition={{ duration: 1.2, delay: 1.0, ease: EASE }}
         >
           <Kicker className="mb-8 md:mb-12">
-            NASA Space Apps Challenge 2026
-            <span className="mx-3 text-parchment">·</span>
-            The Earth Information Jukebox
+            THE EARTH INFORMATION JUKEBOX
           </Kicker>
         </motion.div>
 
@@ -59,7 +57,7 @@ export default function Hero() {
           transition={{ duration: 1.2, delay: 1.35, ease: EASE }}
           className="mt-9 font-elegant text-[13px] uppercase tracking-[0.44em] text-cream/90 md:mt-12 md:text-[15px]"
         >
-          Listen to a changing planet.
+          Making the Invisible - Audible
         </motion.p>
       </motion.div>
 

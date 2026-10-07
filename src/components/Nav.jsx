@@ -24,36 +24,36 @@ export default function Nav({ page = 'index' }) {
       initial={{ y: -18, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 1, delay: 0.5, ease: EASE }}
-      className={`fixed inset-x-0 top-0 z-40 transition-colors duration-500 ${
-        solid ? 'border-b border-ivory/10 bg-ink/90' : 'border-b border-transparent bg-transparent'
-      }`}
+      className={`fixed inset-x-0 top-0 z-40 transition-colors duration-500 ${solid
+        ? 'border-b border-ivory/10 bg-ink/90 backdrop-blur-md shadow-lg shadow-black/20'
+        : 'border-b border-transparent bg-transparent'
+        }`}
     >
-      <nav className="flex h-16 items-center justify-between px-6 md:px-12">
+      <nav className="flex h-24 md:h-28 items-center justify-between px-6 md:px-12 lg:px-16">
         <a
           href={page === 'index' ? '#top' : 'index.html#top'}
-          className="flex flex-col justify-center gap-1"
+          className="group flex flex-col justify-center gap-1.5 focus:outline-none"
           aria-label="Prism Tone — back to top"
         >
           <img
             src="/images/prism-tone-logo.png"
             alt="Prism Tone"
-            className="h-7 w-auto md:h-8"
+            className="h-11 w-auto md:h-14 object-contain transition-transform duration-300 group-hover:scale-[1.02]"
           />
-          <span className="whitespace-nowrap font-stencil text-[7px] uppercase tracking-[0.22em] text-parchment">
-            (N · 37.7749° / W · 122.4194° ORBIT ALT 408 KM)
+          <span className="whitespace-nowrap font-stencil text-[8.5px] md:text-[10px] uppercase tracking-[0.25em] text-[#f9eed8]/80 transition-colors duration-300 group-hover:text-[#f9eed8]">
+            [N · 37.7749° / W · 122.4194° ORBIT ALT 408 KM]
           </span>
         </a>
 
-        <div className="hidden items-center gap-8 lg:flex">
+        <div className="hidden items-center gap-8 lg:flex xl:gap-10">
           {LINKS.map(([label, href]) => (
             <a
               key={label}
               href={hrefFor(href)}
-              className={`font-ui text-[10px] uppercase tracking-[0.28em] transition-colors duration-300 ${
-                page === 'stories' && label === 'Stories'
-                  ? 'text-ivory'
-                  : 'text-cream/55 hover:text-ivory'
-              }`}
+              className={`font-ui text-[13px] md:text-[14px] uppercase tracking-[0.22em] font-medium transition-colors duration-300 ${page === 'stories' && label === 'Stories'
+                  ? 'text-[#f9eed8]'
+                  : 'text-[#f9eed8]/80 hover:text-[#f9eed8]'
+                }`}
             >
               {label}
             </a>
