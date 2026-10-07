@@ -61,24 +61,21 @@ body {
   background: radial-gradient(115% 90% at 50% 42%, transparent 52%, rgba(18, 19, 19, 0.62) 100%);
 }
 
-/* Stacking glassmorphic card sheet with airy cloud effect */
+/* Stacking glassmorphic sheet with straight line divider */
 .stack-card {
   position: sticky;
   top: -40vh;
-  border-top: 1px solid rgba(242, 237, 227, 0.22);
+  border-top: 1px solid rgba(242, 237, 227, 0.15);
   background: linear-gradient(180deg,
-      rgba(242, 237, 227, 0.07) 0%,
-      rgba(12, 13, 17, 0.54) 110px,
-      rgba(8, 9, 12, 0.58) 100%);
+      rgba(242, 237, 227, 0.05) 0%,
+      rgba(12, 13, 17, 0.65) 110px,
+      rgba(8, 9, 12, 0.75) 100%);
   backdrop-filter: blur(24px) saturate(160%);
   -webkit-backdrop-filter: blur(24px) saturate(160%);
   box-shadow:
-    0 -35px 80px -5px rgba(0, 0, 0, 0.95),
-    0 -15px 40px rgba(0, 0, 0, 0.8),
-    inset 0 1px 0 rgba(242, 237, 227, 0.25),
-    inset 0 25px 50px rgba(242, 237, 227, 0.03);
-  border-top-left-radius: 40px;
-  border-top-right-radius: 40px;
+    0 -30px 70px -5px rgba(0, 0, 0, 0.9),
+    0 -12px 35px rgba(0, 0, 0, 0.75),
+    inset 0 1px 0 rgba(242, 237, 227, 0.2);
 }
 
 .stack-card::before {
@@ -87,22 +84,13 @@ body {
   top: 0;
   left: 0;
   right: 0;
-  height: 100px;
-  border-top-left-radius: inherit;
-  border-top-right-radius: inherit;
+  height: 90px;
   background: radial-gradient(ellipse 85% 100% at 50% 0%,
-      rgba(242, 237, 227, 0.08) 0%,
-      rgba(193, 154, 91, 0.04) 45%,
+      rgba(242, 237, 227, 0.06) 0%,
+      rgba(193, 154, 91, 0.03) 45%,
       transparent 100%);
   pointer-events: none;
   z-index: 1;
-}
-
-@media (min-width: 768px) {
-  .stack-card {
-    border-top-left-radius: 56px;
-    border-top-right-radius: 56px;
-  }
 }
 
 /* cinematic film grain */

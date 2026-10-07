@@ -55,7 +55,7 @@ function FlowArrow() {
 
 export default function Translation() {
   return (
-    <section id="translation" className="stack-card z-20 -mt-10 md:-mt-14 px-6 py-28 md:px-12 md:py-36 lg:px-20 lg:py-40">
+    <section id="translation" className="stack-card z-20 px-6 py-28 md:px-12 md:py-36 lg:px-20 lg:py-40">
       <Fade>
         <Rule index="02" label="The Translation" meta="signal → score" />
       </Fade>

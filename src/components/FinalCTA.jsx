@@ -4,7 +4,7 @@ import { Kicker, Reveal } from './ui'
 
 export default function FinalCTA() {
   return (
-    <section id="team" className="stack-card !top-0 z-[60] -mt-10 md:-mt-14 h-[100svh] min-h-[680px] overflow-hidden">
+    <section id="team" className="stack-card !top-0 z-[60] h-[100svh] min-h-[680px] overflow-hidden">
       <div className="absolute inset-0">
         <EarthCanvas variant="cta" />
       </div>
