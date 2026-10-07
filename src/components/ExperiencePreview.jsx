@@ -76,7 +76,7 @@ export default function ExperiencePreview() {
   return (
     <section id="experience" className="relative border-t border-ivory/10 px-6 py-32 md:px-12 md:py-44 lg:px-20">
       <Fade>
-        <Rule index="03" label="The Experience" meta="concept interface — 2026" />
+        <Rule index="04" label="The Experience" meta="concept interface — 2026" />
       </Fade>
 
       <h2 className="mt-16 font-display font-light leading-[0.95] text-ivory text-[clamp(2.8rem,6.4vw,6.4rem)] md:mt-20">

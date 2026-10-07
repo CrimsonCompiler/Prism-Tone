@@ -57,7 +57,7 @@ export default function Translation() {
   return (
     <section id="translation" className="relative border-t border-ivory/10 px-6 py-32 md:px-12 md:py-44 lg:px-20">
       <Fade>
-        <Rule index="01" label="The Translation" meta="signal → score" />
+        <Rule index="02" label="The Translation" meta="signal → score" />
       </Fade>
 
       <div className="mt-16 grid gap-16 md:mt-24 lg:grid-cols-12 lg:gap-10">

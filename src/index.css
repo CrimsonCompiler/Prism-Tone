@@ -11,12 +11,17 @@
   --color-ember: #c19a5b;
   --color-ice: #9aa7ad;
 
-  --font-display: "Scotch Display", "Fraunces", "Playfair Display", Georgia, serif;
-  --font-editorial: "Meno Banner", "Source Serif 4", Georgia, serif;
+  --font-display: "Meno Banner";
+  --font-editorial: "Meno Banner";
+  --font-meno: "Meno Banner";
   --font-stencil: "Hansson Stencil MN", "Allerta Stencil", "Oxanium", sans-serif;
   --font-elegant: "Adrianna", "Jost", "Titillium Web", sans-serif;
   --font-data: "Oxanium", "Titillium Web", sans-serif;
   --font-ui: "Titillium Web", "Jost", system-ui, sans-serif;
+}
+
+.font-meno {
+  font-family: "Meno Banner" !important;
 }
 
 html {

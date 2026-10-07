@@ -4,6 +4,7 @@ import { MotionConfig, motion, useScroll } from 'motion/react'
 
 import Nav from './components/Nav'
 import Hero from './components/Hero'
+import PhenomenologicalConversion from './components/PhenomenologicalConversion'
 import Translation from './components/Translation'
 import PrismSystem from './components/PrismSystem'
 import ExperiencePreview from './components/ExperiencePreview'
@@ -79,6 +80,7 @@ export default function App() {
 
       <main className="relative z-10 bg-transparent text-ivory">
         <Hero />
+        <PhenomenologicalConversion />
         <Translation />
         <PrismSystem />
         <ExperiencePreview />
