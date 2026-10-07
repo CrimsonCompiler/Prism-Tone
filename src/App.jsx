@@ -6,7 +6,6 @@ import Nav from './components/Nav'
 import Hero from './components/Hero'
 import PhenomenologicalConversion from './components/PhenomenologicalConversion'
 import Translation from './components/Translation'
-import PrismSystem from './components/PrismSystem'
 import ExperiencePreview from './components/ExperiencePreview'
 import Accessibility from './components/Accessibility'
 import FinalCTA from './components/FinalCTA'
@@ -82,7 +81,6 @@ export default function App() {
         <Hero />
         <PhenomenologicalConversion />
         <Translation />
-        <PrismSystem />
         <ExperiencePreview />
         <Accessibility />
         <FinalCTA />

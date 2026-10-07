@@ -5,8 +5,8 @@ import { EASE } from './ui'
 const LINKS = [
   ['Concept', '#concept'],
   ['Translation', '#translation'],
-  ['Prism System', '#system'],
-  ['Preview', '#experience'],
+  ['Experience', '#experience'],
+  ['Prism System', 'system.html'],
   ['Team', '#team'],
   ['Stories', 'stories.html'],
 ]
@@ -18,6 +18,10 @@ export default function Nav({ page = 'index' }) {
 
   const hrefFor = (href) =>
     page === 'index' ? href : href.startsWith('#') ? `index.html${href}` : href
+
+  const isActive = (label) =>
+    (page === 'stories' && label === 'Stories') ||
+    (page === 'system' && label === 'Prism System')
 
   return (
     <motion.header
@@ -50,7 +54,7 @@ export default function Nav({ page = 'index' }) {
             <a
               key={label}
               href={hrefFor(href)}
-              className={`font-ui text-[13px] md:text-[14px] uppercase tracking-[0.22em] font-medium transition-colors duration-300 ${page === 'stories' && label === 'Stories'
+              className={`font-ui text-[13px] md:text-[14px] uppercase tracking-[0.22em] font-medium transition-colors duration-300 ${isActive(label)
                 ? 'text-[#f9eed8]'
                 : 'text-[#f9eed8]/80 hover:text-[#f9eed8]'
                 }`}

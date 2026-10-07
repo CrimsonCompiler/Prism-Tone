@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { motion } from 'motion/react'
 import { OrbitCanvas, Waveform } from './Canvases'
-import { Annot, Fade, Reveal, Rule } from './ui'
+import { Fade, Reveal } from './ui'
 
 function useDrift(base, amp, period = 8) {
   const [v, setV] = useState(base)
@@ -32,8 +32,10 @@ function Param({ label, base, amp, unit, decimals = 1, period = 8, index = 0 }) 
     <div className="border-b border-ivory/10 py-5">
       <div className="flex items-baseline justify-between gap-4">
         <div>
-          <p className="font-stencil text-[10px] uppercase tracking-[0.32em] text-beige">{label}</p>
-          <p className="mt-1.5 font-ui text-[9px] uppercase tracking-[0.18em] text-parchment">
+          <p className="font-stencil text-[12px] md:text-[13px] uppercase tracking-[0.28em] text-beige font-medium">
+            {label}
+          </p>
+          <p className="mt-1.5 font-data text-[11px] md:text-[11.5px] uppercase tracking-[0.18em] text-parchment">
             {DATASETS[label]}
           </p>
         </div>
@@ -41,7 +43,9 @@ function Param({ label, base, amp, unit, decimals = 1, period = 8, index = 0 }) 
           <span className="font-data font-light tabular-nums text-ivory text-3xl md:text-4xl">
             {v.toFixed(decimals)}
           </span>
-          <span className="ml-2 font-data text-[10px] tracking-[0.14em] text-parchment">{unit}</span>
+          <span className="ml-2 font-data text-[11px] md:text-[11.5px] tracking-[0.14em] text-parchment">
+            {unit}
+          </span>
         </div>
       </div>
       <div className="mt-4 h-px bg-ivory/10">
@@ -66,7 +70,7 @@ function Timecode() {
   const s = Math.floor(ms / 1000) % 60
   const m = Math.floor(ms / 60000) % 60
   return (
-    <span className="font-data text-[11px] tabular-nums tracking-[0.18em] text-cream/80">
+    <span className="font-data text-[11px] md:text-[12px] tabular-nums tracking-[0.18em] text-cream/80">
       {pad(m)}:{pad(s)}:{cs}
     </span>
   )
@@ -74,34 +78,49 @@ function Timecode() {
 
 export default function ExperiencePreview() {
   return (
-    <section id="experience" className="stack-card z-40 px-6 pt-14 pb-28 md:px-12 md:pt-18 md:pb-36 lg:px-20 lg:pt-20 lg:pb-40">
-      <Fade>
-        <Rule index="04" label="The Experience" meta="concept interface — 2026" />
-      </Fade>
+    <section id="experience" className="stack-card z-30 px-6 pt-10 pb-28 md:px-12 md:pt-12 md:pb-36 lg:px-20 lg:pt-14 lg:pb-40">
+      {/* Left-aligned caption heading matching section 01 & 02 without top border divider */}
+      <div className="flex items-center justify-between gap-6 mb-6 md:mb-8">
+        <div className="flex items-center gap-3">
+          <span
+            className="font-meno text-[11px] md:text-[12px] uppercase tracking-[0.26em] text-beige font-normal"
+            style={{ fontFamily: '"Meno Banner", "Bodoni Moda", "Source Serif 4", Georgia, serif' }}
+          >
+            03 / THE EXPERIENCE
+          </span>
+          <span className="h-px w-14 md:w-20 bg-ivory/25 inline-block" aria-hidden="true" />
+        </div>
+        <span className="font-stencil text-[10px] md:text-[11px] uppercase tracking-[0.26em] text-parchment/80">
+          CONCEPT INTERFACE — 2026
+        </span>
+      </div>
 
-      <h2 className="mt-16 font-display font-light leading-[0.95] text-ivory text-[clamp(2.8rem,6.4vw,6.4rem)] md:mt-20">
+      <h2
+        className="mt-10 md:mt-14 font-meno font-light leading-[0.92] text-ivory text-[clamp(2.2rem,4.6vw,4.8rem)] tracking-[-0.015em]"
+        style={{ fontFamily: '"Meno Banner", Georgia, serif' }}
+      >
         <Reveal delay={0.05}>A PLANET,</Reveal>
         <Reveal delay={0.16}>
-          <em className="italic text-cream">PLAYED LIVE.</em>
+          <em className="italic text-cream font-light">PLAYED LIVE.</em>
         </Reveal>
       </h2>
 
       <Fade delay={0.25}>
-        <div className="mt-14 grid border border-ivory/10 md:mt-20 lg:grid-cols-12">
+        <div className="mt-12 grid border border-ivory/10 md:mt-16 lg:grid-cols-12">
           {/* left — orbital sweep */}
           <div className="flex flex-col border-b border-ivory/10 p-8 lg:col-span-3 lg:border-b-0 lg:border-r">
             <div className="flex items-baseline justify-between">
-              <p className="font-stencil text-[9px] uppercase tracking-[0.3em] text-beige">
+              <p className="font-stencil text-[12px] md:text-[13px] uppercase tracking-[0.28em] text-beige font-medium">
                 Orbital sweep
               </p>
-              <span className="font-data text-[9px] uppercase tracking-[0.2em] text-parchment">
+              <span className="font-data text-[11px] md:text-[11.5px] uppercase tracking-[0.18em] text-parchment">
                 LEO 766 km
               </span>
             </div>
             <div className="mt-6 aspect-square w-full">
               <OrbitCanvas className="h-full w-full" />
             </div>
-            <p className="mt-6 font-ui text-[9px] uppercase leading-relaxed tracking-[0.18em] text-parchment">
+            <p className="mt-6 font-elegant text-[14px] md:text-[14.5px] leading-relaxed tracking-[0.04em] text-cream/75">
               3 satellites in view
               <br />
               swath — 2330 km
@@ -111,14 +130,14 @@ export default function ExperiencePreview() {
           {/* center — live telemetry */}
           <div className="border-b border-ivory/10 p-8 lg:col-span-5 lg:border-b-0 lg:border-r">
             <div className="flex items-baseline justify-between">
-              <p className="font-stencil text-[9px] uppercase tracking-[0.3em] text-beige">
+              <p className="font-stencil text-[12px] md:text-[13px] uppercase tracking-[0.28em] text-beige font-medium">
                 Live telemetry
               </p>
               <span className="flex items-center gap-2">
                 <motion.span
                   animate={{ opacity: [1, 0.25, 1] }}
                   transition={{ duration: 2.2, repeat: Infinity, ease: 'easeInOut' }}
-                  className="block h-1 w-1 bg-ember"
+                  className="block h-1.5 w-1.5 rounded-full bg-ember"
                 />
                 <Timecode />
               </span>
@@ -135,10 +154,10 @@ export default function ExperiencePreview() {
           {/* right — signal out */}
           <div className="flex flex-col p-8 lg:col-span-4">
             <div className="flex items-baseline justify-between">
-              <p className="font-stencil text-[9px] uppercase tracking-[0.3em] text-beige">
+              <p className="font-stencil text-[12px] md:text-[13px] uppercase tracking-[0.28em] text-beige font-medium">
                 Signal out
               </p>
-              <span className="font-data text-[9px] uppercase tracking-[0.2em] text-parchment">
+              <span className="font-data text-[11px] md:text-[11.5px] uppercase tracking-[0.18em] text-parchment">
                 master · 48 kHz
               </span>
             </div>
@@ -150,12 +169,12 @@ export default function ExperiencePreview() {
             <div className="flex items-center justify-between border-t border-ivory/10 pt-6">
               <button
                 type="button"
-                className="group flex items-center gap-3 border border-ivory/25 px-5 py-2.5 font-stencil text-[10px] uppercase tracking-[0.34em] text-ivory transition-colors duration-300 hover:bg-ivory hover:text-ink"
+                className="group flex items-center gap-3 border border-ivory/25 px-5 py-2.5 font-stencil text-[10.5px] md:text-[11.5px] uppercase tracking-[0.34em] text-ivory transition-colors duration-300 hover:bg-ivory hover:text-ink cursor-pointer"
               >
                 <span className="block h-2 w-2 bg-current" aria-hidden="true" />
                 Play
               </button>
-              <p className="font-ui text-[9px] uppercase tracking-[0.2em] text-parchment">
+              <p className="font-stencil text-[10px] md:text-[11px] uppercase tracking-[0.22em] text-parchment/80">
                 headphones recommended
               </p>
             </div>
@@ -164,9 +183,15 @@ export default function ExperiencePreview() {
       </Fade>
 
       <Fade delay={0.2}>
-        <div className="mt-5 flex flex-wrap items-center justify-between gap-3">
-          <Annot>Concept — the full instrument ships with the app</Annot>
-          <Annot>Every value binds to a live NASA dataset</Annot>
+        <div className="mt-6 flex flex-wrap items-center justify-between gap-3 font-stencil text-[10px] md:text-[11px] uppercase tracking-[0.24em] text-parchment/80">
+          <div className="flex items-center gap-2">
+            <span className="text-ivory/40">+</span>
+            <span>Concept — the full instrument ships with the app</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <span className="text-ivory/40">+</span>
+            <span>Every value binds to a live NASA dataset</span>
+          </div>
         </div>
       </Fade>
     </section>
