@@ -8,7 +8,6 @@ import DataAsSound from './components/DataAsSound'
 import Translation from './components/Translation'
 import PrismSystem from './components/PrismSystem'
 import ExperiencePreview from './components/ExperiencePreview'
-import EarthStories from './components/EarthStories'
 import Accessibility from './components/Accessibility'
 import FinalCTA from './components/FinalCTA'
 import BackgroundEffects from './components/BackgroundEffects'
@@ -85,7 +84,6 @@ export default function App() {
         <Translation />
         <PrismSystem />
         <ExperiencePreview />
-        <EarthStories />
         <Accessibility />
         <FinalCTA />
       </main>

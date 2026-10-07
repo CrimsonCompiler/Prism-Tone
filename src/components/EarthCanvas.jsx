@@ -25,7 +25,7 @@ const atmoFragment = /* glsl */ `
     vec3 V = normalize(-vP);
     float f = pow(1.0 - abs(dot(normalize(vN), V)), 3.2);
     float breath = 0.88 + 0.12 * sin(uTime * 0.35);
-    gl_FragColor = vec4(uColor, f * 0.42 * breath);
+    gl_FragColor = vec4(uColor, f * 0.46 * breath);
   }
 `
 
@@ -62,11 +62,11 @@ function Stars({ count = 420 }) {
 /* Textures are loaded imperatively (no React suspense — resilient across
    React 19.x versions) and shared between every <EarthCanvas> instance. */
 const TEXTURE_URLS = [
-  '/textures/earth-day.jpg',
-  '/textures/earth-night.jpg',
+  '/textures/earth-day-graded.jpg',
+  '/textures/earth-night-graded.jpg',
   '/textures/earth-topo.png',
   '/textures/earth-water.png',
-  '/textures/earth-clouds.png',
+  '/textures/earth-clouds-graded.png',
 ]
 let texturePromise = null
 function getTextures() {
@@ -85,7 +85,7 @@ function Earth({ variant = 'hero' }) {
   const atmoUniforms = useMemo(
     () => ({
       uTime: { value: 0 },
-      uColor: { value: new THREE.Color('#f0e7d4') },
+      uColor: { value: new THREE.Color('#f3e5c8') },
     }),
     [],
   )
@@ -133,7 +133,7 @@ function Earth({ variant = 'hero' }) {
           shininess={10}
           emissiveMap={tex.night}
           emissive="#e6dabf"
-          emissiveIntensity={0.55}
+          emissiveIntensity={0.62}
         />
       </mesh>
 
@@ -164,7 +164,7 @@ function Scene({ variant }) {
     <>
       <ambientLight intensity={0.1} color="#f2ede3" />
       {/* single warm key light raking from the left — the planet stays mostly in darkness */}
-      <directionalLight position={[-7, 2.5, 3.5]} intensity={2.2} color="#fff3e0" />
+      <directionalLight position={[-7, 2.5, 3.5]} intensity={2.2} color="#ffeed6" />
       <directionalLight position={[5, -1, -4]} intensity={0.14} color="#93a2ac" />
       <Stars />
       <Earth variant={variant} />
@@ -195,7 +195,7 @@ export default function EarthCanvas({ variant = 'hero', className = '' }) {
         gl={{ antialias: true, alpha: true, powerPreference: 'high-performance' }}
         onCreated={({ gl }) => {
           gl.toneMapping = THREE.ACESFilmicToneMapping
-          gl.toneMappingExposure = 1.08
+          gl.toneMappingExposure = 1.12
         }}
       >
         <Scene variant={variant} />

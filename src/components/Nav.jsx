@@ -3,18 +3,21 @@ import { motion, useMotionValueEvent, useScroll } from 'motion/react'
 import { EASE } from './ui'
 
 const LINKS = [
-  ['Data', '#data'],
-  ['Translation', '#translation'],
-  ['System', '#system'],
-  ['Experience', '#experience'],
-  ['Stories', '#stories'],
-  ['Access', '#access'],
+  ['Concept', '#data'],
+  ['Prism System', '#system'],
+  ['Team', '#team'],
+  ['Preview', '#experience'],
+  ['Phenomena', '#translation'],
+  ['Stories', 'stories.html'],
 ]
 
-export default function Nav() {
+export default function Nav({ page = 'index' }) {
   const { scrollY } = useScroll()
   const [solid, setSolid] = useState(false)
   useMotionValueEvent(scrollY, 'change', (v) => setSolid(v > 80))
+
+  const hrefFor = (href) =>
+    page === 'index' ? href : href.startsWith('#') ? `index.html${href}` : href
 
   return (
     <motion.header
@@ -26,30 +29,35 @@ export default function Nav() {
       }`}
     >
       <nav className="flex h-16 items-center justify-between px-6 md:px-12">
-        <a href="#top" className="flex items-baseline gap-3" aria-label="Prism Tone — back to top">
-          <span className="font-display text-lg tracking-[0.06em] text-ivory">PRISM TONE</span>
-          <span className="hidden font-stencil text-[8px] uppercase tracking-[0.3em] text-parchment sm:inline">
-            V.01
+        <a
+          href={page === 'index' ? '#top' : 'index.html#top'}
+          className="flex flex-col justify-center gap-1"
+          aria-label="Prism Tone — back to top"
+        >
+          <img
+            src="/images/prism-tone-logo.png"
+            alt="Prism Tone"
+            className="h-7 w-auto md:h-8"
+          />
+          <span className="whitespace-nowrap font-stencil text-[7px] uppercase tracking-[0.22em] text-parchment">
+            (N · 37.7749° / W · 122.4194° ORBIT ALT 408 KM)
           </span>
         </a>
 
         <div className="hidden items-center gap-8 lg:flex">
           {LINKS.map(([label, href]) => (
             <a
-              key={href}
-              href={href}
-              className="font-ui text-[10px] uppercase tracking-[0.28em] text-cream/55 transition-colors duration-300 hover:text-ivory"
+              key={label}
+              href={hrefFor(href)}
+              className={`font-ui text-[10px] uppercase tracking-[0.28em] transition-colors duration-300 ${
+                page === 'stories' && label === 'Stories'
+                  ? 'text-ivory'
+                  : 'text-cream/55 hover:text-ivory'
+              }`}
             >
               {label}
             </a>
           ))}
-        </div>
-
-        <div className="flex items-center gap-3">
-          <span className="inline-block h-1 w-1 bg-ember" aria-hidden="true" />
-          <span className="font-stencil text-[9px] uppercase tracking-[0.3em] text-beige">
-            Space Apps '26
-          </span>
         </div>
       </nav>
     </motion.header>
