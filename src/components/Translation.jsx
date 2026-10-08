@@ -1,6 +1,6 @@
 import { motion } from 'motion/react'
 import { MappingViz } from './Canvases'
-import { Fade, Reveal, Rule } from './ui'
+import { Fade } from './ui'
 
 const MAPS = [
   {
@@ -33,67 +33,46 @@ const MAPS = [
   },
 ]
 
-function StackWord({ children, delay, className = '' }) {
-  return (
-    <Reveal delay={delay} className={className}>
-      <span className="block">{children}</span>
-    </Reveal>
-  )
-}
-
-function FlowArrow() {
-  return (
-    <span className="my-2 block h-10 w-px overflow-hidden bg-ivory/10" aria-hidden="true">
-      <motion.span
-        className="block h-1/2 w-px bg-ivory/60"
-        animate={{ y: ['-110%', '220%'] }}
-        transition={{ duration: 1.9, repeat: Infinity, ease: 'easeInOut', repeatDelay: 0.7 }}
-      />
-    </span>
-  )
-}
-
 export default function Translation() {
   return (
-    <section id="translation" className="relative border-t border-ivory/10 px-6 py-32 md:px-12 md:py-44 lg:px-20">
-      <Fade>
-        <Rule index="02" label="The Translation" meta="signal → score" />
-      </Fade>
+    <section id="translation" className="stack-card z-20 px-6 pt-10 pb-28 md:px-12 md:pt-12 md:pb-36 lg:px-20 lg:pt-14 lg:pb-40">
+      {/* Left-aligned caption heading matching section 01 without line break */}
+      <div className="flex items-center justify-between gap-6 mb-6 md:mb-8">
+        <div className="flex items-center gap-3">
+          <span
+            className="font-meno text-[11px] md:text-[12px] uppercase tracking-[0.26em] text-beige font-normal"
+            style={{ fontFamily: '"Meno Banner", "Bodoni Moda", "Source Serif 4", Georgia, serif' }}
+          >
+            02 / THE TRANSLATION
+          </span>
+          <span className="h-px w-14 md:w-20 bg-ivory/25 inline-block" aria-hidden="true" />
+        </div>
+        <span className="font-stencil text-[10px] md:text-[11px] uppercase tracking-[0.26em] text-parchment/80">
+          SIGNAL → SCORE
+        </span>
+      </div>
 
-      <div className="mt-16 grid gap-16 md:mt-24 lg:grid-cols-12 lg:gap-10">
-        {/* EARTH DATA → MAPPING → SOUND */}
-        <div className="lg:col-span-4">
-          <div className="lg:sticky lg:top-32">
-            <h2 className="font-display font-light leading-[1.02] text-ivory text-[clamp(2.4rem,4.6vw,4.2rem)]">
-              <StackWord delay={0.05}>EARTH DATA</StackWord>
-              <FlowArrow />
-              <StackWord delay={0.15}>
-                <span className="text-cream">MAPPING</span>
-              </StackWord>
-              <FlowArrow />
-              <StackWord delay={0.25}>
-                <em className="italic text-cream">SOUND</em>
-              </StackWord>
-            </h2>
-            <Fade delay={0.35}>
-              <p className="mt-10 max-w-xs font-elegant text-[15px] leading-relaxed text-cream/80">
-                Nothing is invented. Each sonic property is bound to a physical quantity — when the
-                planet moves, the music moves with it.
-              </p>
-            </Fade>
-          </div>
+      <div className="mt-12 grid gap-14 md:mt-16 lg:grid-cols-12 lg:gap-10 items-center">
+        {/* Left column: normal body text centered vertically in the middle of the mapping rows */}
+        <div className="flex flex-col justify-center lg:col-span-4 lg:self-center">
+          <Fade delay={0.15}>
+            <p className="max-w-[280px] font-elegant text-[14px] md:text-[14.5px] leading-[1.7] text-cream/75">
+              Nothing is invented. Each sonic property is bound to a physical quantity — when the
+              planet moves, the music moves with it.
+            </p>
+          </Fade>
         </div>
 
         {/* mapping rows */}
         <div className="lg:col-span-8">
           {MAPS.map((m, i) => (
             <Fade key={m.from} delay={0.06 * i}>
-              <div className="grid grid-cols-12 items-center gap-x-6 gap-y-6 border-t border-ivory/10 py-10 md:py-12">
+              <div className="grid grid-cols-12 items-center gap-x-6 gap-y-6 border-t border-ivory/10 py-9 md:py-11">
                 <div className="col-span-6 md:col-span-3">
-                  <p className="font-stencil text-[13px] uppercase tracking-[0.32em] text-ivory md:text-sm">
+                  <p className="font-stencil text-[12px] uppercase tracking-[0.28em] text-beige font-medium md:text-[13px]">
                     {m.from}
                   </p>
-                  <p className="mt-2 font-data text-[9px] uppercase tracking-[0.2em] text-parchment">
+                  <p className="mt-2 font-data text-[11px] uppercase tracking-[0.18em] text-parchment md:text-[11.5px]">
                     {m.sub}
                   </p>
                 </div>
@@ -110,11 +89,14 @@ export default function Translation() {
                 </div>
 
                 <div className="col-span-12 md:col-span-3">
-                  <p className="font-display text-3xl font-light italic leading-none text-ivory md:text-[2.6rem]">
+                  <p
+                    className="font-display text-[1.9rem] font-light italic leading-none text-ivory md:text-[2.4rem]"
+                    style={{ fontFamily: 'Meno Banner' }}
+                  >
                     {m.to.charAt(0) + m.to.slice(1).toLowerCase()}
-                    <span className="ml-2 not-italic text-beige">↑</span>
+                    <span className="ml-2 not-italic text-beige text-xl">↑</span>
                   </p>
-                  <p className="mt-3 font-data text-[9px] uppercase tracking-[0.2em] text-parchment">
+                  <p className="mt-2.5 font-data text-[11px] uppercase tracking-[0.18em] text-parchment md:text-[11.5px]">
                     {m.note}
                   </p>
                 </div>

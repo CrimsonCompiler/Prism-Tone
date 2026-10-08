@@ -11,12 +11,17 @@
   --color-ember: #c19a5b;
   --color-ice: #9aa7ad;
 
-  --font-display: "Scotch Display", "Fraunces", "Playfair Display", Georgia, serif;
-  --font-editorial: "Meno Banner", "Source Serif 4", Georgia, serif;
+  --font-display: "Meno Banner";
+  --font-editorial: "Meno Banner";
+  --font-meno: "Meno Banner";
   --font-stencil: "Hansson Stencil MN", "Allerta Stencil", "Oxanium", sans-serif;
   --font-elegant: "Adrianna", "Jost", "Titillium Web", sans-serif;
   --font-data: "Oxanium", "Titillium Web", sans-serif;
   --font-ui: "Titillium Web", "Jost", system-ui, sans-serif;
+}
+
+.font-meno {
+  font-family: "Meno Banner" !important;
 }
 
 html {
@@ -54,6 +59,47 @@ body {
 /* photographic vignette — used sparingly over imagery only */
 .vignette {
   background: radial-gradient(115% 90% at 50% 42%, transparent 52%, rgba(18, 19, 19, 0.62) 100%);
+}
+
+/* Stacking glassmorphic sheet with straight line divider */
+.stack-card {
+  position: sticky;
+  top: -40vh;
+  border-top: 1px solid rgba(242, 237, 227, 0.15);
+  background: linear-gradient(180deg,
+      rgba(242, 237, 227, 0.05) 0%,
+      rgba(12, 13, 17, 0.65) 110px,
+      rgba(8, 9, 12, 0.75) 100%);
+  -webkit-backdrop-filter: blur(24px) saturate(160%);
+  backdrop-filter: blur(24px) saturate(160%);
+  box-shadow:
+    0 -30px 70px -5px rgba(0, 0, 0, 0.9),
+    0 -12px 35px rgba(0, 0, 0, 0.75),
+    inset 0 1px 0 rgba(242, 237, 227, 0.2);
+}
+
+@supports not (backdrop-filter: blur(24px)) {
+  .stack-card {
+    background: linear-gradient(180deg,
+        rgba(242, 237, 227, 0.05) 0%,
+        rgba(12, 13, 17, 0.96) 110px,
+        rgba(8, 9, 12, 0.98) 100%);
+  }
+}
+
+.stack-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 60px;
+  background: radial-gradient(ellipse 85% 100% at 50% 0%,
+      rgba(242, 237, 227, 0.06) 0%,
+      rgba(193, 154, 91, 0.03) 45%,
+      transparent 100%);
+  pointer-events: none;
+  z-index: 1;
 }
 
 /* cinematic film grain */
@@ -94,6 +140,218 @@ body {
 
 @media (prefers-reduced-motion: reduce) {
   .grain {
+    animation: none;
+  }
+}
+
+/* Reference-style cosmic background — 8 stacked layers over a deep ink
+   base. Mirrors the landing page's CosmicBackground system but is rebuilt
+   in the existing ink/ivory palette only. No new colors introduced. */
+
+.bg-cosmic {
+  background:
+    radial-gradient(ellipse at 50% 30%,
+      rgba(36, 37, 37, 1) 0%,
+      rgba(20, 21, 21, 1) 45%,
+      rgba(18, 19, 19, 1) 100%);
+}
+
+/* 1. Nebula clouds — soft ivory radial blobs + center darken */
+.bg-nebula-wrap {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  animation: bg-nebula-breathe 60s ease-in-out infinite alternate;
+}
+
+.bg-nebula {
+  position: absolute;
+  border-radius: 50%;
+  background: radial-gradient(circle,
+      rgba(242, 237, 227, var(--a, 0.05)) 0%,
+      transparent 60%);
+  pointer-events: none;
+}
+
+.bg-center-darken {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+@keyframes bg-nebula-breathe {
+  from {
+    transform: scale(1);
+  }
+  to {
+    transform: scale(1.05);
+  }
+}
+
+/* 2. Horizon haze */
+.bg-horizon {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+/* 3. + 7. Star field (faint + bright) */
+.bg-stars {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.bg-star {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(242, 237, 227, 0.85);
+  box-shadow: 0 0 2px rgba(242, 237, 227, 0.4);
+  animation: bg-star-twinkle var(--d) ease-in-out var(--del) infinite;
+  will-change: opacity;
+}
+
+@keyframes bg-star-twinkle {
+  0%, 100% {
+    opacity: calc(var(--star-op, 0.4) * var(--tmin, 0.4));
+  }
+  50% {
+    opacity: var(--star-op, 0.6);
+  }
+}
+
+/* 4. Constellations — sparse web of SVG lines + nodes */
+.bg-constellations {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.bg-const-line {
+  animation: bg-const-pulse var(--d) ease-in-out var(--del) infinite;
+  will-change: opacity;
+}
+
+@keyframes bg-const-pulse {
+  0%, 100% {
+    opacity: 0.05;
+  }
+  50% {
+    opacity: 0.22;
+  }
+}
+
+/* 5. Orbital arcs — three rotating SVG ellipses */
+.bg-arcs {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.bg-arc {
+  animation: bg-arc-spin var(--d) linear infinite;
+  will-change: transform;
+}
+
+@keyframes bg-arc-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(var(--spin, 360deg));
+  }
+}
+
+/* 6. Drifting particles — ivory specks rising upward */
+.bg-particles {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.bg-particle {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(242, 237, 227, 0.85);
+  animation: bg-particle-rise var(--d) linear var(--del) infinite;
+  will-change: transform, opacity;
+}
+
+@keyframes bg-particle-rise {
+  0% {
+    transform: translate3d(0, 0, 0);
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  85% {
+    opacity: 1;
+  }
+  100% {
+    transform: translate3d(var(--dx, 0), -110vh, 0);
+    opacity: 0;
+  }
+}
+
+/* 8. Data trails — horizontal light streaks */
+.bg-trails {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.bg-trail {
+  position: absolute;
+  left: 0;
+  height: 1px;
+  box-shadow:
+    0 0 var(--glow, 6px) rgba(242, 237, 227, 0.6),
+    0 0 calc(var(--glow, 6px) * 2) rgba(242, 237, 227, 0.2);
+  transform: translateX(-50%);
+  animation: bg-trail-sweep var(--d) linear var(--del) infinite;
+  will-change: transform, opacity;
+}
+
+@keyframes bg-trail-sweep {
+  0% {
+    transform: translateX(-50%);
+    opacity: 0;
+  }
+  10% {
+    opacity: 0.7;
+  }
+  85% {
+    opacity: 0.7;
+  }
+  100% {
+    transform: translateX(120vw);
+    opacity: 0;
+  }
+}
+
+/* 9. Subtle grain — fractalNoise SVG, mix-blend-overlay, 5% opacity */
+.bg-grain-overlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.05;
+  mix-blend-mode: overlay;
+  background-repeat: repeat;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bg-nebula-wrap,
+  .bg-star,
+  .bg-const-line,
+  .bg-arc,
+  .bg-particle,
+  .bg-trail {
     animation: none;
   }
 }

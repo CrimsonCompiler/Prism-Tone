@@ -11,7 +11,7 @@ const LAYERS = [
 
 export default function PrismSystem() {
   return (
-    <section id="system" className="relative border-t border-ivory/10 px-6 py-32 md:px-12 md:py-44 lg:px-20">
+    <section id="system" className="stack-card z-30 px-6 pt-14 pb-28 md:px-12 md:pt-18 md:pb-36 lg:px-20 lg:pt-20 lg:pb-40">
       <Fade>
         <Rule index="03" label="The Prism System" meta="one signal — five voices" />
       </Fade>

@@ -4,14 +4,10 @@ import { MotionConfig, motion, useScroll } from 'motion/react'
 
 import Nav from './components/Nav'
 import Hero from './components/Hero'
-import DataAsSound from './components/DataAsSound'
+import PhenomenologicalConversion from './components/PhenomenologicalConversion'
 import Translation from './components/Translation'
-import PrismSystem from './components/PrismSystem'
 import ExperiencePreview from './components/ExperiencePreview'
-import EarthStories from './components/EarthStories'
 import Accessibility from './components/Accessibility'
-import FinalCTA from './components/FinalCTA'
-import BackgroundEffects from './components/BackgroundEffects'
 
 function Grain() {
   return <div className="grain" aria-hidden="true" />
@@ -22,7 +18,7 @@ function ProgressLine() {
   return (
     <motion.div
       style={{ scaleY: scrollYProgress }}
-      className="fixed left-0 top-0 z-40 h-full w-px origin-top bg-ivory/30"
+      className="fixed left-0 top-0 z-[85] h-full w-px origin-top bg-ivory/30"
       aria-hidden="true"
     />
   )
@@ -74,20 +70,16 @@ export default function App() {
         aria-hidden="true"
       />
 
-      <BackgroundEffects />
       <Grain />
       <ProgressLine />
       <Nav />
 
       <main className="relative z-10 bg-transparent text-ivory">
         <Hero />
-        <DataAsSound />
+        <PhenomenologicalConversion />
         <Translation />
-        <PrismSystem />
         <ExperiencePreview />
-        <EarthStories />
         <Accessibility />
-        <FinalCTA />
       </main>
     </MotionConfig>
   )

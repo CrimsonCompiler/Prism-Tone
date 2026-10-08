@@ -10,6 +10,15 @@
   overflow: hidden;
 }
 
+#stars,
+#stars2,
+#stars3,
+#stars4 {
+  will-change: transform;
+  transform: translate3d(0, 0, 0);
+  backface-visibility: hidden;
+}
+
 #stars {
   width: 1px;
   height: 1px;
