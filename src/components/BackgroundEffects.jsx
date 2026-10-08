@@ -1,20 +1,25 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 export default function BackgroundEffects() {
+  const containerRef = useRef(null)
   const canvasRef = useRef(null)
+  const [inView, setInView] = useState(true)
 
   useEffect(() => {
     const canvas = canvasRef.current
-    if (!canvas) return
-    const ctx = canvas.getContext('2d')
+    const container = containerRef.current
+    if (!canvas || !container) return
+    const ctx = canvas.getContext('2d', { alpha: true })
     if (!ctx) return
 
-    let rafId
+    let rafId = null
+    let running = false
+    let isIntersecting = true
     let particles = []
-    let mouseX = window.innerWidth / 2
-    let mouseY = window.innerHeight / 2
-    let winW = window.innerWidth
-    let winH = window.innerHeight
+    let winW = container.clientWidth || window.innerWidth
+    let winH = container.clientHeight || window.innerHeight
+    let mouseX = winW / 2
+    let mouseY = winH / 2
     let tiltX = 0
     let tiltY = 0
 
@@ -50,10 +55,10 @@ export default function BackgroundEffects() {
           y: Math.random() * winH,
         }
 
-        const sx = (-options.maxSpeedX / 2 + Math.random() * options.maxSpeedX)
+        const sx = -options.maxSpeedX / 2 + Math.random() * options.maxSpeedX
         this.speedX = sx + (sx > 0 ? options.minSpeedX : -options.minSpeedX)
 
-        const sy = (-options.maxSpeedY / 2 + Math.random() * options.maxSpeedY)
+        const sy = -options.maxSpeedY / 2 + Math.random() * options.maxSpeedY
         this.speedY = sy + (sy > 0 ? options.minSpeedY : -options.minSpeedY)
       }
 
@@ -75,58 +80,32 @@ export default function BackgroundEffects() {
           this.parallaxOffsetY += (this.parallaxTargY - this.parallaxOffsetY) / 12
         }
 
-        if (this.position.x + this.speedX + this.parallaxOffsetX > winW || this.position.x + this.speedX + this.parallaxOffsetX < 0) {
+        if (
+          this.position.x + this.speedX + this.parallaxOffsetX > winW ||
+          this.position.x + this.speedX + this.parallaxOffsetX < 0
+        ) {
           this.speedX = -this.speedX
         }
-        if (this.position.y + this.speedY + this.parallaxOffsetY > winH || this.position.y + this.speedY + this.parallaxOffsetY < 0) {
+        if (
+          this.position.y + this.speedY + this.parallaxOffsetY > winH ||
+          this.position.y + this.speedY + this.parallaxOffsetY < 0
+        ) {
           this.speedY = -this.speedY
         }
 
         this.position.x += this.speedX
         this.position.y += this.speedY
       }
-
-      draw() {
-        const px = this.position.x + this.parallaxOffsetX
-        const py = this.position.y + this.parallaxOffsetY
-
-        // Draw particle dot with size & alpha modulated by depth layer
-        ctx.beginPath()
-        const r = (options.particleRadius / 2) * (0.65 + this.layer * 0.22)
-        ctx.arc(px, py, Math.max(1, r), 0, Math.PI * 2, true)
-        ctx.fillStyle = options.dotColor
-        ctx.fill()
-        ctx.closePath()
-
-        // Proximity lines between particles
-        for (let i = particles.length - 1; i > this.stackPos; i--) {
-          const p2 = particles[i]
-          const p2x = p2.position.x + p2.parallaxOffsetX
-          const p2y = p2.position.y + p2.parallaxOffsetY
-
-          const dx = px - p2x
-          const dy = py - p2y
-          const dist = Math.sqrt(dx * dx + dy * dy)
-
-          if (dist < options.proximity) {
-            ctx.beginPath()
-            ctx.moveTo(px, py)
-            ctx.lineTo(p2x, p2y)
-            ctx.strokeStyle = options.lineColor
-            ctx.stroke()
-            ctx.closePath()
-          }
-        }
-      }
     }
 
     function resize() {
-      winW = window.innerWidth
-      winH = window.innerHeight
+      const rect = container.getBoundingClientRect()
+      winW = Math.max(300, rect.width || window.innerWidth)
+      winH = Math.max(300, rect.height || window.innerHeight)
       canvas.width = winW
       canvas.height = winH
 
-      const targetCount = Math.min(120, Math.round((winW * winH) / options.density))
+      const targetCount = Math.min(100, Math.round((winW * winH) / options.density))
 
       if (targetCount > particles.length) {
         while (particles.length < targetCount) {
@@ -142,8 +121,9 @@ export default function BackgroundEffects() {
     }
 
     function onMouseMove(e) {
-      mouseX = e.clientX
-      mouseY = e.clientY
+      const rect = canvas.getBoundingClientRect()
+      mouseX = e.clientX - rect.left
+      mouseY = e.clientY - rect.top
     }
 
     function onDeviceOrientation(e) {
@@ -162,24 +142,104 @@ export default function BackgroundEffects() {
     }
 
     function loop() {
+      if (!running) return
+
       ctx.clearRect(0, 0, winW, winH)
 
-      for (let i = 0; i < particles.length; i++) {
+      // 1. Update all particle positions
+      const len = particles.length
+      for (let i = 0; i < len; i++) {
         particles[i].updatePosition()
       }
-      for (let i = 0; i < particles.length; i++) {
-        particles[i].draw()
+
+      // 2. Batched proximity lines - single stroke call for all lines
+      const prox = options.proximity
+      const proxSq = prox * prox
+      ctx.beginPath()
+      ctx.strokeStyle = options.lineColor
+      ctx.lineWidth = 1
+
+      for (let i = 0; i < len; i++) {
+        const p1 = particles[i]
+        const p1x = p1.position.x + p1.parallaxOffsetX
+        const p1y = p1.position.y + p1.parallaxOffsetY
+
+        for (let j = i + 1; j < len; j++) {
+          const p2 = particles[j]
+          const p2x = p2.position.x + p2.parallaxOffsetX
+          const p2y = p2.position.y + p2.parallaxOffsetY
+
+          const dx = p1x - p2x
+          const dy = p1y - p2y
+          const distSq = dx * dx + dy * dy
+
+          if (distSq < proxSq) {
+            ctx.moveTo(p1x, p1y)
+            ctx.lineTo(p2x, p2y)
+          }
+        }
+      }
+      ctx.stroke()
+
+      // 3. Batched particle dots
+      ctx.fillStyle = options.dotColor
+      for (let i = 0; i < len; i++) {
+        const p = particles[i]
+        const px = p.position.x + p.parallaxOffsetX
+        const py = p.position.y + p.parallaxOffsetY
+        const r = (options.particleRadius / 2) * (0.65 + p.layer * 0.22)
+
+        ctx.beginPath()
+        ctx.arc(px, py, Math.max(1, r), 0, Math.PI * 2, true)
+        ctx.fill()
       }
 
       rafId = requestAnimationFrame(loop)
     }
 
-    rafId = requestAnimationFrame(loop)
+    const startLoop = () => {
+      if (running) return
+      running = true
+      rafId = requestAnimationFrame(loop)
+    }
+
+    const stopLoop = () => {
+      running = false
+      if (rafId) {
+        cancelAnimationFrame(rafId)
+        rafId = null
+      }
+    }
+
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        isIntersecting = entry.isIntersecting
+        setInView(isIntersecting)
+        if (isIntersecting && !document.hidden) {
+          startLoop()
+        } else {
+          stopLoop()
+        }
+      },
+      { rootMargin: '120px' }
+    )
+    io.observe(container)
+
+    const onVisibilityChange = () => {
+      if (document.hidden) {
+        stopLoop()
+      } else if (isIntersecting) {
+        startLoop()
+      }
+    }
+    document.addEventListener('visibilitychange', onVisibilityChange)
 
     return () => {
-      cancelAnimationFrame(rafId)
+      stopLoop()
+      io.disconnect()
       window.removeEventListener('resize', resize)
       window.removeEventListener('mousemove', onMouseMove)
+      document.removeEventListener('visibilitychange', onVisibilityChange)
       if (window.DeviceOrientationEvent && !isDesktop) {
         window.removeEventListener('deviceorientation', onDeviceOrientation)
       }
@@ -188,13 +248,15 @@ export default function BackgroundEffects() {
 
   return (
     <div
-      className="pointer-events-none fixed inset-0 z-0 overflow-hidden"
+      ref={containerRef}
+      className={`pointer-events-none absolute inset-0 z-0 overflow-hidden ${inView ? '' : 'hidden'
+        }`}
       aria-hidden="true"
     >
       {/* 3D Interactive Connected Particles (Particleground) Canvas */}
       <canvas ref={canvasRef} className="absolute inset-0 h-full w-full" />
 
-      {/* Whole Page Cosmic Dust Particle Drift Animation */}
+      {/* Cosmic Dust Particle Drift Animation — strictly Hero-scoped */}
       <div className="bg-animation absolute inset-0 h-full w-full opacity-65">
         <div id="stars" />
         <div id="stars2" />

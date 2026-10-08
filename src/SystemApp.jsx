@@ -5,7 +5,6 @@ import { MotionConfig, motion, useScroll } from 'motion/react'
 import Nav from './components/Nav'
 import PrismSystem from './components/PrismSystem'
 import Pipeline from './components/Pipeline'
-import BackgroundEffects from './components/BackgroundEffects'
 
 function Grain() {
   return <div className="grain" aria-hidden="true" />
@@ -68,7 +67,6 @@ export default function SystemApp() {
         aria-hidden="true"
       />
 
-      <BackgroundEffects />
       <Grain />
       <ProgressLine />
       <Nav page="system" />

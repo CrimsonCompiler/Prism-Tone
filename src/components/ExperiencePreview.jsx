@@ -78,7 +78,8 @@ function Timecode() {
 
 export default function ExperiencePreview() {
   return (
-    <section id="experience" className="stack-card z-30 px-6 pt-10 pb-28 md:px-12 md:pt-12 md:pb-36 lg:px-20 lg:pt-14 lg:pb-40">
+    <section id="preview" className="stack-card z-30 px-6 pt-10 pb-28 md:px-12 md:pt-12 md:pb-36 lg:px-20 lg:pt-14 lg:pb-40">
+      <span id="experience" className="sr-only" aria-hidden="true" />
       {/* Caption heading matching image */}
       <div className="flex items-center gap-3 mb-6 md:mb-8">
         <span

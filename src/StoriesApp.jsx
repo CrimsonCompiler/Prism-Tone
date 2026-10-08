@@ -4,7 +4,6 @@ import { MotionConfig, motion, useScroll } from 'motion/react'
 
 import Nav from './components/Nav'
 import EarthStories from './components/EarthStories'
-import BackgroundEffects from './components/BackgroundEffects'
 
 function Grain() {
   return <div className="grain" aria-hidden="true" />
@@ -67,7 +66,6 @@ export default function StoriesApp() {
         aria-hidden="true"
       />
 
-      <BackgroundEffects />
       <Grain />
       <ProgressLine />
       <Nav page="stories" />

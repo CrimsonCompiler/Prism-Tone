@@ -8,7 +8,6 @@ import PhenomenologicalConversion from './components/PhenomenologicalConversion'
 import Translation from './components/Translation'
 import ExperiencePreview from './components/ExperiencePreview'
 import Accessibility from './components/Accessibility'
-import BackgroundEffects from './components/BackgroundEffects'
 
 function Grain() {
   return <div className="grain" aria-hidden="true" />
@@ -71,7 +70,6 @@ export default function App() {
         aria-hidden="true"
       />
 
-      <BackgroundEffects />
       <Grain />
       <ProgressLine />
       <Nav />

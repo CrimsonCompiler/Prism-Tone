@@ -1,6 +1,7 @@
 import { useRef } from 'react'
 import { motion, useScroll, useTransform } from 'motion/react'
 import EarthCanvas from './EarthCanvas'
+import BackgroundEffects from './BackgroundEffects'
 import { Annot, EASE, Kicker } from './ui'
 
 export default function Hero() {
@@ -12,6 +13,9 @@ export default function Hero() {
 
   return (
     <section ref={ref} id="top" className="sticky top-[-45vh] z-0 h-[100svh] min-h-[500px] md:min-h-[560px] lg:min-h-[620px] overflow-hidden">
+      {/* Background Effects: Dust & Connected Dots (strictly in hero section) */}
+      <BackgroundEffects />
+
       {/* Earth */}
       <motion.div style={{ scale }} className="absolute inset-0">
         <motion.div

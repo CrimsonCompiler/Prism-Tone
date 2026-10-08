@@ -28,9 +28,11 @@ const atmoFragment = /* glsl */ `
   uniform float uTime;
   uniform vec3 uSunDirection;
 
-  // Procedural noise for organic, drifting cloud wisps
+  // Fast hardware-friendly hash for smooth cloud noise
   float hash(vec2 p) {
-    return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453123);
+    p = fract(p * vec2(127.1, 311.7));
+    p += dot(p, p + 45.32);
+    return fract(p.x * p.y);
   }
 
   float noise(vec2 p) {
@@ -48,7 +50,7 @@ const atmoFragment = /* glsl */ `
     float v = 0.0;
     float a = 0.5;
     mat2 rot = mat2(0.8, 0.6, -0.6, 0.8);
-    for (int i = 0; i < 4; i++) {
+    for (int i = 0; i < 3; i++) {
       v += a * noise(p);
       p = rot * p * 2.05 + vec2(11.3);
       a *= 0.5;
@@ -63,13 +65,18 @@ const atmoFragment = /* glsl */ `
     // t goes from 0 (center) to 1 (outer silhouette edge)
     float t = 1.0 - abs(dot(N, V));
     
-    // Soft brush gradient: fade in gently from planet, and fade OUT to 0 BEFORE the geometric boundary
-    // Strictly zero at t >= 0.95 — completely eliminates any harsh line/border!
+    // Soft brush gradient: fade in gently from planet, and fade OUT to 0 BEFORE geometric boundary
     float innerGradient = smoothstep(0.12, 0.62, t);
     float outerDissolve = smoothstep(0.95, 0.58, t);
     float softAtmosphere = innerGradient * outerDissolve;
     
-    // Drifting cloud wisps flowing across the upper atmosphere
+    // Early exit: skip expensive cloud noise when outside the atmospheric rim
+    if (softAtmosphere <= 0.002) {
+      gl_FragColor = vec4(0.0);
+      return;
+    }
+
+    // Drifting cloud wisps flowing across upper atmosphere
     vec3 WN = normalize(vWorldNormal);
     float lon = atan(WN.z, WN.x);
     float lat = WN.y;
@@ -132,8 +139,7 @@ function Stars({ count = 420 }) {
   )
 }
 
-/* Textures are loaded imperatively (no React suspense — resilient across
-   React 19.x versions) and shared between every <EarthCanvas> instance. */
+/* Textures are loaded imperatively and shared between instances */
 const TEXTURE_URLS = [
   '/textures/earth-day-graded.jpg',
   '/textures/earth-night-graded.jpg',
@@ -141,13 +147,26 @@ const TEXTURE_URLS = [
   '/textures/earth-water.png',
   '/textures/earth-clouds-graded.png',
 ]
+
 let texturePromise = null
 function getTextures() {
   if (!texturePromise) {
     const loader = new THREE.TextureLoader()
-    texturePromise = Promise.all(TEXTURE_URLS.map((url) => loader.loadAsync(url)))
+    texturePromise = Promise.all(
+      TEXTURE_URLS.map((url) =>
+        loader.loadAsync(url).then((tex) => {
+          tex.generateMipmaps = true
+          return tex
+        })
+      )
+    )
   }
   return texturePromise
+}
+
+// Preload textures immediately in browser
+if (typeof window !== 'undefined') {
+  getTextures()
 }
 
 function Earth({ variant = 'hero' }) {
@@ -188,7 +207,13 @@ function Earth({ variant = 'hero' }) {
         day.colorSpace = THREE.SRGBColorSpace
         night.colorSpace = THREE.SRGBColorSpace
         const max = gl.capabilities.getMaxAnisotropy()
-        for (const t of [day, night, topo, water, cloudTex]) t.anisotropy = max
+        const aniso = Math.min(max, 4)
+        for (const t of [day, night, topo, water, cloudTex]) {
+          t.anisotropy = aniso
+          t.minFilter = THREE.LinearMipmapLinearFilter
+          t.magFilter = THREE.LinearFilter
+          t.generateMipmaps = true
+        }
         setTex({ day, night, topo, water, cloudTex })
       })
       .catch((err) => console.error('[EarthCanvas] texture load failed', err))
@@ -198,10 +223,12 @@ function Earth({ variant = 'hero' }) {
   }, [gl])
 
   useFrame((_, delta) => {
+    // Clamp delta to maximum of 33ms (30fps equivalent) to prevent large rotational jumps on hitches
+    const d = Math.min(delta, 0.033)
     const speed = REDUCED() ? 0.004 : 0.02
-    if (group.current) group.current.rotation.y += delta * speed
-    if (clouds.current) clouds.current.rotation.y += delta * speed * 1.3
-    atmoUniforms.uTime.value += delta
+    if (group.current) group.current.rotation.y += d * speed
+    if (clouds.current) clouds.current.rotation.y += d * speed * 1.3
+    atmoUniforms.uTime.value += d
   })
 
   if (!tex) return null
@@ -281,9 +308,15 @@ export default function EarthCanvas({ variant = 'hero', className = '' }) {
     <div ref={wrapRef} className={`h-full w-full ${className}`}>
       <Canvas
         frameloop={active ? 'always' : 'never'}
-        dpr={[1, 1.75]}
+        dpr={[1, 1.5]}
         camera={{ fov: 42, position: [0, 0.55, 5.6], near: 0.1, far: 130 }}
-        gl={{ antialias: true, alpha: true, powerPreference: 'high-performance' }}
+        gl={{
+          antialias: true,
+          alpha: true,
+          powerPreference: 'high-performance',
+          stencil: false,
+          depth: true,
+        }}
         onCreated={({ gl }) => {
           gl.toneMapping = THREE.ACESFilmicToneMapping
           gl.toneMappingExposure = 1.12

@@ -5,8 +5,8 @@ import { EASE } from './ui'
 const LINKS = [
   ['Concept', '#concept'],
   ['Translation', '#translation'],
-  ['Experience', '#experience'],
-  ['Access', '#access'],
+  ['Prism System', 'system.html'],
+  ['Preview', '#preview'],
   ['Team', '#team'],
   ['Stories', 'stories.html'],
 ]
