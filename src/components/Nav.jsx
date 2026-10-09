@@ -7,7 +7,7 @@ const LINKS = [
   ['Translation', '#translation'],
   ['Prism System', 'system.html'],
   ['Preview', '#preview'],
-  ['Team', '#team'],
+  ['Team', 'team.html'],
   ['Stories', 'stories.html'],
 ]
 
@@ -21,7 +21,8 @@ export default function Nav({ page = 'index' }) {
 
   const isActive = (label) =>
     (page === 'stories' && label === 'Stories') ||
-    (page === 'system' && label === 'Prism System')
+    (page === 'system' && label === 'Prism System') ||
+    (page === 'team' && label === 'Team')
 
   return (
     <motion.header

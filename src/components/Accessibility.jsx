@@ -213,7 +213,6 @@ export default function Accessibility() {
 
       {/* Continuous Team & Closing Footer — compact, no divider, waveform brought up */}
       <div
-        id="team"
         className="mt-14 md:mt-20 text-center flex flex-col items-center w-full"
       >
 

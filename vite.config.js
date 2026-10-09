@@ -11,6 +11,7 @@ export default defineConfig({
         main: resolve(__dirname, 'index.html'),
         stories: resolve(__dirname, 'stories.html'),
         system: resolve(__dirname, 'system.html'),
+        team: resolve(__dirname, 'team.html'),
       },
     },
   },
