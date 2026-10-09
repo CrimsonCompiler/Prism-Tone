@@ -800,7 +800,7 @@ function FiguresGrid() {
 
           <div className="flex flex-col justify-end lg:col-span-5 lg:pl-8 xl:pl-14 pb-1.5">
             <p className="max-w-lg font-elegant text-[16px] md:text-[17px] leading-[1.72] text-[#f9eed8]/90">
-              A field-notebook of the planet — line, vector, drop, fracture, ember, orbit. Each one becomes a voice in the score.
+              A field-notebook of the planet — line, vector, drop, fracture, ember, orbit. Each one becomes a Timre in the score.
             </p>
           </div>
         </div>
