@@ -37,6 +37,10 @@ body {
   overflow-x: clip;
 }
 
+body.system-page {
+  background: #1e2a2c;
+}
+
 ::selection {
   background: var(--color-ivory);
   color: var(--color-ink);

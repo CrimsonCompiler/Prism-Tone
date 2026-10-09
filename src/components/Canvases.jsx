@@ -5,6 +5,8 @@ import { useCanvasLoop } from '../hooks/useCanvasLoop'
 const IVORY = (a) => `rgba(242, 237, 227, ${a})`
 const BEIGE = (a) => `rgba(177, 166, 140, ${a})`
 const EMBER = (a) => `rgba(193, 154, 91, ${a})`
+const SAGE = (a) => `rgba(142, 175, 148, ${a})`
+const SKY = (a) => `rgba(130, 179, 217, ${a})`
 
 /* deterministic hash noise */
 const hash = (n) => {
@@ -395,18 +397,17 @@ function drawPrism(ctx, w, h, t) {
   const ecx = w * 0.1
   const ecy = h * 0.55
   ctx.lineWidth = 1
-  ctx.strokeStyle = IVORY(0.14)
+  ctx.strokeStyle = SAGE(0.24)
   ctx.beginPath()
   ctx.arc(ecx, ecy, h * 0.62, -Math.PI * 0.42, Math.PI * 0.28)
   ctx.stroke()
-  ctx.strokeStyle = IVORY(0.05)
+  ctx.strokeStyle = SKY(0.14)
   ctx.beginPath()
   ctx.arc(ecx, ecy, h * 0.62 + 9, -Math.PI * 0.4, Math.PI * 0.26)
   ctx.stroke()
 
   const ax = w * 0.34
   const ay = h * 0.5
-  tag(ctx, 'prism split — 5 voices', 14, 18, { alpha: 0.4, size: 8 })
 
   /* incoming beam + traveling pulse */
   ctx.strokeStyle = IVORY(0.8)
@@ -511,9 +512,9 @@ function drawPrism(ctx, w, h, t) {
     }
 
     /* stratum labels */
-    tag(ctx, `0${i + 1} ${names[i]}`, ex + 12, yT + 1, { alpha: 0.6, size: 8 })
+    tag(ctx, `0${i + 1} ${names[i]}`, ex + 12, yT + 1, { alpha: 0.88, size: 10, color: IVORY })
     const hz = 82 + hash(i + Math.floor(t * 0.5)) * 380
-    tag(ctx, `${hz.toFixed(0)} hz`, ex + 12, yT + 13, { alpha: 0.32, size: 7, color: BEIGE })
+    tag(ctx, `${hz.toFixed(0)} hz`, ex + 12, yT + 14, { alpha: 0.68, size: 9, color: SAGE })
   }
 }
 
