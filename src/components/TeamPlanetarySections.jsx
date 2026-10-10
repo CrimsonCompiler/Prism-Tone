@@ -62,7 +62,7 @@ const MEMBERS = [
     lines: ['Anika Binta', 'Azad Shifa'],
     name: 'Anika Binta Azad Shifa',
     role: 'Project Lead, UI/UX Design & Frontend Engineering',
-    tagline: 'Leading the vision — translating complex planetary telemetry and climate datasets into intuitive, human-centered sensory interfaces.',
+    tagline: 'Translating complex planetary telemetry and climate datasets into intuitive, human-centered sensory interfaces.',
     stat: 'ORBIT · LEADERSHIP & CODE',
     coord: '23.8738° N / 90.3965° E',
     photo: '/images/shifa-glow.png',
