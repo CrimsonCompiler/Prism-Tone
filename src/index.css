@@ -84,6 +84,18 @@ body.system-page {
   border-radius: 8px;
 }
 
+/* Hide scrollbar utility */
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+  width: 0;
+  height: 0;
+}
+
 /* photographic vignette — used sparingly over imagery only */
 .vignette {
   background: radial-gradient(115% 90% at 50% 42%, transparent 52%, rgba(18, 19, 19, 0.62) 100%);

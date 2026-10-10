@@ -238,36 +238,6 @@ export default function TeamIntro() {
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
         </motion.svg>
       </motion.div>
-
-      {/* 4. Subtle replay button at bottom right */}
-      <motion.div
-        initial={{ opacity: 0, y: 15 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 2.2, duration: 0.8 }}
-        className="fixed bottom-6 right-6 z-30"
-      >
-        <button
-          onClick={() => setReplayKey((k) => k + 1)}
-          className="group flex items-center gap-2 rounded-full border border-ivory/20 bg-ink/70 px-4 py-1.5 font-data text-[10px] uppercase tracking-[0.22em] text-ivory/70 backdrop-blur-md transition-all hover:border-ivory/60 hover:text-ivory hover:bg-ink/90 active:scale-95"
-          title="Replay scrapbook entrance"
-        >
-          <svg
-            className="h-3 w-3 transition-transform duration-500 group-hover:rotate-180 text-parchment"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          >
-            <path d="M3 12a9 9 0 0 1 15-6.7L21 8" />
-            <path d="M21 3v5h-5" />
-            <path d="M21 12a9 9 0 0 1-15 6.7L3 16" />
-            <path d="M3 21v-5h5" />
-          </svg>
-          <span>Replay Entrance</span>
-        </button>
-      </motion.div>
     </section>
   )
 }
