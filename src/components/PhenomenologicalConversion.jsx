@@ -304,7 +304,7 @@ export default function PhenomenologicalConversion() {
               <div>
                 <div className="flex items-center justify-between border-b border-ivory/10 pb-3">
                   <span className="font-stencil text-[11.5px] uppercase tracking-[0.22em] text-beige md:text-[12px]">
-                    {s.index} // Sensor
+                    {s.index}
                   </span>
                   <span className="truncate font-data text-[11px] uppercase tracking-[0.16em] text-parchment md:text-[11.5px]">
                     {s.sensorTag}
