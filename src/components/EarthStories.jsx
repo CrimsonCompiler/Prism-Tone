@@ -57,7 +57,7 @@ const STORIES = [
     alt: 'Sea ice floes and fractures seen from above',
     fig: 'Fig. 04 — sea ice, beaufort sea',
     stats: [
-      { label: 'ANNUAL CONTINENTAL MASS LOSS', value: '-420', unit: 'Gt/yr' },
+      { label: 'ANNUAL CONTINENTAL MASS LOSS', value: '- 420', unit: 'Gt/yr' },
       { label: 'ICE ACCELERATION', value: '+34', unit: '%' },
     ],
     copy: 'Thwaites and Pine Island glaciers lose billions of tons of crystalline ice every lunar cycle. Laser altimeters document microscopic elevation drops, converted here into tectonic 42Hz sub-bass. As the ice retreats - the music becomes sparser, more haunting. The missing notes are the missing floes.',
@@ -729,51 +729,199 @@ function Wildfire() {
   )
 }
 
-// FIG · 06 — ORBITAL VIEW: rotating satellite orbits
-function SatelliteOrbits() {
-  const orbits = [
-    { cx: 50, cy: 50, rx: 38, ry: 32, rot: 0 },
-    { cx: 50, cy: 50, rx: 44, ry: 26, rot: 25 },
-    { cx: 50, cy: 50, rx: 30, ry: 42, rot: -20 },
-  ]
+// FIG · 06 — DEFORESTATION: dense canopy of tree-cells progressively cleared
+// along a fishbone logging road. Reads instantly as forest being consumed.
+function Deforestation() {
+  // Build a dense grid of small tree-cells (the intact canopy).
+  // Each cell is a tiny hexagon/dot. Cells close to the road get "cleared"
+  // (turned dark + faded out) on a stagger, so the forest visibly retreats.
+  const cols = 28
+  const rows = 18
+  const cellSize = 100 / cols
+  const cells_list = []
+  for (let r = 0; r < rows; r++) {
+    for (let c = 0; c < cols; c++) {
+      const x = c * cellSize + cellSize / 2
+      const y = r * cellSize + cellSize / 2
+      // Distance from the main road (a line from bottom-left to top-right).
+      // Road: from (8, 78) to (92, 30) in 0..100 coords.
+      const roadY = 78 - ((x - 8) / (92 - 8)) * (78 - 30)
+      const dRoad = Math.abs(y - roadY)
+      // Distance from any of the fishbone spurs (sample a few).
+      const spurs = [
+        [22, 70, 18, 38],
+        [22, 70, 34, 56],
+        [38, 60, 32, 22],
+        [38, 60, 50, 70],
+        [52, 52, 60, 20],
+        [52, 52, 44, 84],
+        [68, 42, 80, 70],
+        [68, 42, 74, 14],
+        [82, 34, 90, 60],
+      ]
+      let dSpur = Infinity
+      for (const [x1, y1, x2, y2] of spurs) {
+        // perpendicular distance from point (x,y) to segment
+        const dx = x2 - x1
+        const dy = y2 - y1
+        const t = Math.max(0, Math.min(1, ((x - x1) * dx + (y - y1) * dy) / (dx * dx + dy * dy)))
+        const px = x1 + t * dx
+        const py = y1 + t * dy
+        const d = Math.hypot(x - px, y - py)
+        if (d < dSpur) dSpur = d
+      }
+      // A cell is "cleared" if it's close enough to the road or a spur,
+      // and only if it's on the "advance side" (we'll use a probability
+      // driven by distance so it looks organic, not a uniform strip).
+      const proximity = Math.min(dRoad, dSpur)
+      // Cells well inside the forest keep full opacity.
+      // Cells near the road flip to "cleared" with high probability.
+      const cleared = proximity < cellSize * 1.6 ? Math.random() < 0.92 : proximity < cellSize * 3 ? Math.random() < 0.35 : false
+      cells_list.push({
+        x,
+        y,
+        r: cellSize * 0.22,
+        cleared,
+        // Stagger the clear moment so the front advances over time
+        delay: 0.4 + Math.random() * 2.4,
+        key: `${r}-${c}`,
+      })
+    }
+  }
+
   return (
     <svg viewBox="0 0 100 100" preserveAspectRatio="none" className="w-full h-full">
-      {orbits.map((o, i) => (
-        <ellipse
-          key={i}
-          cx={o.cx}
-          cy={o.cy}
-          rx={o.rx}
-          ry={o.ry}
-          fill="none"
-          stroke="rgba(249,238,216,0.25)"
-          strokeWidth="0.15"
-          transform={`rotate(${o.rot} ${o.cx} ${o.cy})`}
-          strokeDasharray="0.8 0.6"
+      {/* Faint warm base so cleared cells read as "exposed earth" */}
+      <defs>
+        <radialGradient id="clearedGrad" cx="50%" cy="50%" r="60%">
+          <stop offset="0%" stopColor="rgba(192,138,85,0.10)" />
+          <stop offset="100%" stopColor="rgba(192,138,85,0)" />
+        </radialGradient>
+      </defs>
+      <rect x="0" y="0" width="100" height="100" fill="url(#clearedGrad)" />
+
+      {/* The canopy: a dense field of small cells. */}
+      {/* Intact cells render as ivory dots; cleared cells animate to dark/transparent. */}
+      {cells_list.map((c) => (
+        <motion.circle
+          key={c.key}
+          cx={c.x}
+          cy={c.y}
+          r={c.r}
+          fill={c.cleared ? '#f9eed8' : '#f9eed8'}
+          initial={{ opacity: c.cleared ? 0.85 : 0.9 }}
+          animate={
+            c.cleared
+              ? { opacity: [0.85, 0.05, 0.05] }
+              : { opacity: [0.9, 0.55, 0.9] }
+          }
+          transition={{
+            duration: c.cleared ? 1.6 : 5 + Math.random() * 3,
+            delay: c.cleared ? c.delay : Math.random() * 2,
+            repeat: c.cleared ? 0 : Infinity,
+            ease: 'easeInOut',
+          }}
         />
       ))}
-      <motion.g
-        animate={{ rotate: 360 }}
-        transition={{ duration: 20, ease: 'linear', repeat: Infinity }}
-        style={{ transformOrigin: '50% 50%' }}
-      >
-        <circle cx="88" cy="50" r="0.6" fill="#f9eed8" />
-        <circle
-          cx="88"
-          cy="50"
-          r="1.4"
-          fill="none"
-          stroke="rgba(249,238,216,0.4)"
+
+      {/* Cleared earth patches: dark blobs that fade in where trees fell. */}
+      {[
+        [22, 70, 7, 3.5, -32],
+        [38, 60, 8, 4, 8],
+        [52, 52, 9, 4.5, -12],
+        [68, 42, 7, 3.2, 24],
+        [82, 34, 6, 2.8, -18],
+        [30, 50, 4, 1.8, 60],
+        [60, 64, 5, 2.2, -50],
+        [46, 36, 4, 1.6, 40],
+      ].map(([cx, cy, rx, ry, rot], i) => (
+        <motion.ellipse
+          key={`cleared-${i}`}
+          cx={cx}
+          cy={cy}
+          rx={rx}
+          ry={ry}
+          fill="rgba(0,0,0,0.55)"
+          stroke="rgba(249,238,216,0.18)"
           strokeWidth="0.15"
+          transform={`rotate(${rot} ${cx} ${cy})`}
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 1.6, delay: 1.8 + i * 0.22, ease: 'easeOut' }}
         />
-      </motion.g>
-      <motion.g
-        animate={{ rotate: -360 }}
-        transition={{ duration: 28, ease: 'linear', repeat: Infinity }}
-        style={{ transformOrigin: '50% 50%' }}
-      >
-        <circle cx="6" cy="50" r="0.5" fill="#f9eed8" opacity="0.7" />
-      </motion.g>
+      ))}
+
+      {/* The logging road: main diagonal + side spurs, drawn on top. */}
+      <motion.line
+        x1="8"
+        y1="78"
+        x2="92"
+        y2="30"
+        stroke="rgba(249,238,216,0.55)"
+        strokeWidth="1.6"
+        strokeLinecap="round"
+        initial={{ pathLength: 0 }}
+        whileInView={{ pathLength: 1 }}
+        viewport={{ once: true }}
+        transition={{ duration: 2.4, ease: 'easeInOut' }}
+      />
+      <motion.line
+        x1="8"
+        y1="78"
+        x2="92"
+        y2="30"
+        stroke="#f9eed8"
+        strokeWidth="0.4"
+        strokeLinecap="round"
+        strokeDasharray="0.6 0.4"
+        initial={{ pathLength: 0 }}
+        whileInView={{ pathLength: 1 }}
+        viewport={{ once: true }}
+        transition={{ duration: 2.4, ease: 'easeInOut' }}
+      />
+      {/* Side spurs — fishbone branches */}
+      {[
+        [22, 70, 18, 38],
+        [22, 70, 34, 56],
+        [38, 60, 32, 22],
+        [38, 60, 50, 70],
+        [52, 52, 60, 20],
+        [52, 52, 44, 84],
+        [68, 42, 80, 70],
+        [68, 42, 74, 14],
+        [82, 34, 90, 60],
+      ].map(([x1, y1, x2, y2], i) => (
+        <motion.line
+          key={`spur-${i}`}
+          x1={x1}
+          y1={y1}
+          x2={x2}
+          y2={y2}
+          stroke="rgba(249,238,216,0.45)"
+          strokeWidth="0.45"
+          strokeLinecap="round"
+          initial={{ pathLength: 0 }}
+          whileInView={{ pathLength: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 1.1, delay: 2.1 + i * 0.1, ease: 'easeOut' }}
+        />
+      ))}
+
+      {/* A faint scan-line "before/after" divider sweeping the frame once — */}
+      {/* reads as the satellite's eye passing over the loss. */}
+      <motion.line
+        x1="0"
+        x2="100"
+        y1="50"
+        y2="50"
+        stroke="rgba(249,238,216,0.18)"
+        strokeWidth="0.3"
+        initial={{ y1: -2, y2: -2, opacity: 0 }}
+        whileInView={{ y1: 102, y2: 102, opacity: [0, 0.6, 0] }}
+        viewport={{ once: true }}
+        transition={{ duration: 3.6, delay: 1.2, ease: 'easeInOut' }}
+      />
     </svg>
   )
 }
@@ -793,20 +941,21 @@ function DataTile({ index, label, value, unit, annotation, children }) {
         className="relative w-full overflow-hidden border border-[#f9eed8]/15 bg-[#25232a]"
         style={{ aspectRatio: '4 / 3' }}
       >
-        {/* Top-left & top-right stencil labels */}
+        {/* Top-left & top-right stencil labels — backed with a dark pill so they
+            read on top of busy visualizations (e.g. deforestation canopy). */}
         <div className="pointer-events-none absolute inset-0 z-10">
           <span
-            className="absolute top-3 left-3 font-stencil uppercase text-[8.5px] md:text-[9.5px] tracking-[0.28em] text-[#f9eed8]/75"
+            className="absolute top-3 left-3 font-stencil uppercase text-[8.5px] md:text-[9.5px] tracking-[0.28em] text-[#f9eed8] bg-black/80 backdrop-blur-md px-2.5 py-1 border border-[#f9eed8]/20 shadow-sm"
           >
             {`FIG · 0${index + 1}`}
           </span>
           <span
-            className="absolute top-3 right-3 font-stencil uppercase text-[8.5px] md:text-[9.5px] tracking-[0.28em] text-[#f9eed8]/75"
+            className="absolute top-3 right-3 max-w-[60%] text-right font-stencil uppercase text-[8.5px] md:text-[9.5px] tracking-[0.28em] text-[#f9eed8] bg-black/80 backdrop-blur-md px-2.5 py-1 border border-[#f9eed8]/20 shadow-sm"
           >
             {label}
           </span>
 
-          {/* Bottom-left value + unit */}
+          {/* Bottom-left value + unit — plain text, no pill */}
           <span
             className="absolute bottom-3 left-3 font-meno font-light tracking-[-0.015em] text-[#f9eed8] leading-none"
             style={{
@@ -818,9 +967,9 @@ function DataTile({ index, label, value, unit, annotation, children }) {
             <span className="text-[#f9eed8]/85 text-sm md:text-base pl-1">{unit}</span>
           </span>
 
-          {/* Bottom-right annotation */}
+          {/* Bottom-right annotation — plain text, no pill */}
           <span
-            className="absolute bottom-3 right-3 max-w-[40%] text-right font-data text-[8.5px] md:text-[9px] uppercase tracking-[0.22em] text-[#f9eed8]/65"
+            className="absolute bottom-3 right-3 max-w-[42%] text-right font-data text-[8.5px] md:text-[9px] uppercase tracking-[0.22em] text-[#f9eed8]/65"
           >
             {annotation}
           </span>
@@ -877,13 +1026,13 @@ function FiguresGrid() {
       </Fade>
 
       <div className="mt-14 grid md:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-12">
-        {/* FIG · 01 — TEMPERATURE */}
+        {/* FIG · 01 — TEMPERATURE / SEA LEVEL RISE */}
         <DataTile
           index={0}
-          label="TEMPERATURE"
-          value="+1.47"
-          unit="°C"
-          annotation="Global mean anomaly vs. 1900 baseline"
+          label="SEA LEVEL RISE"
+          value="+101.2"
+          unit="mm"
+          annotation="Sea level anomaly · 420 Gt/yr ice loss"
         >
           <svg viewBox="0 0 600 450" preserveAspectRatio="none" className="w-full h-full">
             <defs>
@@ -942,59 +1091,59 @@ function FiguresGrid() {
           </svg>
         </DataTile>
 
-        {/* FIG · 02 — WIND */}
+        {/* FIG · 02 — WIND / STORM ACTIVITY */}
         <DataTile
           index={1}
-          label="WIND"
-          value="7.4"
-          unit="m/s"
-          annotation="Mean vector magnitude, tropospheric"
+          label="STORM ACTIVITY"
+          value="142"
+          unit="km/h"
+          annotation="Peak tropospheric gust · 8.4° Rossby amplitude"
         >
           <WindField />
         </DataTile>
 
-        {/* FIG · 03 — RAINFALL */}
+        {/* FIG · 03 — RAINFALL / PRECIPITATION */}
         <DataTile
           index={2}
-          label="RAINFALL"
-          value="2.6"
-          unit="mm/hr"
-          annotation="Tropical precipitation rate"
+          label="PRECIPITATION"
+          value="68"
+          unit="mm/h"
+          annotation="Peak water vapor flux · 940 kg/m/s IVT"
         >
           <Rainfall />
         </DataTile>
 
-        {/* FIG · 04 — ICE */}
+        {/* FIG · 04 — ICE / ICE SHEETS */}
         <DataTile
           index={3}
-          label="ICE"
-          value="−13.1"
-          unit="% / decade"
-          annotation="Arctic sea ice extent loss"
+          label="ICE SHEETS"
+          value="−420"
+          unit="Gt/yr"
+          annotation="Continental mass loss · +34% ice acceleration"
         >
           <Ice />
         </DataTile>
 
-        {/* FIG · 05 — WILDFIRE */}
+        {/* FIG · 05 — WILDFIRE / GLOBAL TEMPERATURE */}
         <DataTile
           index={4}
-          label="WILDFIRE"
-          value="4.2M"
-          unit="ha"
-          annotation="Global burned area, annual"
+          label="GLOBAL TEMPERATURE"
+          value="≈ 4.0"
+          unit="M km²"
+          annotation="Burned area · 1,420 PJ radiative intensity"
         >
           <Wildfire />
         </DataTile>
 
-        {/* FIG · 06 — ORBITAL VIEW */}
+        {/* FIG · 06 — DEFORESTATION */}
         <DataTile
           index={5}
-          label="ORBITAL VIEW"
-          value="408"
-          unit="km"
-          annotation="ISS observation altitude"
+          label="DEFORESTATION"
+          value="3.7"
+          unit="Mha"
+          annotation="Annual primary forest loss"
         >
-          <SatelliteOrbits />
+          <Deforestation />
         </DataTile>
       </div>
     </div>
