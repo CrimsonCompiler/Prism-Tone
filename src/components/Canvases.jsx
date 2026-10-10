@@ -406,32 +406,32 @@ export function Waveform({ className = '' }) {
 }
 
 /* ————————————————————————————————————————————————————————
-   PRISM — section 03 · one beam, five spectral voices
+   PRISM — section 03 · five spectral voices, one combined beam
 ———————————————————————————————————————————————————————— */
 function drawPrism(ctx, w, h, t) {
   ctx.clearRect(0, 0, w, h)
 
-  /* faint Earth limb, left edge */
-  const ecx = w * 0.1
+  /* faint Earth limb, right edge — the combined signal returns to the planet */
+  const ecx = w * 0.9
   const ecy = h * 0.55
   ctx.lineWidth = 1
   ctx.strokeStyle = SAGE(0.24)
   ctx.beginPath()
-  ctx.arc(ecx, ecy, h * 0.62, -Math.PI * 0.42, Math.PI * 0.28)
+  ctx.arc(ecx, ecy, h * 0.62, Math.PI * 0.72, Math.PI * 1.42)
   ctx.stroke()
   ctx.strokeStyle = SKY(0.14)
   ctx.beginPath()
-  ctx.arc(ecx, ecy, h * 0.62 + 9, -Math.PI * 0.4, Math.PI * 0.26)
+  ctx.arc(ecx, ecy, h * 0.62 + 9, Math.PI * 0.74, Math.PI * 1.4)
   ctx.stroke()
 
-  const ax = w * 0.34
+  const ax = w * 0.66
   const ay = h * 0.5
 
-  /* incoming beam + traveling pulse */
+  /* combined output beam + traveling pulse */
   ctx.strokeStyle = IVORY(0.8)
   ctx.lineWidth = 1.2
-  line(ctx, [[-4, ay], [ax, ay]])
-  const px = ((t * 130) % (ax + 20)) - 10
+  line(ctx, [[ax, ay], [w + 4, ay]])
+  const px = ax + ((t * 130) % (w - ax + 20)) - 10
   ctx.fillStyle = IVORY(0.95)
   ctx.beginPath()
   ctx.arc(px, ay, 2, 0, Math.PI * 2)
@@ -450,14 +450,14 @@ function drawPrism(ctx, w, h, t) {
   ctx.arc(ax, ay, 2.2, 0, Math.PI * 2)
   ctx.fill()
 
-  const names = ['thermal', 'kinetic', 'hydro', 'cryo', 'pyro']
-  for (let i = 0; i < 5; i++) {
-    const yT = h * (0.14 + i * 0.18)
-    const ex = w * 0.84
+  const names = ['thermal', 'kinetic', 'hydro', 'cryo', 'pyro', 'deforestation']
+  for (let i = 0; i < 6; i++) {
+    const yT = h * (0.12 + i * 0.152)
+    const sx = w * 0.22
     const wob = Math.sin(t * 0.4 + i * 1.3) * 5
-    const cxp = w * 0.58
+    const cxp = w * 0.42
     const cyp = (ay + yT) / 2 + wob
-    const at = (p) => qpoint(ax, ay, cxp, cyp, ex, yT, p)
+    const at = (p) => qpoint(sx, yT, cxp, cyp, ax, ay, p)
 
     if (i === 0) {
       /* thermal — smooth tone */
@@ -477,8 +477,8 @@ function drawPrism(ctx, w, h, t) {
       ctx.setLineDash([9, 7])
       ctx.lineDashOffset = -t * 46
       ctx.beginPath()
-      const [sx, sy] = at(0)
-      ctx.moveTo(sx, sy)
+      const [sx0, sy0] = at(0)
+      ctx.moveTo(sx0, sy0)
       for (let k = 1; k <= 40; k++) {
         const [x, y] = at(k / 40)
         ctx.lineTo(x, y)
@@ -514,7 +514,7 @@ function drawPrism(ctx, w, h, t) {
         ctx.strokeStyle = IVORY(0.25)
         line(ctx, [[x, y - 5], [x, y + 5]])
       }
-    } else {
+    } else if (i === 4) {
       /* pyro — flickering embers */
       for (let k = 0; k < 26; k++) {
         const p0 = k / 26
@@ -527,12 +527,24 @@ function drawPrism(ctx, w, h, t) {
         ctx.lineWidth = 1.2
         line(ctx, [[x0, y0], [x1, y1]])
       }
+    } else {
+      /* deforestation — the line erodes as it converges */
+      for (let k = 0; k < 26; k++) {
+        const p0 = k / 26
+        const p1 = (k + 1) / 26
+        if (hash(k + Math.floor(t * 1.6) * 13) < p0 * 0.85) continue
+        const [x0, y0] = at(p0)
+        const [x1, y1] = at(p1)
+        ctx.strokeStyle = IVORY(0.3 + (1 - p0) * 0.45)
+        ctx.lineWidth = 1.2
+        line(ctx, [[x0, y0], [x1, y1]])
+      }
     }
 
     /* stratum labels */
-    tag(ctx, `0${i + 1} ${names[i]}`, ex + 12, yT + 1, { alpha: 0.88, size: 10, color: IVORY })
+    tag(ctx, `0${i + 1} ${names[i]}`, sx - 12, yT + 1, { alpha: 0.88, size: 10, color: IVORY, align: 'right' })
     const hz = 82 + hash(i + Math.floor(t * 0.5)) * 380
-    tag(ctx, `${hz.toFixed(0)} hz`, ex + 12, yT + 14, { alpha: 0.68, size: 9, color: SAGE })
+    tag(ctx, `${hz.toFixed(0)} hz`, sx - 12, yT + 14, { alpha: 0.68, size: 9, color: SAGE, align: 'right' })
   }
 }
 
@@ -544,7 +556,7 @@ export function PrismCanvas({ className = '' }) {
       ref={ref}
       className={className}
       role="img"
-      aria-label="A signal beam splitting into five spectral voices, like light through a prism"
+      aria-label="Six spectral voices converging into one combined output beam, like light recombining through a prism"
     />
   )
 }

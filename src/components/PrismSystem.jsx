@@ -8,6 +8,7 @@ const LAYERS = [
   ['03', 'HYDRO', 'rainfall - rhythm'],
   ['04', 'CRYO', 'ice - texture'],
   ['05', 'PYRO', 'wildfire - detail'],
+  ['06', 'DEFORESTATION', 'land cover - density'],
 ]
 
 /* --- Web Audio Sonification Engine for Prism Tone --- */
@@ -94,6 +95,15 @@ class PrismToneEngine {
     gainPyro.connect(masterGain)
     oscPyro.start(now)
 
+    const oscDeforestation = ctx.createOscillator()
+    const gainDeforestation = ctx.createGain()
+    oscDeforestation.type = 'sine'
+    oscDeforestation.frequency.setValueAtTime(147, now)
+    gainDeforestation.gain.value = 0.14
+    oscDeforestation.connect(gainDeforestation)
+    gainDeforestation.connect(masterGain)
+    oscDeforestation.start(now)
+
     this.stopFn = () => {
       const stopTime = ctx.currentTime
       masterGain.gain.linearRampToValueAtTime(0.001, stopTime + 0.25)
@@ -104,6 +114,7 @@ class PrismToneEngine {
           oscHydro.stop()
           oscCryo.stop()
           oscPyro.stop()
+          oscDeforestation.stop()
         } catch { }
       }, 300)
     }
@@ -138,9 +149,10 @@ export default function PrismSystem() {
         <div className="lg:col-span-4">
           <Fade delay={0.15}>
             <p className="max-w-sm font-elegant text-[15px] md:text-[15.5px] leading-relaxed text-[#ede7dc]/90 font-light">
-              Like a prism splitting white light, Prism Tone splits the Earth's data stream into
-              spectral layers. Each layer is a sound. Each sound is a dataset. Together, they are the
-              sound of a planet.
+              Prism Tone runs the prism in reverse. Six datasets arrive as spectral layers —
+              thermal, kinetic, hydro, cryo, pyro, and the slow subtraction of the forests — and
+              converge into a single voice. Each layer is a sound. Each sound is a dataset.
+              Together, they are the sound of a planet.
             </p>
           </Fade>
 
@@ -210,7 +222,7 @@ export default function PrismSystem() {
               <div className="relative aspect-[4/3] sm:aspect-[16/10] md:aspect-[16/9]">
                 <PrismCanvas className="absolute inset-0 h-full w-full" />
               </div>
-              <Annot className="absolute left-3 top-3">Figure: spectral split</Annot>
+              <Annot className="absolute right-3 top-3">Figure: spectral split</Annot>
               <Annot className="absolute bottom-3 right-3">live synth — 48 kHz</Annot>
             </div>
           </Fade>

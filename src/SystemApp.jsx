@@ -5,6 +5,7 @@ import Nav from './components/Nav'
 import EarthBackground from './components/EarthBackground'
 import PrismSystem from './components/PrismSystem'
 import Pipeline from './components/Pipeline'
+import SonificationFormulas from './components/SonificationFormulas'
 
 function ProgressLine() {
   const { scrollYProgress } = useScroll()
@@ -39,6 +40,7 @@ export default function SystemApp() {
         <div className="h-20 sm:h-22 md:h-24" aria-hidden="true" />
         <PrismSystem />
         <Pipeline />
+        <SonificationFormulas />
       </main>
     </MotionConfig>
   )
