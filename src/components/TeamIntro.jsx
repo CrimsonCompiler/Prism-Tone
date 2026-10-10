@@ -145,8 +145,8 @@ export default function TeamIntro() {
       className="relative flex min-h-screen w-full items-center justify-center overflow-hidden px-4 pt-20 pb-12 sm:px-6 md:px-12"
       aria-label="Cosmic Cloud Logo"
     >
-      {/* 1. Deep Space Nebula Background */}
-      <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden bg-ink select-none">
+      {/* 1. Deep Space Nebula Background — scrolls naturally with the logo section */}
+      <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden bg-ink select-none">
         <motion.img
           initial={{ opacity: 0, scale: 1.08 }}
           animate={{ opacity: 1, scale: 1 }}
@@ -156,9 +156,9 @@ export default function TeamIntro() {
           className="h-full w-full object-cover object-center [filter:brightness(0.92)_contrast(1.05)]"
           draggable="false"
         />
-        {/* Soft vignette to blend smoothly into deep space */}
-        <div className="absolute inset-0 bg-radial-gradient from-transparent via-transparent to-ink/70" />
-        <div className="absolute inset-0 bg-gradient-to-b from-ink/50 via-transparent to-ink/60" />
+        {/* Soft vignette and smooth bottom blend into the next planetary section */}
+        <div className="absolute inset-0 bg-radial-gradient from-transparent via-transparent to-ink/60" />
+        <div className="absolute inset-0 bg-gradient-to-b from-ink/50 via-transparent to-ink" />
       </div>
 
       {/* 2. Central Scrapbook Stage — fixed aspect ratio matching the 625x375 artwork */}
@@ -213,7 +213,33 @@ export default function TeamIntro() {
         ))}
       </div>
 
-      {/* 3. Subtle replay button at bottom right */}
+      {/* 3. Scroll cue to seamlessly invite exploration into the 5 member sections */}
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 2.1, duration: 0.9 }}
+        className="absolute bottom-6 left-1/2 -translate-x-1/2 z-20 flex flex-col items-center gap-1.5 cursor-pointer pointer-events-auto group"
+        onClick={() => {
+          const el = document.getElementById('members-start')
+          if (el) el.scrollIntoView({ behavior: 'smooth' })
+        }}
+      >
+        <span className="font-data text-[9.5px] uppercase tracking-[0.28em] text-ivory/50 transition-colors group-hover:text-ivory">
+          Scroll to explore team
+        </span>
+        <motion.svg
+          animate={{ y: [0, 4, 0] }}
+          transition={{ duration: 1.8, repeat: Infinity, ease: 'easeInOut' }}
+          className="h-3.5 w-3.5 text-ivory/40 transition-colors group-hover:text-ivory/80"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+        </motion.svg>
+      </motion.div>
+
+      {/* 4. Subtle replay button at bottom right */}
       <motion.div
         initial={{ opacity: 0, y: 15 }}
         animate={{ opacity: 1, y: 0 }}

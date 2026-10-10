@@ -3,6 +3,7 @@ import { useLenisScroll } from './hooks/useLenisScroll'
 
 import Nav from './components/Nav'
 import TeamIntro from './components/TeamIntro'
+import TeamPlanetarySections from './components/TeamPlanetarySections'
 
 function Grain() {
   return <div className="grain" aria-hidden="true" />
@@ -27,6 +28,7 @@ export default function TeamApp() {
 
       <main className="relative z-10 bg-transparent text-ivory">
         <TeamIntro />
+        <TeamPlanetarySections />
       </main>
     </MotionConfig>
   )
