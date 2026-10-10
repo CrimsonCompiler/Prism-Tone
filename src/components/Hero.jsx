@@ -46,7 +46,7 @@ export default function Hero() {
           className="pt-[20vh] md:pt-[25vh] lg:pt-[28vh] pointer-events-auto"
         >
           <Kicker>
-            THE EARTH INFORMATION JUKEBOX
+            NASA SPACE APPS 2026 | THE EARTH INFORMATION JUKEBOX
           </Kicker>
         </motion.div>
 

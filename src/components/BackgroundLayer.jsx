@@ -112,7 +112,7 @@ const TRAILS = [
 
 // ---------- nebula blobs (5) — ivory low-alpha versions of the reference nebulae ----------
 const NEBULAE = [
-  { top: '-8%', left: '-6%', size: '60vw',  alpha: 0.07, blur: 80 },
+  { top: '-8%', left: '-6%', size: '60vw', alpha: 0.07, blur: 80 },
   { top: '-4%', right: '-8%', size: '52vw', alpha: 0.06, blur: 80 },
   { top: '40%', right: '-4%', size: '46vw', alpha: 0.05, blur: 70 },
   { bottom: '-12%', left: '-2%', size: '54vw', alpha: 0.045, blur: 70 },
@@ -260,8 +260,8 @@ export default function BackgroundLayer() {
               i === 2
                 ? 'rgba(242,237,227,0.18)'
                 : i === 0
-                ? 'url(#orbitStroke)'
-                : 'url(#orbitStroke2)'
+                  ? 'url(#orbitStroke)'
+                  : 'url(#orbitStroke2)'
             }
             strokeWidth={a.sw}
             strokeDasharray={a.dash}
@@ -303,24 +303,7 @@ export default function BackgroundLayer() {
         <Stars items={BRIGHT_STARS} keyPrefix="bright" twinkleMin={0.5} />
       </div>
 
-      {/* 8. Data trails — 4 horizontal light streaks */}
-      <div className="bg-trails" aria-hidden="true">
-        {TRAILS.map((t, i) => (
-          <span
-            key={i}
-            className="bg-trail"
-            style={{
-              top: t.top,
-              width: t.width,
-              '--d': `${t.duration}s`,
-              '--del': `${t.delay}s`,
-              '--glow': `${t.glow}px`,
-              background:
-                'linear-gradient(to right, transparent, rgba(242,237,227,0.85), transparent)',
-            }}
-          />
-        ))}
-      </div>
+
 
       {/* 9. Subtle grain (fractalNoise SVG, mix-blend-overlay, 5% opacity) */}
       <div

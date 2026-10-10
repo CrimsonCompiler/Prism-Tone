@@ -26,6 +26,7 @@
 
 html {
   background: #121313;
+  overscroll-behavior: none;
 }
 
 body {
@@ -35,6 +36,33 @@ body {
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
   overflow-x: clip;
+  overscroll-behavior: none;
+}
+
+/* Lenis smooth scrolling rules */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+.lenis.lenis-scrolling iframe {
+  pointer-events: none;
+}
+
+body.system-page {
+  background: #1e2a2c;
 }
 
 ::selection {
@@ -54,6 +82,18 @@ body {
   background: #2a2b2b;
   border: 2px solid #121313;
   border-radius: 8px;
+}
+
+/* Hide scrollbar utility */
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+  width: 0;
+  height: 0;
 }
 
 /* photographic vignette — used sparingly over imagery only */
@@ -183,6 +223,7 @@ body {
   from {
     transform: scale(1);
   }
+
   to {
     transform: scale(1.05);
   }
@@ -212,9 +253,12 @@ body {
 }
 
 @keyframes bg-star-twinkle {
-  0%, 100% {
+
+  0%,
+  100% {
     opacity: calc(var(--star-op, 0.4) * var(--tmin, 0.4));
   }
+
   50% {
     opacity: var(--star-op, 0.6);
   }
@@ -235,9 +279,12 @@ body {
 }
 
 @keyframes bg-const-pulse {
-  0%, 100% {
+
+  0%,
+  100% {
     opacity: 0.05;
   }
+
   50% {
     opacity: 0.22;
   }
@@ -261,6 +308,7 @@ body {
   from {
     transform: rotate(0deg);
   }
+
   to {
     transform: rotate(var(--spin, 360deg));
   }
@@ -287,12 +335,15 @@ body {
     transform: translate3d(0, 0, 0);
     opacity: 0;
   }
+
   10% {
     opacity: 1;
   }
+
   85% {
     opacity: 1;
   }
+
   100% {
     transform: translate3d(var(--dx, 0), -110vh, 0);
     opacity: 0;
@@ -323,12 +374,15 @@ body {
     transform: translateX(-50%);
     opacity: 0;
   }
+
   10% {
     opacity: 0.7;
   }
+
   85% {
     opacity: 0.7;
   }
+
   100% {
     transform: translateX(120vw);
     opacity: 0;
@@ -346,6 +400,7 @@ body {
 }
 
 @media (prefers-reduced-motion: reduce) {
+
   .bg-nebula-wrap,
   .bg-star,
   .bg-const-line,

@@ -7,7 +7,7 @@ const LINKS = [
   ['Translation', '#translation'],
   ['Prism System', 'system.html'],
   ['Preview', '#preview'],
-  ['Team', '#team'],
+  ['Team', 'team.html'],
   ['Stories', 'stories.html'],
 ]
 
@@ -21,7 +21,8 @@ export default function Nav({ page = 'index' }) {
 
   const isActive = (label) =>
     (page === 'stories' && label === 'Stories') ||
-    (page === 'system' && label === 'Prism System')
+    (page === 'system' && label === 'Prism System') ||
+    (page === 'team' && label === 'Team')
 
   return (
     <motion.header
@@ -29,7 +30,9 @@ export default function Nav({ page = 'index' }) {
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 1, delay: 0.5, ease: EASE }}
       className={`fixed inset-x-0 top-0 z-[80] transition-colors duration-500 ${solid
-        ? 'border-b border-ivory/10 bg-ink/90 backdrop-blur-md shadow-lg shadow-black/20'
+        ? (page === 'system'
+          ? 'border-b border-white/10 bg-[#162022]/90 backdrop-blur-md shadow-lg shadow-black/20'
+          : 'border-b border-ivory/10 bg-ink/90 backdrop-blur-md shadow-lg shadow-black/20')
         : 'border-b border-transparent bg-transparent'
         }`}
     >

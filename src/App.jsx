@@ -1,6 +1,5 @@
-import { useEffect } from 'react'
-import Lenis from 'lenis'
 import { MotionConfig, motion, useScroll } from 'motion/react'
+import { useLenisScroll } from './hooks/useLenisScroll'
 
 import Nav from './components/Nav'
 import Hero from './components/Hero'
@@ -25,39 +24,7 @@ function ProgressLine() {
 }
 
 export default function App() {
-  useEffect(() => {
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
-
-    const lenis = new Lenis({
-      duration: 1.15,
-      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-    })
-    window.__lenis = lenis
-
-    let raf
-    const loop = (time) => {
-      lenis.raf(time)
-      raf = requestAnimationFrame(loop)
-    }
-    raf = requestAnimationFrame(loop)
-
-    const onClick = (e) => {
-      const a = e.target.closest('a[href^="#"]')
-      if (!a) return
-      const el = document.querySelector(a.getAttribute('href'))
-      if (!el) return
-      e.preventDefault()
-      lenis.scrollTo(el, { duration: 1.7 })
-    }
-    document.addEventListener('click', onClick)
-
-    return () => {
-      cancelAnimationFrame(raf)
-      document.removeEventListener('click', onClick)
-      lenis.destroy()
-      delete window.__lenis
-    }
-  }, [])
+  useLenisScroll()
 
   return (
     <MotionConfig reducedMotion="user">
