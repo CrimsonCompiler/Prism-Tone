@@ -7,22 +7,22 @@ const STORIES = [
   {
     id: 'temperature',
     n: '01',
-    name: 'TEMPERATURE',
+    name: 'SEA LEVEL RISE',
     img: '/images/story-temperature.jpg',
     alt: 'Satellite view of a cyclone swirling over a dark ocean',
     fig: 'Fig. 01 — cyclone, southern ocean',
     stats: [
-      { label: 'SEA SURFACE ANOMALY', value: '+1.48', unit: '°C' },
-      { label: 'HEAT ACCUMULATION', value: '385', unit: 'ZJ' },
+      { label: 'SEA LEVEL ANOMALY', value: '+101.2', unit: 'mm' },
+      { label: 'ANNUAL ICE LOSS', value: '420', unit: 'Gt/yr' },
     ],
-    copy: 'A century of thermometers, compressed into a single rising line. The world ocean absorbs over 90 percent of excess solar heat. As the Gulf Stream destabilizes, thermal radiometry data shifts into upper vibrational harmonics- an ascending cello glissando alerting us to an overheating thermal engine.',
+    copy: 'The world ocean absorbs over 90 percent of excess solar heat. Satellite altimetry measures the rising pulse of global oceans. As thermal expansion and melting glaciers pour billions of tons of water back into the basins, the acoustic signature maps a steady, relentless upward tide.',
     viz: 'rise',
     reverse: false,
   },
   {
     id: 'wind',
     n: '02',
-    name: 'WIND',
+    name: 'STORM ACTIVITY',
     img: '/images/story-wind.jpg',
     alt: 'Wind streaks and cloud streets stretched across a dark ocean',
     fig: 'Fig. 02 — cloud streets, open ocean',
@@ -37,7 +37,7 @@ const STORIES = [
   {
     id: 'rainfall',
     n: '03',
-    name: 'RAINFALL',
+    name: 'PRECIPITATION',
     img: '/images/story-rainfall.jpg',
     alt: 'Rain shafts falling over a dark ocean at night',
     fig: 'Fig. 03 — rain shafts, tropical pacific',
@@ -52,7 +52,7 @@ const STORIES = [
   {
     id: 'ice',
     n: '04',
-    name: 'ICE',
+    name: 'ICE SHEETS [GLACIER DYNAMICS]',
     img: '/images/story-ice.jpg',
     alt: 'Sea ice floes and fractures seen from above',
     fig: 'Fig. 04 — sea ice, beaufort sea',
@@ -67,7 +67,7 @@ const STORIES = [
   {
     id: 'wildfire',
     n: '05',
-    name: 'WILDFIRE',
+    name: 'GLOBAL TEMPERATURE',
     img: '/images/story-wildfire.jpg',
     alt: 'A wildfire front glowing through darkness and smoke, seen from the air',
     fig: 'Fig. 05 — fire front, western range',
@@ -75,9 +75,24 @@ const STORIES = [
       { label: 'GLOBAL BURNED AREA', value: '≈ 4.0', unit: 'M km²' },
       { label: 'RADIATIVE INTENSITY', value: '1,420', unit: 'PJ' },
     ],
-    copy: 'Wildfire is rendered as low, warm crackles and pops. Wildfires generate their own local weather and pyrocumulus storms. Thermal sensors detect thermal radiative power in megawatts, sonified into a crackling, dry granular static that swells with violent updrafts. When the flame line moves, the sound sharpens.',
+    copy: 'Rising global temperatures are turning ecosystems into tinderboxes. As thermal anomalies intensify year after year, dry spells fuel unprecedented wildfire seasons. Thermal sensors track radiative power in gigawatts. Wildfire is rendered as low, warm crackles and pops.',
     viz: 'flicker',
     reverse: false,
+  },
+  {
+    id: 'deforestation',
+    n: '06',
+    name: 'DEFORESTATION [LAND COVER & FORESTS]',
+    img: '/images/story-deforestation.jpg',
+    alt: 'Aerial view of dark rainforest carved by a logging road, with branching clearings and rising smoke',
+    fig: 'Fig. 06 — logging roads, amazon basin',
+    stats: [
+      { label: 'ANNUAL PRIMARY FOREST LOSS', value: '3.7', unit: 'Mha' },
+      { label: 'FOREST WITHIN 1 KM OF EDGE', value: '70', unit: '%' },
+    ],
+    copy: 'Deforestation is rendered as a thinning texture - a score that loses voices. Logging roads cut fishbone scars into unbroken canopy, and today 70% of the world’s remaining forest lies within 1 km of an edge. Satellite pixels turn each cleared hectare into a subtracted note; the dense polyrhythm sheds strands one by one until the texture is sparse and exposed.',
+    viz: 'erode',
+    reverse: true,
   },
 ]
 
@@ -265,6 +280,61 @@ class StorySoundEngine {
       osc.start()
 
       cleanup.push(() => {
+        try {
+          osc.stop()
+          lfo.stop()
+        } catch { }
+      })
+    } else if (id === 'deforestation') {
+      // Deforestation: warm canopy drone eroded by a closing filter, sparse falling pulses
+      const osc = ctx.createOscillator()
+      const filter = ctx.createBiquadFilter()
+
+      osc.type = 'sawtooth'
+      osc.frequency.setValueAtTime(96, now)
+
+      filter.type = 'lowpass'
+      filter.frequency.setValueAtTime(400, now)
+      filter.Q.value = 2.0
+
+      // canopy-thinning LFO — the texture erodes as the filter closes
+      const lfo = ctx.createOscillator()
+      const lfoGain = ctx.createGain()
+      lfo.type = 'sine'
+      lfo.frequency.value = 0.14
+      lfoGain.gain.value = 160
+      lfo.connect(lfoGain)
+      lfoGain.connect(filter.frequency)
+      lfo.start()
+
+      osc.connect(filter)
+      filter.connect(masterGain)
+      osc.start()
+
+      // sparse falling pulses — a rhythm that drops its own beats
+      let step = 0
+      const timer = setInterval(() => {
+        if (!this.ctx || this.ctx.state === 'closed') return
+        step++
+        if (step % 3 === 0) return
+        const t = this.ctx.currentTime
+        const thud = this.ctx.createOscillator()
+        const noteGain = ctx.createGain()
+
+        thud.type = 'sine'
+        thud.frequency.setValueAtTime(170, t)
+        thud.frequency.exponentialRampToValueAtTime(48, t + 0.18)
+        noteGain.gain.setValueAtTime(0.2, t)
+        noteGain.gain.exponentialRampToValueAtTime(0.001, t + 0.3)
+
+        thud.connect(noteGain)
+        noteGain.connect(masterGain)
+        thud.start(t)
+        thud.stop(t + 0.32)
+      }, 480)
+
+      cleanup.push(() => {
+        clearInterval(timer)
         try {
           osc.stop()
           lfo.stop()

@@ -338,6 +338,24 @@ function drawStoryWave(ctx, w, h, t, type) {
       if (Math.sin(t * 4 + hash(i + 221) * 30) > 0.3) ctx.fillRect(x, y, 1.4, 1.4)
     }
   }
+
+  if (type === 'erode') {
+    /* canopy strands — an erosion front sweeps across and clears them */
+    const base = h * 0.82
+    ctx.strokeStyle = IVORY(0.16)
+    line(ctx, [[0, base], [w, base]])
+    const front = 0.08 + (Math.sin(t * 0.22) * 0.5 + 0.5) * 0.88
+    for (let i = 0; i < 42; i++) {
+      const p = i / 41
+      const x = 3 + p * (w - 6)
+      const alive = Math.min(1, Math.max(0, (front - p) * 3))
+      if (alive <= 0.04) continue
+      const breathe = 0.75 + 0.25 * Math.sin(t * 0.9 + i * 0.7)
+      const bh = (0.3 + hash(i) * 0.7) * h * 0.5 * alive * breathe * envelope(x)
+      ctx.strokeStyle = IVORY((0.22 + 0.55 * alive) * envelope(x))
+      line(ctx, [[x, base], [x, base - bh]])
+    }
+  }
 }
 
 export function StoryWave({ type, className = '' }) {
