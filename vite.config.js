@@ -12,6 +12,7 @@ export default defineConfig({
         stories: resolve(__dirname, 'stories.html'),
         system: resolve(__dirname, 'system.html'),
         team: resolve(__dirname, 'team.html'),
+        concept: resolve(__dirname, 'concept.html'),
       },
     },
   },
