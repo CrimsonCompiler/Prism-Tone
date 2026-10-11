@@ -532,7 +532,7 @@ export default function SonificationFormulas() {
   return (
     <section
       id="formulas"
-      className="relative z-30 px-6 sm:px-8 md:px-10 lg:px-12 pt-10 pb-28 md:pt-14 md:pb-36 lg:pt-16 lg:pb-40"
+      className="relative z-30 px-6 sm:px-8 md:px-10 lg:px-12 pt-10 pb-16 sm:pb-20 md:pt-14 md:pb-24 lg:pt-16 lg:pb-28"
       aria-label="Atmospheric Mappings and Sonification Formulas"
     >
       <div className="mx-auto w-full max-w-7xl">

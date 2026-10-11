@@ -62,8 +62,8 @@ const MEMBERS = [
     lines: ['Anika Binta', 'Azad Shifa'],
     name: 'Anika Binta Azad Shifa',
     role: 'Project Lead, UI/UX Design & Frontend Engineering',
-    tagline: 'Translating complex planetary telemetry and climate datasets into intuitive, human-centered sensory interfaces.',
-    stat: 'ORBIT · LEADERSHIP & CODE',
+    tagline: 'Translating complex planetary data into intuitive interfaces. Bridging UI design with frontend engineering to make Earth’s changing patterns easier to explore, understand, and hear.',
+    stat: 'EARTH · DATA · HUMAN PERCEPTION',
     coord: '23.8738° N / 90.3965° E',
     photo: '/images/shifa-glow.png',
     hue: 'aurora',
@@ -72,12 +72,12 @@ const MEMBERS = [
   },
   {
     n: '02',
-    code: '02 / BACKEND & MACHINE LEARNING',
+    code: '02 / BACKEND & ML',
     lines: ['Senjuti', 'Humyra'],
     name: 'Senjuti Humyra',
-    role: 'Backend & ML Engineer',
-    tagline: 'Architecting resilient server infrastructure, high-throughput satellite pipelines, and intelligent machine learning classifiers.',
-    stat: 'NEURAL TELEMETRY CORE',
+    role: 'Backend Architecture • API Engineering • ML Integration',
+    tagline: 'Engineering the intelligence behind Earth’s symphony to transform Earth’s scientific signals into a responsive, meaningful sonic experience.',
+    stat: 'PLANETARY DATA · SOUND',
     coord: '25.7785° N / 88.8974° E',
     photo: '/images/sejuti-glow.png',
     hue: 'ocean',
@@ -86,12 +86,12 @@ const MEMBERS = [
   },
   {
     n: '03',
-    code: '03 / ARCHITECTURE & NEURAL AI',
+    code: '03 / SYSTEM & AI',
     lines: ['Tousif', 'Tasrik'],
     name: 'Tousif Tasrik',
-    role: 'System Architect & AI Engineer',
-    tagline: 'Designing end-to-end distributed systems, model training workflows, and neural synthesis pipelines that power the Prism Tone ecosystem.',
-    stat: 'DISTRIBUTED ARCHITECTURE',
+    role: 'System Architecture • Backend Engineering • AI Integration',
+    tagline: 'Architecting the systems & technical foundations for a reliable, integrated experience where Earth observations can become dynamic & interactive.',
+    stat: 'DATA PROCESSING · AI COMPONENTS',
     coord: '23.7656° N / 90.3603° E',
     photo: '/images/tousif-glow.png',
     hue: 'blue',
@@ -101,12 +101,12 @@ const MEMBERS = [
   },
   {
     n: '04',
-    code: '04 / DATA SCIENCE & ACOUSTICS',
+    code: '04 / ANALYSIS & HARMONIZATION',
     lines: ['Samiha Tasnim', 'Mim'],
     name: 'Samiha Tasnim Mim',
     role: 'Data Scientist & Sonification Specialist',
-    tagline: 'Sonifying environmental flux — transforming global temperature, wind anomalies, and ice sheets into deeply evocative acoustic frequencies.',
-    stat: 'HARMONIC SONIFICATION',
+    tagline: 'Finding the rhythm within environmental datasets & transforming Earth’s changing climate signals into evocative acoustic experiences.',
+    stat: 'SIGNAL MAPPING • SCIENTIFIC PATTERNS',
     coord: '23.76171° N / 90.43128° E',
     photo: '/images/samiha-glow.png',
     hue: 'river',
@@ -115,12 +115,12 @@ const MEMBERS = [
   },
   {
     n: '05',
-    code: '05 / MOTION & VISUAL DIRECTION',
+    code: '05 / MOTION GRAPHICS & VFX',
     lines: ['Abu Saleh', 'Md Nahian'],
     name: 'Abu Saleh Md Nahian',
-    role: 'Visual Experience & Motion Design Engineer',
-    tagline: 'Crafting spatial animations, atmospheric micro-interactions, and visual storytelling that make planetary data feel tactile and alive.',
-    stat: 'KINETIC CHOREOGRAPHY',
+    role: 'Visual Experience & Storytelling',
+    tagline: 'Giving Earth’s invisible patterns a language. Crafting that connect scientific data with human perception to make more tangible & engaging.',
+    stat: 'VISUAL IDENTITY · ANIMATION',
     coord: '23.7465° N / 90.3760° E',
     photo: '/images/nahian-glow.png',
     hue: 'ice',
@@ -503,7 +503,7 @@ export default function TeamPlanetarySections() {
       <footer className="relative border-t border-ivory/15 px-6 py-14 text-center md:py-18">
         <div className="mx-auto max-w-2xl">
           <div className="font-stencil text-[10px] uppercase tracking-[0.34em] text-ivory/50 mb-3">
-            PRISM · TONE — TEAM COSMIC CLOUD
+            PRISM · TONE - TEAM · COSMIC CLOUD
           </div>
           <h3 className="font-display font-light text-ivory text-3xl md:text-5xl leading-tight text-balance">
             Five minds, listening together to the pulse of a living world.
@@ -511,20 +511,6 @@ export default function TeamPlanetarySections() {
           <p className="mt-5 font-elegant text-sm text-ivory/60 leading-relaxed">
             Built with science, data, sound, and design for the NASA Space Apps Challenge 2026.
           </p>
-          <div className="mt-8 flex items-center justify-center gap-6">
-            <a
-              href="index.html"
-              className="rounded-full border border-ivory/25 px-5 py-2 font-data text-[10px] uppercase tracking-[0.22em] text-ivory/80 transition-all hover:border-ivory hover:text-ivory hover:bg-ivory/10"
-            >
-              ← Back to Concept
-            </a>
-            <a
-              href="stories.html"
-              className="rounded-full border border-ivory/25 px-5 py-2 font-data text-[10px] uppercase tracking-[0.22em] text-ivory/80 transition-all hover:border-ivory hover:text-ivory hover:bg-ivory/10"
-            >
-              Explore Earth Stories →
-            </a>
-          </div>
         </div>
       </footer>
     </div>
