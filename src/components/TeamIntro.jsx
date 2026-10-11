@@ -142,7 +142,7 @@ export default function TeamIntro() {
   return (
     <section
       key={replayKey}
-      className="relative flex min-h-screen w-full items-center justify-center overflow-hidden px-4 pt-20 pb-12 sm:px-6 md:px-12"
+      className="relative flex min-h-[75vh] sm:min-h-[83vh] md:min-h-[90vh] w-full items-center justify-center overflow-hidden px-4 pt-16 pb-12 sm:px-6 md:px-12"
       aria-label="Cosmic Cloud Logo"
     >
       {/* 1. Deep Space Nebula Background — scrolls naturally with the logo section */}
@@ -162,7 +162,7 @@ export default function TeamIntro() {
       </div>
 
       {/* 2. Central Scrapbook Stage — fixed aspect ratio matching the 625x375 artwork */}
-      <div className="relative z-10 w-full max-w-[880px] aspect-[625/375]">
+      <div className="relative z-10 w-full max-w-[760px] md:max-w-[820px] aspect-[625/375]">
         {pieces.map((p) => (
           <motion.div
             key={p.id}
