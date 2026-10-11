@@ -6,6 +6,7 @@ import EarthBackground from './components/EarthBackground'
 import PrismSystem from './components/PrismSystem'
 import Pipeline from './components/Pipeline'
 import SonificationFormulas from './components/SonificationFormulas'
+import SystemQuotes from './components/SystemQuotes'
 
 function ProgressLine() {
   const { scrollYProgress } = useScroll()
@@ -41,6 +42,7 @@ export default function SystemApp() {
         <PrismSystem />
         <Pipeline />
         <SonificationFormulas />
+        <SystemQuotes />
       </main>
     </MotionConfig>
   )
