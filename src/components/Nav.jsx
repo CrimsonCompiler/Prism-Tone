@@ -3,7 +3,7 @@ import { motion, useMotionValueEvent, useScroll } from 'motion/react'
 import { EASE } from './ui'
 
 const LINKS = [
-  ['Concept', '#concept'],
+  ['Concept', 'concept.html'],
   ['Translation', '#translation'],
   ['Prism System', 'system.html'],
   ['Preview', '#preview'],
@@ -22,7 +22,8 @@ export default function Nav({ page = 'index' }) {
   const isActive = (label) =>
     (page === 'stories' && label === 'Stories') ||
     (page === 'system' && label === 'Prism System') ||
-    (page === 'team' && label === 'Team')
+    (page === 'team' && label === 'Team') ||
+    (page === 'concept' && label === 'Concept')
 
   return (
     <motion.header
@@ -32,7 +33,9 @@ export default function Nav({ page = 'index' }) {
       className={`fixed inset-x-0 top-0 z-[80] transition-colors duration-500 ${solid
         ? (page === 'system'
           ? 'border-b border-white/10 bg-[#162022]/90 backdrop-blur-md shadow-lg shadow-black/20'
-          : 'border-b border-ivory/10 bg-ink/90 backdrop-blur-md shadow-lg shadow-black/20')
+          : page === 'concept'
+            ? 'border-b border-white/10 bg-[#13191c]/90 backdrop-blur-md shadow-lg shadow-black/20'
+            : 'border-b border-ivory/10 bg-ink/90 backdrop-blur-md shadow-lg shadow-black/20')
         : 'border-b border-transparent bg-transparent'
         }`}
     >
