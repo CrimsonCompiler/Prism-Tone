@@ -24,8 +24,8 @@ export function ConceptObservation() {
   ]
 
   return (
-    <section className="relative w-full pb-28 md:pb-36 lg:pb-44">
-      {/* Top Header Bar: 01 — observation & Chapter Meta */}
+    <section className="relative w-full pb-24 md:pb-32 lg:pb-40">
+      {/* Top Header Bar: OBSERVATION & Chapter Meta */}
       <Fade delay={0.1}>
         <div className="flex items-center justify-between pb-8 md:pb-12 text-[#cad7ce]">
           <span className="font-stencil text-[10px] md:text-[11.5px] tracking-[0.34em]">
@@ -39,7 +39,7 @@ export function ConceptObservation() {
 
       {/* Main Headline (2 lines) + Right-aligned Description */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-end justify-between">
-        {/* Left Headline (2 lines as requested) */}
+        {/* Left Headline (2 lines) */}
         <div className="lg:col-span-7 xl:col-span-8">
           <Fade delay={0.2}>
             <h1 className="font-display font-light text-4xl sm:text-5xl md:text-6xl lg:text-[4.8rem] xl:text-[5.6rem] 2xl:text-[6.2rem] leading-[1.06] tracking-[-0.035em] text-ivory">
@@ -83,75 +83,95 @@ export function ConceptObservation() {
 }
 
 /* =========================================================================
-   SECTION 2: WHAT IF THE MEASUREMENTS COULD BE SUNG?
+   SECTION 2: THE CRISIS OF PERCEPTION / THE PROBLEM
    ========================================================================= */
-export function ConceptHero() {
+export function ConceptProblem() {
+  const problemCards = [
+    {
+      n: '01',
+      title: 'Emotional Insulation',
+      desc: 'Numerical graphs turn existential planetary shifts into sterile data points. Seeing +1.5°C on a chart fails to trigger the visceral human realization that our biospheric engine is burning.',
+      impact: 'IMPACT: COGNITIVE DETACHMENT',
+    },
+    {
+      n: '02',
+      title: 'Sensory Exclusion',
+      desc: 'Ocular-centric data visualization excludes blind, visually impaired, and neurodiverse researchers and students. Climate intelligence is locked behind visual gates.',
+      impact: 'IMPACT: INACCESSIBILITY',
+    },
+    {
+      n: '03',
+      title: 'Dimensional Overload',
+      desc: 'Human vision struggles to process more than 3 overlapping variables simultaneously. Long-term micro-variations and non-linear shifts blur into visual noise.',
+      impact: 'IMPACT: MISSED CORRELATIONS',
+    },
+  ]
+
   return (
-    <section className="relative w-full flex flex-col justify-between gap-16 md:gap-20 lg:gap-28 py-20 md:py-28 lg:py-36">
-      {/* Upper Area: 2-line Headline + Right Description */}
+    <section className="relative w-full py-20 md:py-28 lg:py-36 border-t border-white/10">
+      {/* Top Header Bar: THE CRISIS OF PERCEPTION & Chapter Meta */}
+      <Fade delay={0.1}>
+        <div className="flex items-center justify-between pb-8 md:pb-12 text-[#cad7ce]">
+          <span className="font-stencil text-[10px] md:text-[11.5px] tracking-[0.34em] uppercase">
+            THE CRISIS OF PERCEPTION
+          </span>
+          <span className="font-stencil text-[9.5px] md:text-[11px] uppercase tracking-[0.34em] text-ivory/60">
+            WHAT THE NUMBERS HIDE - CHAPTER II
+          </span>
+        </div>
+      </Fade>
+
+      {/* Main Headline (Left) + Right Description */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-end justify-between">
-        {/* Left Headline */}
-        <div className="lg:col-span-7 xl:col-span-8">
+        {/* Left Headline + Sub-text */}
+        <div className="lg:col-span-5 xl:col-span-5">
           <Fade delay={0.15}>
             <h2 className="font-display font-light text-4xl sm:text-5xl md:text-6xl lg:text-[4.8rem] xl:text-[5.6rem] 2xl:text-[6.2rem] leading-[1.06] tracking-[-0.035em] text-ivory">
-              What if the <span className="italic font-normal">measurements</span>
-              <br />
-              could be sung?
+              The Problem
             </h2>
+            <p className="mt-4 font-display italic text-sm md:text-[15px] lg:text-base text-ivory/70 font-light">
+              Charts and maps reduce the planet to pixels. They are precise, but quiet.
+            </p>
           </Fade>
         </div>
 
         {/* Right Explanatory Paragraph */}
-        <div className="lg:col-span-5 xl:col-span-4 lg:flex lg:justify-end lg:pb-3">
+        <div className="lg:col-span-7 xl:col-span-7 lg:flex lg:justify-end lg:pb-3">
           <Fade delay={0.25}>
-            <p className="max-w-lg lg:max-w-md font-elegant text-sm sm:text-[15px] md:text-base leading-relaxed text-ivory/80 font-light lg:ml-auto">
-              The idea is simple: take a NASA variable, normalise it gently, and map it to a parameter that the ear already understands — pitch, rhythm, density, decay.
+            <p className="max-w-lg lg:max-w-[540px] xl:max-w-[570px] 2xl:max-w-[590px] font-elegant text-sm sm:text-[15px] md:text-base leading-relaxed text-ivory/80 font-light lg:ml-auto">
+              For over fifty years, humanity has recorded Earth’s vital signs via satellites - tracking thermal anomalies, gravity shifts, and laser altimetry. Yet, this vast scientific intelligence remains locked inside 2D graphs, static spreadsheets, and isolated academic journals.
             </p>
           </Fade>
         </div>
       </div>
 
-      {/* Lower Area: Three Columns (A, B, C) */}
-      <Fade delay={0.35}>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-10 md:gap-14 lg:gap-20 xl:gap-28 pt-10 md:pt-14 border-t border-white/10">
-          {/* Column A */}
-          <div className="flex flex-col">
-            <span className="font-data text-[11px] md:text-xs tracking-[0.28em] text-[#cad7ce] uppercase font-light">
-              A.
-            </span>
-            <h3 className="mt-3.5 font-display text-xl sm:text-2xl lg:text-[1.75rem] font-light text-ivory leading-snug">
-              Sound as a second language
-            </h3>
-            <p className="mt-4 font-elegant text-sm md:text-[15px] leading-relaxed text-ivory/70 font-light">
-              Ears can resolve change in time in a way that eyes cannot. A 0.2° drift over a century is invisible on a chart, but unmistakable as a slow rising tone.
-            </p>
-          </div>
+      {/* Three Bottom Cards aligned across a single baseline */}
+      <Fade delay={0.4}>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-10 lg:gap-12 pt-12 md:pt-16 mt-12 md:mt-16">
+          {problemCards.map((card) => (
+            <div
+              key={card.n}
+              className="border border-white/10 bg-white/[0.02] backdrop-blur-[2px] p-6 sm:p-8 flex flex-col justify-between h-full"
+            >
+              <div>
+                <span className="font-stencil text-[10px] md:text-[11px] tracking-[0.28em] text-[#cad7ce]">
+                  {card.n}
+                </span>
+                <h3 className="mt-4 font-display text-xl sm:text-2xl lg:text-[1.7rem] font-light text-ivory leading-snug">
+                  {card.title}
+                </h3>
+                <p className="mt-4 font-elegant text-sm md:text-[14.5px] leading-relaxed text-ivory/70 font-light">
+                  {card.desc}
+                </p>
+              </div>
 
-          {/* Column B */}
-          <div className="flex flex-col">
-            <span className="font-data text-[11px] md:text-xs tracking-[0.28em] text-[#cad7ce] uppercase font-light">
-              B.
-            </span>
-            <h3 className="mt-3.5 font-display text-xl sm:text-2xl lg:text-[1.75rem] font-light text-ivory leading-snug">
-              Mapping, not metaphor
-            </h3>
-            <p className="mt-4 font-elegant text-sm md:text-[15px] leading-relaxed text-ivory/70 font-light">
-              Each link from variable to parameter is declared and inspectable. The composition is honest — the rule is the instrument.
-            </p>
-          </div>
-
-          {/* Column C */}
-          <div className="flex flex-col">
-            <span className="font-data text-[11px] md:text-xs tracking-[0.28em] text-[#cad7ce] uppercase font-light">
-              C.
-            </span>
-            <h3 className="mt-3.5 font-display text-xl sm:text-2xl lg:text-[1.75rem] font-light text-ivory leading-snug">
-              The room as a lab
-            </h3>
-            <p className="mt-4 font-elegant text-sm md:text-[15px] leading-relaxed text-ivory/70 font-light">
-              When a chart of sea surface temperature is sung back to climate scientists, the room goes quiet. Sound gives the data a body.
-            </p>
-          </div>
+              <div className="pt-6 mt-8 border-t border-white/10">
+                <span className="font-data text-[9.5px] md:text-[10px] tracking-[0.22em] text-[#cad7ce]/70 uppercase">
+                  {card.impact}
+                </span>
+              </div>
+            </div>
+          ))}
         </div>
       </Fade>
     </section>
@@ -202,7 +222,7 @@ const PRINCIPLES = [
 
 export function ConceptPrinciples() {
   return (
-    <section className="relative w-full pt-16 md:pt-24 lg:pt-32 pb-20 md:pb-28">
+    <section className="relative w-full pt-16 md:pt-24 lg:pt-32 pb-20 md:pb-28 border-t border-white/10">
       {/* Top Header: 2-line Heading + Right Description spread wide */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-end justify-between mb-16 md:mb-20 lg:mb-24">
         {/* Left Headline (2 lines as requested) */}
