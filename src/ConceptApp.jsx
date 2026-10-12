@@ -2,8 +2,7 @@ import { MotionConfig, motion } from 'motion/react'
 import { useLenisScroll } from './hooks/useLenisScroll'
 import Nav from './components/Nav'
 import ConceptBackground from './components/ConceptBackground'
-import ConceptHero from './components/ConceptHero'
-import ConceptPrinciples from './components/ConceptPrinciples'
+import { ConceptObservation, ConceptHero, ConceptPrinciples } from './components/ConceptSections'
 
 export default function ConceptApp() {
   useLenisScroll()
@@ -27,12 +26,15 @@ export default function ConceptApp() {
         <ConceptBackground />
       </div>
 
-      {/* Main Concept Page Content with wider spread across both sides */}
+      {/* Main Concept Page Content */}
       <main className="relative z-10 min-h-screen text-ivory pt-28 sm:pt-32 md:pt-36 lg:pt-40 pb-20 md:pb-32 px-6 sm:px-10 md:px-14 lg:px-20 xl:px-24 2xl:px-28 max-w-[1680px] mx-auto w-full">
-        {/* Section 1: What if the measurements could be sung? */}
+        {/* Section 1: The Observation — The planet in digits & data */}
+        <ConceptObservation />
+
+        {/* Section 2: What if the measurements could be sung? */}
         <ConceptHero />
 
-        {/* Section 2: The things we keep close. */}
+        {/* Section 3: The things we keep close (Principles) */}
         <ConceptPrinciples />
       </main>
     </MotionConfig>
