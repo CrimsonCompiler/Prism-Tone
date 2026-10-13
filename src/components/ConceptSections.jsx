@@ -191,18 +191,18 @@ export function ConceptIdea() {
   const ideaColumns = [
     {
       letter: 'A.',
-      title: 'Sound as a second language',
-      desc: 'Ears can resolve change in time in a way that eyes cannot. A 0.2° drift over a century is invisible on a chart, but unmistakable as a slow rising tone.',
+      title: 'Sound as Another Dimension',
+      desc: 'Visuals reveal where Earth is changing; sound reveals how those changes unfold through time. By translating shifts in environmental data into rhythms, we tried another way to perceive patterns.',
     },
     {
       letter: 'B.',
-      title: 'Mapping, not metaphor',
-      desc: 'Each link from variable to parameter is declared and inspectable. The composition is honest — the rule is the instrument.',
+      title: 'Mapping, Not Metaphor',
+      desc: 'Every sound has a defined relationship with the data behind it. The mapping remains interpretable, connecting what users hear to what the data actually represents.',
     },
     {
       letter: 'C.',
-      title: 'The room as a lab',
-      desc: 'When a chart of sea surface temperature is sung back to climate scientists, the room goes quiet. Sound gives the data a body.',
+      title: 'From Data to Experience',
+      desc: 'Earth science becomes more than something to examine on a screen. As data-driven sounds evolve with visualizations, users can explore planetary changes through both sight & hearing.',
     },
   ]
 
@@ -246,20 +246,24 @@ export function ConceptIdea() {
         </div>
       </Fade>
 
-      {/* Three Columns (A, B, C) with small divider line under each title */}
+      {/* Three Columns (A, B, C) */}
       <Fade delay={0.35}>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-10 md:gap-12 lg:gap-16 pt-8 md:pt-12">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-12 md:gap-16 lg:gap-20 xl:gap-24 2xl:gap-28 pt-12 md:pt-16 lg:pt-20">
           {ideaColumns.map((col) => (
-            <div key={col.letter} className="space-y-4">
-              <span className="font-stencil text-[11px] md:text-[12px] tracking-[0.28em] text-[#cad7ce]">
-                {col.letter}
-              </span>
-              <h3 className="font-display text-2xl sm:text-[1.75rem] lg:text-[1.95rem] font-light text-ivory leading-snug">
-                {col.title}
-              </h3>
-              {/* Short accent divider under title */}
-              <div className="w-12 sm:w-16 h-px bg-white/25 my-3.5" />
-              <p className="font-elegant text-sm md:text-[14.5px] lg:text-[15px] leading-relaxed text-ivory/70 font-light">
+            <div key={col.letter} className="flex flex-col">
+              <div>
+                <span className="font-stencil text-[11px] md:text-[12px] tracking-[0.28em] text-[#cad7ce]">
+                  {col.letter}
+                </span>
+                <h3 className="mt-4 font-display text-2xl sm:text-[1.75rem] lg:text-[1.95rem] font-light text-ivory leading-snug">
+                  {col.title}
+                </h3>
+              </div>
+
+              {/* Horizontal line across the column under the title */}
+              <div className="w-full h-px bg-white/10 my-6 sm:my-7" />
+
+              <p className="font-elegant text-sm md:text-[14.5px] lg:text-[15px] leading-[1.7] text-ivory/75 font-light">
                 {col.desc}
               </p>
             </div>
