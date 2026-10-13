@@ -89,21 +89,27 @@ export function ConceptProblem() {
   const problemCards = [
     {
       n: '01',
-      title: 'Emotional Insulation',
-      desc: 'Numerical graphs turn existential planetary shifts into sterile data points. Seeing +1.5°C on a chart fails to trigger the visceral human realization that our biospheric engine is burning.',
-      impact: 'IMPACT: COGNITIVE DETACHMENT',
+      title: 'Emotional Distance',
+      desc: 'Planetary change is often presented as numbers on a screen. A rising temperature curve may be scientifically precise, yet difficult to emotionally connect with the scale and urgency of a changing planet.',
+      impact: 'IMPACT: DISCONNECTED PERCEPTION',
     },
     {
       n: '02',
-      title: 'Sensory Exclusion',
-      desc: 'Ocular-centric data visualization excludes blind, visually impaired, and neurodiverse researchers and students. Climate intelligence is locked behind visual gates.',
-      impact: 'IMPACT: INACCESSIBILITY',
+      title: 'Visual Dependency',
+      desc: 'Maps, charts, and satellite imagery make Earth science heavily dependent on sight. Without meaningful alternatives, many of these visual data patterns remain difficult to access for people who are blind or have visual impairments.',
+      impact: 'IMPACT: LIMITED ACCESSIBILITY',
     },
     {
       n: '03',
-      title: 'Dimensional Overload',
-      desc: 'Human vision struggles to process more than 3 overlapping variables simultaneously. Long-term micro-variations and non-linear shifts blur into visual noise.',
-      impact: 'IMPACT: MISSED CORRELATIONS',
+      title: 'Hidden Patterns',
+      desc: 'Earth’s systems are interconnected, but their signals are often examined through separate graphs and datasets. Subtle fluctuations, long-term trends, and relationships between variables can be difficult to recognise across multiple visual representations.',
+      impact: 'IMPACT: OVERLOOKED CONNECTIONS',
+    },
+    {
+      n: '04',
+      title: 'Data Without Experience',
+      desc: 'Scientific datasets contain continuous records of planetary change, yet static charts and spreadsheets offer limited ways to experience those changes dynamically. The information is available, but its movement through time can be difficult.',
+      impact: 'IMPACT: PASSIVE UNDERSTANDING',
     },
   ]
 
@@ -139,28 +145,28 @@ export function ConceptProblem() {
         <div className="lg:col-span-7 xl:col-span-7 lg:flex lg:justify-end lg:pb-3">
           <Fade delay={0.25}>
             <p className="max-w-lg lg:max-w-[540px] xl:max-w-[570px] 2xl:max-w-[590px] font-elegant text-sm sm:text-[15px] md:text-base leading-relaxed text-ivory/80 font-light lg:ml-auto">
-              For over fifty years, humanity has recorded Earth’s vital signs via satellites - tracking thermal anomalies, gravity shifts, and laser altimetry. Yet, this vast scientific intelligence remains locked inside 2D graphs, static spreadsheets, and isolated academic journals.
+              For over fifty years, humanity has recorded Earth’s vital signs via satellites—tracking thermal anomalies, gravity shifts, and laser altimetry. Yet, this vast scientific intelligence remains locked inside 2D graphs, static spreadsheets, and isolated academic journals.
             </p>
           </Fade>
         </div>
       </div>
 
-      {/* Three Bottom Cards aligned across a single baseline */}
+      {/* Four Bottom Cards aligned across a single baseline */}
       <Fade delay={0.4}>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-10 lg:gap-12 pt-12 md:pt-16 mt-12 md:mt-16">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-6 xl:gap-8 pt-12 md:pt-16 mt-12 md:mt-16">
           {problemCards.map((card) => (
             <div
               key={card.n}
-              className="border border-white/10 bg-white/[0.02] backdrop-blur-[2px] p-6 sm:p-8 flex flex-col justify-between h-full"
+              className="border border-white/10 bg-white/[0.02] backdrop-blur-[2px] p-6 sm:p-7 lg:p-6 xl:p-8 flex flex-col justify-between h-full"
             >
               <div>
                 <span className="font-stencil text-[10px] md:text-[11px] tracking-[0.28em] text-[#cad7ce]">
                   {card.n}
                 </span>
-                <h3 className="mt-4 font-display text-xl sm:text-2xl lg:text-[1.7rem] font-light text-ivory leading-snug">
+                <h3 className="mt-4 font-display text-xl sm:text-2xl lg:text-[1.4rem] xl:text-[1.6rem] font-light text-ivory leading-snug">
                   {card.title}
                 </h3>
-                <p className="mt-4 font-elegant text-sm md:text-[14.5px] leading-relaxed text-ivory/70 font-light">
+                <p className="mt-4 font-elegant text-[14.5px] sm:text-[15px] xl:text-[15.5px] leading-relaxed text-ivory/75 font-light">
                   {card.desc}
                 </p>
               </div>
@@ -179,7 +185,93 @@ export function ConceptProblem() {
 }
 
 /* =========================================================================
-   SECTION 3: THE THINGS WE KEEP CLOSE (6 PRINCIPLES)
+   SECTION 3: A NEW TRANSPORT FOR DATA / THE IDEA (CHAPTER III)
+   ========================================================================= */
+export function ConceptIdea() {
+  const ideaColumns = [
+    {
+      letter: 'A.',
+      title: 'Sound as a second language',
+      desc: 'Ears can resolve change in time in a way that eyes cannot. A 0.2° drift over a century is invisible on a chart, but unmistakable as a slow rising tone.',
+    },
+    {
+      letter: 'B.',
+      title: 'Mapping, not metaphor',
+      desc: 'Each link from variable to parameter is declared and inspectable. The composition is honest — the rule is the instrument.',
+    },
+    {
+      letter: 'C.',
+      title: 'The room as a lab',
+      desc: 'When a chart of sea surface temperature is sung back to climate scientists, the room goes quiet. Sound gives the data a body.',
+    },
+  ]
+
+  return (
+    <section className="relative w-full py-20 md:py-28 lg:py-36 border-t border-white/10">
+      {/* Top Header Bar: A NEW TRANSPORT FOR DATA & Chapter Meta */}
+      <Fade delay={0.1}>
+        <div className="flex items-center justify-between pb-8 md:pb-12 text-[#cad7ce]">
+          <span className="font-stencil text-[10px] md:text-[11.5px] tracking-[0.34em] uppercase">
+            A NEW TRANSPORT FOR DATA
+          </span>
+          <span className="font-stencil text-[9.5px] md:text-[11px] uppercase tracking-[0.34em] text-ivory/60">
+            THE IDEA - CHAPTER III
+          </span>
+        </div>
+      </Fade>
+
+      {/* Editorial Quote Block (Styled identically to SystemQuotes) */}
+      <Fade delay={0.2}>
+        <div className="pt-2 pb-16 md:pb-24 max-w-5xl">
+          {/* Kicker Tag */}
+          <div className="mb-6 flex items-center gap-3 md:mb-8">
+            <span className="font-stencil text-[10px] uppercase tracking-[0.32em] text-[#8ea792] sm:text-[11px]">
+              A · NOTE ON FREQUENCY
+            </span>
+            <span className="inline-block h-px w-12 bg-ivory/20 md:w-16" aria-hidden="true" />
+          </div>
+
+          {/* Main Italic Quote */}
+          <blockquote
+            style={{ fontFamily: '"Adrianna", "EB Garamond", Georgia, serif' }}
+            className="max-w-4xl text-[clamp(1.4rem,2.6vw,2.35rem)] font-normal italic leading-[1.38] tracking-[-0.01em] text-ivory/95"
+          >
+            “our entire biological system – the brain and the earth itself – work on the same frequencies.”
+          </blockquote>
+
+          {/* Author Attribution */}
+          <p className="mt-6 font-stencil text-[9.5px] uppercase tracking-[0.26em] text-[#cad7ce]/80 sm:text-[10.5px] md:mt-8">
+            ~ Nicola Tesla
+          </p>
+        </div>
+      </Fade>
+
+      {/* Three Columns (A, B, C) with small divider line under each title */}
+      <Fade delay={0.35}>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-10 md:gap-12 lg:gap-16 pt-8 md:pt-12">
+          {ideaColumns.map((col) => (
+            <div key={col.letter} className="space-y-4">
+              <span className="font-stencil text-[11px] md:text-[12px] tracking-[0.28em] text-[#cad7ce]">
+                {col.letter}
+              </span>
+              <h3 className="font-display text-2xl sm:text-[1.75rem] lg:text-[1.95rem] font-light text-ivory leading-snug">
+                {col.title}
+              </h3>
+              {/* Short accent divider under title */}
+              <div className="w-12 sm:w-16 h-px bg-white/25 my-3.5" />
+              <p className="font-elegant text-sm md:text-[14.5px] lg:text-[15px] leading-relaxed text-ivory/70 font-light">
+                {col.desc}
+              </p>
+            </div>
+          ))}
+        </div>
+      </Fade>
+    </section>
+  )
+}
+
+/* =========================================================================
+   SECTION 4: THE THINGS WE KEEP CLOSE (6 PRINCIPLES)
    ========================================================================= */
 const PRINCIPLES = [
   {

@@ -2,7 +2,7 @@ import { MotionConfig, motion } from 'motion/react'
 import { useLenisScroll } from './hooks/useLenisScroll'
 import Nav from './components/Nav'
 import ConceptBackground from './components/ConceptBackground'
-import { ConceptObservation, ConceptProblem, ConceptPrinciples } from './components/ConceptSections'
+import { ConceptObservation, ConceptProblem, ConceptIdea, ConceptPrinciples } from './components/ConceptSections'
 
 export default function ConceptApp() {
   useLenisScroll()
@@ -34,7 +34,10 @@ export default function ConceptApp() {
           {/* Section 2: The Crisis of Perception — The Problem */}
           <ConceptProblem />
 
-          {/* Section 3: The things we keep close (Principles) */}
+          {/* Section 3: A New Transport for Data — The Idea (Chapter III) */}
+          <ConceptIdea />
+
+          {/* Section 4: The things we keep close (Principles) */}
           <ConceptPrinciples />
         </main>
       </div>
