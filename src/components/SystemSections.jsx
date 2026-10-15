@@ -152,7 +152,7 @@ export function PrismSystem() {
         {/* Left column: text body + layers + voice tag & sound button directly below */}
         <div className="lg:col-span-4">
           <Fade delay={0.15}>
-            <p className="max-w-md font-elegant text-[16.5px] md:text-[18px] leading-relaxed text-[#ede7dc]/95 font-light">
+            <p className="max-w-md font-elegant text-[16.5px] md:text-[17px] leading-relaxed text-[#ede7dc]/95 font-light">
               Six datasets arrive as spectral layers. Thermal, kinetic, hydro, cryo, pyro, and the slow subtraction of the forests converge into a single voice. Each layer is a sound. Each sound is a dataset. Together, they are the sound of a planet.
             </p>
           </Fade>

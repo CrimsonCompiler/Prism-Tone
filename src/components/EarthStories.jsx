@@ -387,7 +387,7 @@ function Story({ s, activeSoundId, onToggleSound }) {
                 className="h-[54vw] max-h-[560px] w-full object-cover grayscale brightness-[0.94] contrast-[1.06] sepia-[0.14] md:h-[420px] lg:h-[480px]"
               />
               <div className="vignette pointer-events-none absolute inset-0" />
-              <p className="font-stencil uppercase text-[8.5px] md:text-[9.5px] tracking-[0.28em] text-[#f9eed8] absolute bottom-3 left-3 bg-black/80 backdrop-blur-md px-2.5 py-1 border border-[#f9eed8]/20 shadow-sm">
+              <p className="font-stencil uppercase text-[9px] md:text-[10px] tracking-[0.28em] text-[#f9eed8] absolute bottom-3 left-3 bg-black/80 backdrop-blur-md px-2.5 py-1 border border-[#f9eed8]/20 shadow-sm">
                 <span className="mr-2 text-[#f9eed8]/60">+</span>
                 {s.fig}
               </p>
@@ -398,10 +398,10 @@ function Story({ s, activeSoundId, onToggleSound }) {
         <div className={`lg:col-span-5 flex flex-col justify-between gap-8 lg:gap-0 h-full lg:min-h-[480px] pt-1 pb-1 ${s.reverse ? 'lg:order-1 lg:pr-8' : 'lg:pl-8'}`}>
           {/* Top group: Section number/name and copy */}
           <Fade>
-            <p className="font-stencil uppercase text-[11px] md:text-[12px] tracking-[0.38em] text-[#f9eed8] font-medium">
+            <p className="font-stencil uppercase text-[11.5px] md:text-[12.8px] tracking-[0.38em] text-[#f9eed8] font-medium">
               {`${s.n} — ${s.name}`}
             </p>
-            <p className="mt-3.5 md:mt-4 max-w-xl font-elegant text-[16px] md:text-[17px] leading-[1.72] text-[#f9eed8]/90">
+            <p className="mt-3.5 md:mt-4 max-w-xl font-elegant text-[16.8px] md:text-[17.8px] leading-[1.72] text-[#f9eed8]/90">
               {s.copy}
             </p>
           </Fade>
@@ -412,7 +412,7 @@ function Story({ s, activeSoundId, onToggleSound }) {
               {s.stats ? (
                 s.stats.map((st, idx) => (
                   <div key={idx} className="flex flex-col">
-                    <span className="font-stencil text-[9.5px] md:text-[10.5px] uppercase tracking-[0.22em] text-[#f9eed8]/75 mb-1.5">
+                    <span className="font-stencil text-[10.2px] md:text-[11.2px] uppercase tracking-[0.22em] text-[#f9eed8]/75 mb-1.5">
                       {st.label}
                     </span>
                     <div className="flex items-baseline gap-1">
@@ -439,7 +439,7 @@ function Story({ s, activeSoundId, onToggleSound }) {
           <Fade delay={0.25} className="mt-auto lg:mt-0">
             <StoryWave type={s.viz} className="h-16 w-full" />
             <div className="mt-6 md:mt-7 flex items-center justify-between gap-4">
-              <p className="font-data text-[8.5px] md:text-[9px] uppercase tracking-[0.24em] text-[#f9eed8]/70">
+              <p className="font-data text-[9px] md:text-[9.8px] uppercase tracking-[0.24em] text-[#f9eed8]/70">
                 voice — {s.name.toLowerCase()} · loop
               </p>
 
@@ -469,7 +469,7 @@ function Story({ s, activeSoundId, onToggleSound }) {
                   />
                 </span>
 
-                <span className="font-stencil text-[9.5px] md:text-[10px] uppercase tracking-[0.18em] whitespace-nowrap">
+                <span className="font-stencil text-[10.2px] md:text-[10.8px] uppercase tracking-[0.18em] whitespace-nowrap">
                   {isPlaying ? 'ACTIVE SOUND' : 'ACTIVATE SOUND'}
                 </span>
               </button>
@@ -516,7 +516,7 @@ export default function EarthStories() {
           </div>
 
           <div className="flex flex-col justify-end lg:col-span-5 lg:pl-8 xl:pl-14 pb-1.5">
-            <p className="max-w-lg font-elegant text-[16px] md:text-[17px] leading-[1.72] text-[#f9eed8]/90">
+            <p className="max-w-lg font-elegant text-[16.8px] md:text-[17.8px] leading-[1.72] text-[#f9eed8]/90">
               Different patterns of Earth's signal. Each one gets its own instrument, its own behavior, its own part in the score. They may have some critical planetary phenomena. Read the scientific telemetry, then listen to the pulse of the Earth system in flux.
             </p>
           </div>
@@ -945,12 +945,12 @@ function DataTile({ index, label, value, unit, annotation, children }) {
             read on top of busy visualizations (e.g. deforestation canopy). */}
         <div className="pointer-events-none absolute inset-0 z-10">
           <span
-            className="absolute top-3 left-3 font-stencil uppercase text-[8.5px] md:text-[9.5px] tracking-[0.28em] text-[#f9eed8] bg-black/80 backdrop-blur-md px-2.5 py-1 border border-[#f9eed8]/20 shadow-sm"
+            className="absolute top-3 left-3 font-stencil uppercase text-[9px] md:text-[10.2px] tracking-[0.28em] text-[#f9eed8] bg-black/80 backdrop-blur-md px-2.5 py-1 border border-[#f9eed8]/20 shadow-sm"
           >
             {`FIG · 0${index + 1}`}
           </span>
           <span
-            className="absolute top-3 right-3 max-w-[60%] text-right font-stencil uppercase text-[8.5px] md:text-[9.5px] tracking-[0.28em] text-[#f9eed8] bg-black/80 backdrop-blur-md px-2.5 py-1 border border-[#f9eed8]/20 shadow-sm"
+            className="absolute top-3 right-3 max-w-[60%] text-right font-stencil uppercase text-[9px] md:text-[10.2px] tracking-[0.28em] text-[#f9eed8] bg-black/80 backdrop-blur-md px-2.5 py-1 border border-[#f9eed8]/20 shadow-sm"
           >
             {label}
           </span>
@@ -969,7 +969,7 @@ function DataTile({ index, label, value, unit, annotation, children }) {
 
           {/* Bottom-right annotation — plain text, no pill */}
           <span
-            className="absolute bottom-3 right-3 max-w-[42%] text-right font-data text-[8.5px] md:text-[9px] uppercase tracking-[0.22em] text-[#f9eed8]/65"
+            className="absolute bottom-3 right-3 max-w-[42%] text-right font-data text-[9px] md:text-[9.8px] uppercase tracking-[0.22em] text-[#f9eed8]/65"
           >
             {annotation}
           </span>
@@ -1018,7 +1018,7 @@ function FiguresGrid() {
           </div>
 
           <div className="flex flex-col justify-end lg:col-span-5 lg:pl-8 xl:pl-14 pb-1.5">
-            <p className="max-w-lg font-elegant text-[16px] md:text-[17px] leading-[1.72] text-[#f9eed8]/90">
+            <p className="max-w-lg font-elegant text-[16.8px] md:text-[17.8px] leading-[1.72] text-[#f9eed8]/90">
               A field-notebook of the planet — line, vector, drop, fracture, ember, orbit. Each one becomes a Timre in the score.
             </p>
           </div>
