@@ -21,7 +21,9 @@ export function useLenisScroll() {
 
     let rafId
     const loop = (time) => {
-      lenis.raf(time)
+      if (!document.hidden) {
+        lenis.raf(time)
+      }
       rafId = requestAnimationFrame(loop)
     }
     rafId = requestAnimationFrame(loop)

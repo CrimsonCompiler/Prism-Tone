@@ -3,10 +3,7 @@ import { useLenisScroll } from './hooks/useLenisScroll'
 
 import Nav from './components/Nav'
 import EarthBackground from './components/EarthBackground'
-import PrismSystem from './components/PrismSystem'
-import Pipeline from './components/Pipeline'
-import SonificationFormulas from './components/SonificationFormulas'
-import SystemQuotes from './components/SystemQuotes'
+import { PrismSystem, Pipeline, SonificationFormulas, SystemQuotes } from './components/SystemSections'
 
 function ProgressLine() {
   const { scrollYProgress } = useScroll()

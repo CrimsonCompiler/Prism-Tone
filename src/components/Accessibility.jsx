@@ -150,7 +150,7 @@ export default function Accessibility() {
         {/* Left Column: Heading, Narrative and Feature Tags */}
         <div className="lg:col-span-7">
           <Fade delay={0.2}>
-            <p className="mt-8 max-w-xl font-elegant text-[15.5px] leading-relaxed text-cream/85 md:text-[16.5px]">
+            <p className="mt-8 max-w-xl font-elegant text-[17px] leading-relaxed text-cream/85 md:text-[18px]">
               Charts privilege those who see.
               <br />
               Prism Tone opens the same data to those who can listen.

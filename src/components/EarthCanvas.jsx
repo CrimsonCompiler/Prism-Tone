@@ -222,14 +222,22 @@ function Earth({ variant = 'hero' }) {
     }
   }, [gl])
 
-  useFrame((_, delta) => {
+  const lastRender = useRef(0)
+  useFrame((state, delta) => {
     // Clamp delta to maximum of 33ms (30fps equivalent) to prevent large rotational jumps on hitches
     const d = Math.min(delta, 0.033)
     const speed = REDUCED() ? 0.004 : 0.02
     if (group.current) group.current.rotation.y += d * speed
     if (clouds.current) clouds.current.rotation.y += d * speed * 1.3
     atmoUniforms.uTime.value += d
-  })
+
+    // Throttle actual WebGL rasterization to max 60fps (skips duplicate draws on 120Hz/144Hz displays)
+    const now = performance.now()
+    if (now - lastRender.current >= 16) {
+      lastRender.current = now
+      state.gl.render(state.scene, state.camera)
+    }
+  }, 1)
 
   if (!tex) return null
 
@@ -297,11 +305,24 @@ export default function EarthCanvas({ variant = 'hero', className = '' }) {
   useEffect(() => {
     const el = wrapRef.current
     if (!el) return
-    const io = new IntersectionObserver(([entry]) => setActive(entry.isIntersecting), {
-      rootMargin: '220px',
-    })
+    let isIntersecting = false
+    const updateActive = () => {
+      setActive(isIntersecting && !document.hidden)
+    }
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        isIntersecting = entry.isIntersecting
+        updateActive()
+      },
+      { rootMargin: '100px' }
+    )
     io.observe(el)
-    return () => io.disconnect()
+
+    document.addEventListener('visibilitychange', updateActive)
+    return () => {
+      io.disconnect()
+      document.removeEventListener('visibilitychange', updateActive)
+    }
   }, [])
 
   return (
@@ -313,7 +334,7 @@ export default function EarthCanvas({ variant = 'hero', className = '' }) {
         gl={{
           antialias: true,
           alpha: true,
-          powerPreference: 'high-performance',
+          powerPreference: 'default',
           stencil: false,
           depth: true,
         }}

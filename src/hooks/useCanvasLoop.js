@@ -52,21 +52,29 @@ export function useCanvasLoop(drawRef, { fps = 60 } = {}) {
       if (!running) drawOnce()
     }
 
+    let isIntersecting = false
+    const updateLoop = () => {
+      const shouldRun = isIntersecting && !reduced && !document.hidden
+      if (shouldRun && !running) {
+        running = true
+        last = 0
+        raf = requestAnimationFrame(frame)
+      } else if (!shouldRun && running) {
+        running = false
+        if (isIntersecting && reduced) drawOnce()
+      }
+    }
+
     const io = new IntersectionObserver(
       ([entry]) => {
-        const shouldRun = entry.isIntersecting && !reduced
-        if (shouldRun && !running) {
-          running = true
-          last = 0
-          raf = requestAnimationFrame(frame)
-        } else if (!shouldRun) {
-          running = false
-          if (entry.isIntersecting && reduced) drawOnce()
-        }
+        isIntersecting = entry.isIntersecting
+        updateLoop()
       },
       { rootMargin: '140px' },
     )
     io.observe(canvas)
+
+    document.addEventListener('visibilitychange', updateLoop)
 
     const ro = new ResizeObserver(resize)
     ro.observe(canvas)
@@ -75,6 +83,7 @@ export function useCanvasLoop(drawRef, { fps = 60 } = {}) {
     return () => {
       io.disconnect()
       ro.disconnect()
+      document.removeEventListener('visibilitychange', updateLoop)
       cancelAnimationFrame(raf)
       running = false
     }

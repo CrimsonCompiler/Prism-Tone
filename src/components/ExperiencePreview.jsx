@@ -106,7 +106,7 @@ export default function ExperiencePreview() {
         </div>
 
         <div className="flex flex-col justify-end lg:col-span-5 lg:pl-8 xl:pl-14 pb-1.5">
-          <p className="max-w-md font-elegant text-[15.5px] leading-relaxed text-cream/85 md:text-[16.5px]">
+          <p className="max-w-md font-elegant text-[17px] leading-relaxed text-cream/85 md:text-[18px]">
             Not a corporate dashboard. A living scientific listening post. Explore real-time planetary telemetry translated into pure acoustic vibration.
           </p>
         </div>
@@ -127,7 +127,7 @@ export default function ExperiencePreview() {
             <div className="mt-6 aspect-square w-full">
               <OrbitCanvas className="h-full w-full" />
             </div>
-            <p className="mt-6 font-elegant text-[14px] md:text-[14.5px] leading-relaxed tracking-[0.04em] text-cream/75">
+            <p className="mt-6 font-elegant text-[15.5px] md:text-[16px] leading-relaxed tracking-[0.04em] text-cream/75">
               3 satellites in view
               <br />
               swath — 2330 km

@@ -148,11 +148,8 @@ export default function PrismSystem() {
         {/* Left column: text body + layers + voice tag & sound button directly below */}
         <div className="lg:col-span-4">
           <Fade delay={0.15}>
-            <p className="max-w-sm font-elegant text-[15px] md:text-[15.5px] leading-relaxed text-[#ede7dc]/90 font-light">
-              Prism Tone runs the prism in reverse. Six datasets arrive as spectral layers —
-              thermal, kinetic, hydro, cryo, pyro, and the slow subtraction of the forests — and
-              converge into a single voice. Each layer is a sound. Each sound is a dataset.
-              Together, they are the sound of a planet.
+            <p className="max-w-md font-elegant text-[16.5px] md:text-[18px] leading-relaxed text-[#ede7dc]/95 font-light">
+              Six datasets arrive as spectral layers — thermal, kinetic, hydro, cryo, pyro, and the slow subtraction of the forests — and converge into a single voice. Each layer is a sound. Each sound is a dataset. Together, they are the sound of a planet.
             </p>
           </Fade>
 
@@ -161,12 +158,12 @@ export default function PrismSystem() {
               {LAYERS.map(([n, name, role]) => (
                 <li
                   key={n}
-                  className="flex items-baseline justify-between gap-4 border-t border-white/10 py-3"
+                  className="flex items-baseline justify-between gap-4 border-t border-white/10 py-3.5"
                 >
-                  <span className="font-data text-[10.5px] uppercase tracking-[0.26em] text-[#f2ede3]">
+                  <span className="font-data text-[12px] sm:text-[13px] uppercase tracking-[0.26em] text-[#f2ede3]">
                     {n} <span className="mx-2 text-[#8ea792]">·</span> {name}
                   </span>
-                  <span className="font-ui text-[9.5px] uppercase tracking-[0.18em] text-[#cad7ce]">
+                  <span className="font-ui text-[11px] sm:text-[12px] uppercase tracking-[0.18em] text-[#cad7ce]">
                     {role}
                   </span>
                 </li>
@@ -177,7 +174,7 @@ export default function PrismSystem() {
           {/* Placed directly under the text body: Voice tag & Active Sound Button */}
           <Fade delay={0.4}>
             <div className="mt-8 flex items-center justify-between gap-4">
-              <p className="font-data text-[8.5px] md:text-[9px] uppercase tracking-[0.24em] text-[#f2ede3]/70">
+              <p className="font-data text-[10px] md:text-[11px] uppercase tracking-[0.24em] text-[#f2ede3]/70">
                 voice — spectral split · loop
               </p>
 
@@ -185,7 +182,7 @@ export default function PrismSystem() {
               <button
                 type="button"
                 onClick={handleToggleSound}
-                className={`group flex items-center gap-2.5 px-3 py-1.5 border transition-all duration-300 cursor-pointer ${isPlaying
+                className={`group flex items-center gap-2.5 px-3.5 py-2 border transition-all duration-300 cursor-pointer ${isPlaying
                   ? 'border-[#f2ede3] bg-[#f2ede3]/15 text-[#f2ede3] shadow-[0_0_12px_rgba(242,237,227,0.22)]'
                   : 'border-white/25 hover:border-white/70 bg-[#162022]/70 hover:bg-white/10 text-[#f2ede3]/85 hover:text-[#f2ede3]'
                   }`}
@@ -207,7 +204,7 @@ export default function PrismSystem() {
                   />
                 </span>
 
-                <span className="font-stencil text-[9.5px] md:text-[10px] uppercase tracking-[0.18em] whitespace-nowrap">
+                <span className="font-stencil text-[10.5px] md:text-[11px] uppercase tracking-[0.2em] whitespace-nowrap">
                   {isPlaying ? 'ACTIVE SOUND' : 'ACTIVATE SOUND'}
                 </span>
               </button>

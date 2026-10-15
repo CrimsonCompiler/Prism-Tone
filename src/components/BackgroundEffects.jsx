@@ -141,8 +141,15 @@ export default function BackgroundEffects() {
       window.addEventListener('deviceorientation', onDeviceOrientation, { passive: true })
     }
 
-    function loop() {
+    let lastFrame = 0
+    const frameInterval = 1000 / 50
+
+    function loop(now = performance.now()) {
       if (!running) return
+      rafId = requestAnimationFrame(loop)
+
+      if (now - lastFrame < frameInterval) return
+      lastFrame = now
 
       ctx.clearRect(0, 0, winW, winH)
 
@@ -167,12 +174,14 @@ export default function BackgroundEffects() {
         for (let j = i + 1; j < len; j++) {
           const p2 = particles[j]
           const p2x = p2.position.x + p2.parallaxOffsetX
-          const p2y = p2.position.y + p2.parallaxOffsetY
-
           const dx = p1x - p2x
-          const dy = p1y - p2y
-          const distSq = dx * dx + dy * dy
+          if (Math.abs(dx) > prox) continue
 
+          const p2y = p2.position.y + p2.parallaxOffsetY
+          const dy = p1y - p2y
+          if (Math.abs(dy) > prox) continue
+
+          const distSq = dx * dx + dy * dy
           if (distSq < proxSq) {
             ctx.moveTo(p1x, p1y)
             ctx.lineTo(p2x, p2y)
@@ -193,13 +202,12 @@ export default function BackgroundEffects() {
         ctx.arc(px, py, Math.max(1, r), 0, Math.PI * 2, true)
         ctx.fill()
       }
-
-      rafId = requestAnimationFrame(loop)
     }
 
     const startLoop = () => {
       if (running) return
       running = true
+      lastFrame = 0
       rafId = requestAnimationFrame(loop)
     }
 
@@ -257,7 +265,7 @@ export default function BackgroundEffects() {
       <canvas ref={canvasRef} className="absolute inset-0 h-full w-full" />
 
       {/* Cosmic Dust Particle Drift Animation — strictly Hero-scoped */}
-      <div className="bg-animation absolute inset-0 h-full w-full opacity-65">
+      <div className="bg-animation absolute inset-0 h-full w-full opacity-65" style={{ contain: 'strict' }}>
         <div id="stars" />
         <div id="stars2" />
         <div id="stars3" />
