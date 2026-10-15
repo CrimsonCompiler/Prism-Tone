@@ -5,7 +5,7 @@ import { EASE } from './ui'
 const LINKS = [
   ['Concept', 'concept.html'],
   ['Prism System', 'system.html'],
-  ['Preview', '#preview'],
+  ['Preview', 'preview.html'],
   ['Team', 'team.html'],
   ['Stories', 'stories.html'],
 ]
@@ -22,7 +22,8 @@ export default function Nav({ page = 'index' }) {
     (page === 'stories' && label === 'Stories') ||
     (page === 'system' && label === 'Prism System') ||
     (page === 'team' && label === 'Team') ||
-    (page === 'concept' && label === 'Concept')
+    (page === 'concept' && label === 'Concept') ||
+    (page === 'preview' && label === 'Preview')
 
   return (
     <motion.header
