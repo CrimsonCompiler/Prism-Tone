@@ -9,12 +9,12 @@ export function ConceptObservation() {
     {
       roman: 'I.',
       title: 'Translation',
-      desc: 'A consistent, reversible bridge between a NASA variable and a sonic parameter - never arbitrary, always declared.',
+      desc: 'A consistent, reversible bridge between a NASA variable and a sonic parameter.',
     },
     {
       roman: 'II.',
       title: 'Resonance',
-      desc: "The chosen sounds carry emotional weight - pitch, density, and grain reflect the data's behaviour, not just its value.",
+      desc: "The chosen sounds carry emotional weight - reflect the data's behaviour, not just its value.",
     },
     {
       roman: 'III.',
@@ -53,7 +53,7 @@ export function ConceptObservation() {
         {/* Right Explanatory Paragraph */}
         <div className="lg:col-span-5 xl:col-span-4 lg:flex lg:justify-end lg:pb-3">
           <Fade delay={0.35}>
-            <p className="max-w-lg lg:max-w-md font-elegant text-sm sm:text-[15px] md:text-base leading-relaxed text-ivory/80 font-light lg:ml-auto">
+            <p className="max-w-xl font-elegant text-[16.5px] md:text-[18px] leading-relaxed text-ivory/85 font-light lg:ml-auto">
               Planetary data is the planet's hidden language. Our vision is to decode their metrics into acoustic art - letting raw data dissolve into the universal language of sound.
             </p>
           </Fade>
@@ -65,13 +65,13 @@ export function ConceptObservation() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-10 md:gap-14 lg:gap-20 xl:gap-28 pt-12 md:pt-16 mt-12 md:mt-16">
           {observationColumns.map((col) => (
             <div key={col.roman} className="flex flex-col">
-              <span className="font-data text-[11px] md:text-xs tracking-[0.28em] text-[#cad7ce] uppercase font-light">
+              <span className="font-data text-[12px] md:text-[13px] tracking-[0.28em] text-[#cad7ce] uppercase font-light">
                 {col.roman}
               </span>
-              <h3 className="mt-3.5 font-display text-xl sm:text-2xl lg:text-[1.75rem] font-light text-ivory leading-snug">
+              <h3 className="mt-3.5 font-display text-2xl sm:text-[1.75rem] lg:text-[2rem] font-light text-ivory leading-snug">
                 {col.title}
               </h3>
-              <p className="mt-4 font-elegant text-sm md:text-[15px] leading-relaxed text-ivory/70 font-light">
+              <p className="mt-4 font-elegant text-[17px] md:text-[18px] leading-relaxed text-ivory/85 font-light">
                 {col.desc}
               </p>
             </div>
@@ -135,7 +135,7 @@ export function ConceptProblem() {
             <h2 className="font-display font-light text-4xl sm:text-5xl md:text-6xl lg:text-[4.8rem] xl:text-[5.6rem] 2xl:text-[6.2rem] leading-[1.06] tracking-[-0.035em] text-ivory">
               The Problem
             </h2>
-            <p className="mt-4 font-display italic text-sm md:text-[15px] lg:text-base text-ivory/70 font-light">
+            <p className="mt-4 font-display italic text-[16px] md:text-[17px] lg:text-[18px] text-ivory/75 font-light">
               Charts and maps reduce the planet to pixels. They are precise, but quiet.
             </p>
           </Fade>
@@ -144,8 +144,8 @@ export function ConceptProblem() {
         {/* Right Explanatory Paragraph */}
         <div className="lg:col-span-7 xl:col-span-7 lg:flex lg:justify-end lg:pb-3">
           <Fade delay={0.25}>
-            <p className="max-w-lg lg:max-w-[540px] xl:max-w-[570px] 2xl:max-w-[590px] font-elegant text-sm sm:text-[15px] md:text-base leading-relaxed text-ivory/80 font-light lg:ml-auto">
-              For over fifty years, humanity has recorded Earth’s vital signs via satellites—tracking thermal anomalies, gravity shifts, and laser altimetry. Yet, this vast scientific intelligence remains locked inside 2D graphs, static spreadsheets, and isolated academic journals.
+            <p className="max-w-lg lg:max-w-[560px] xl:max-w-[590px] 2xl:max-w-[620px] font-elegant text-[16.5px] md:text-[18px] leading-relaxed text-ivory/85 font-light lg:ml-auto">
+              For over fifty years, humanity has recorded Earth’s vital signs via satellites-tracking thermal anomalies, gravity shifts & laser altimetry. Yet, this vast scientific intelligence remains locked inside 2D graphs, static spreadsheets & isolated academic journals.
             </p>
           </Fade>
         </div>
@@ -166,7 +166,7 @@ export function ConceptProblem() {
                 <h3 className="mt-4 font-display text-xl sm:text-2xl lg:text-[1.4rem] xl:text-[1.6rem] font-light text-ivory leading-snug">
                   {card.title}
                 </h3>
-                <p className="mt-4 font-elegant text-[14.5px] sm:text-[15px] xl:text-[15.5px] leading-relaxed text-ivory/75 font-light">
+                <p className="mt-4 font-elegant text-[16px] sm:text-[16.5px] xl:text-[17px] leading-relaxed text-ivory/80 font-light">
                   {card.desc}
                 </p>
               </div>
@@ -240,7 +240,7 @@ export function ConceptIdea() {
           </blockquote>
 
           {/* Author Attribution */}
-          <p className="mt-6 font-stencil text-[9.5px] uppercase tracking-[0.26em] text-[#cad7ce]/80 sm:text-[10.5px] md:mt-8">
+          <p className="mt-6 font-stencil text-[11px] sm:text-[12px] md:text-[13px] uppercase tracking-[0.28em] text-[#cad7ce] md:mt-8">
             ~ Nicola Tesla
           </p>
         </div>
@@ -263,7 +263,7 @@ export function ConceptIdea() {
               {/* Horizontal line across the column under the title */}
               <div className="w-full h-px bg-white/10 my-6 sm:my-7" />
 
-              <p className="font-elegant text-sm md:text-[14.5px] lg:text-[15px] leading-[1.7] text-ivory/75 font-light">
+              <p className="font-elegant text-[15.5px] md:text-[16.5px] lg:text-[17px] leading-[1.7] text-ivory/80 font-light">
                 {col.desc}
               </p>
             </div>
@@ -360,7 +360,7 @@ export function ConceptPalette() {
         {/* Right Subtext */}
         <div className="lg:col-span-6 xl:col-span-7 lg:flex lg:justify-end lg:pb-3">
           <Fade delay={0.25}>
-            <p className="max-w-xl font-elegant text-sm sm:text-[15px] md:text-base leading-relaxed text-ivory/80 font-light lg:ml-auto">
+            <p className="max-w-xl font-elegant text-[16.5px] md:text-[18px] leading-relaxed text-ivory/85 font-light lg:ml-auto">
               Every layer translates a different environmental signal into a distinct sonic behaviour. Together, they form an evolving acoustic portrait of a changing planet.
             </p>
           </Fade>
@@ -372,9 +372,9 @@ export function ConceptPalette() {
         {paletteLayers.map((layer, idx) => (
           <Fade key={layer.n} delay={0.1 * idx}>
             <div className="group border-t border-white/10 py-8 md:py-10 lg:py-11 transition-colors duration-500 hover:bg-white/[0.015] -mx-4 px-4 sm:-mx-6 sm:px-6 md:-mx-8 md:px-8">
-              <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-center">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8 xl:gap-10 items-center">
                 {/* 1. Track Number, Title & Sensor Mapping */}
-                <div className="lg:col-span-4 xl:col-span-4">
+                <div>
                   <div className="flex items-center gap-3">
                     <span className="font-stencil text-[11px] tracking-[0.28em] text-[#cad7ce]">
                       {layer.n}
@@ -385,7 +385,7 @@ export function ConceptPalette() {
                     </span>
                   </div>
 
-                  <h3 className="mt-3.5 font-display text-2xl sm:text-3xl lg:text-[1.95rem] font-light text-ivory leading-tight group-hover:text-white transition-colors">
+                  <h3 className="mt-3.5 font-display text-2xl sm:text-3xl lg:text-[1.85rem] font-light text-ivory leading-tight group-hover:text-white transition-colors">
                     {layer.title}
                   </h3>
 
@@ -396,26 +396,26 @@ export function ConceptPalette() {
                   </div>
                 </div>
 
-                {/* 2. Bespoke Acoustic Waveform Visualization */}
-                <div className="lg:col-span-3 xl:col-span-3 py-2">
-                  <div className="max-w-[200px]">
+                {/* 2. Bespoke Acoustic Waveform Visualization (centered in its column) */}
+                <div className="py-2 flex items-center justify-start lg:justify-center">
+                  <div className="w-full max-w-[170px] sm:max-w-[185px]">
                     <WaveformViz type={layer.viz} />
                   </div>
                 </div>
 
                 {/* 3. Narrative Translation Description */}
-                <div className="lg:col-span-3 xl:col-span-3">
-                  <p className="font-elegant text-sm md:text-[14px] lg:text-[14.5px] leading-relaxed text-ivory/70 font-light">
+                <div>
+                  <p className="font-elegant text-[16px] md:text-[17px] lg:text-[17.5px] leading-relaxed text-ivory/85 font-light">
                     {layer.desc}
                   </p>
                 </div>
 
                 {/* 4. Acoustic Specification Badge */}
-                <div className="lg:col-span-2 xl:col-span-2 lg:text-right">
-                  <p className="font-data text-xs sm:text-[13px] tracking-[0.16em] text-[#cad7ce] uppercase font-medium">
+                <div className="lg:text-right">
+                  <p className="font-data text-xs sm:text-[13.5px] tracking-[0.16em] text-[#cad7ce] uppercase font-medium">
                     {layer.spec}
                   </p>
-                  <p className="mt-1 font-stencil text-[9px] uppercase tracking-[0.2em] text-ivory/45">
+                  <p className="mt-1 font-stencil text-[9.5px] sm:text-[10px] uppercase tracking-[0.2em] text-ivory/50">
                     {layer.specLabel}
                   </p>
                 </div>
@@ -438,7 +438,7 @@ export function ConceptPalette() {
           </div>
 
           <div className="lg:col-span-8">
-            <p className="font-elegant text-sm sm:text-[15px] leading-relaxed text-ivory/75 font-light">
+            <p className="font-elegant text-[16px] sm:text-[17px] leading-relaxed text-ivory/80 font-light">
               These relationships describe the proposed sonification design. Exact mappings and frequency ranges will be refined through implementation and testing to balance scientific interpretability, perceptual clarity, and musical coherence.
             </p>
           </div>
@@ -461,7 +461,7 @@ export function ConceptPalette() {
           </div>
 
           {/* 4 Tier Cards */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
             {[
               {
                 tier: 'TIER 1',
@@ -486,15 +486,15 @@ export function ConceptPalette() {
             ].map((item) => (
               <div
                 key={item.tier}
-                className="border border-white/10 bg-white/[0.02] p-5 sm:p-6 text-center flex flex-col justify-center items-center hover:border-white/20 transition-all duration-300"
+                className="border border-white/10 bg-white/[0.02] p-6 sm:p-7 md:p-8 text-center flex flex-col justify-center items-center hover:border-white/20 transition-all duration-300"
               >
-                <span className="font-stencil text-[9.5px] md:text-[10px] tracking-[0.28em] text-[#cad7ce] uppercase">
+                <span className="font-stencil text-[10.5px] md:text-[11.5px] tracking-[0.28em] text-[#cad7ce] uppercase">
                   {item.tier}
                 </span>
-                <h4 className="mt-2.5 font-display text-base sm:text-lg lg:text-[1.12rem] font-light text-ivory leading-snug">
+                <h4 className="mt-3 font-display text-lg sm:text-xl lg:text-[1.28rem] font-light text-ivory leading-snug">
                   {item.title}
                 </h4>
-                <p className="mt-2 font-elegant text-xs sm:text-[13px] text-ivory/60 font-light leading-relaxed">
+                <p className="mt-3 font-elegant text-[15px] sm:text-[16px] text-ivory/80 font-light leading-relaxed">
                   {item.desc}
                 </p>
               </div>
