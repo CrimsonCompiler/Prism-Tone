@@ -65,7 +65,7 @@ export function Rule({ index, label, meta, className = '' }) {
 export function Annot({ children, className = '' }) {
   return (
     <p
-      className={`font-stencil uppercase text-[9.5px] md:text-[11px] tracking-[0.26em] text-[#d4decb] ${className}`}
+      className={`font-stencil uppercase text-[10.5px] md:text-[12px] tracking-[0.26em] text-[#d4decb] ${className}`}
     >
       <span className="mr-2 text-white/50">+</span>
       {children}

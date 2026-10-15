@@ -542,9 +542,9 @@ function drawPrism(ctx, w, h, t) {
     }
 
     /* stratum labels */
-    tag(ctx, `0${i + 1} ${names[i]}`, sx - 12, yT + 1, { alpha: 0.88, size: 10, color: IVORY, align: 'right' })
+    tag(ctx, `0${i + 1} ${names[i]}`, sx - 14, yT + 1, { alpha: 0.92, size: 11.5, color: IVORY, align: 'right' })
     const hz = 82 + hash(i + Math.floor(t * 0.5)) * 380
-    tag(ctx, `${hz.toFixed(0)} hz`, sx - 12, yT + 14, { alpha: 0.68, size: 9, color: SAGE, align: 'right' })
+    tag(ctx, `${hz.toFixed(0)} hz`, sx - 14, yT + 15, { alpha: 0.75, size: 10.5, color: SAGE, align: 'right' })
   }
 }
 
