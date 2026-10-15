@@ -8,6 +8,7 @@
   height: 100%;
   pointer-events: none;
   overflow: hidden;
+  contain: strict;
 }
 
 #stars,
@@ -17,6 +18,7 @@
   will-change: transform;
   transform: translate3d(0, 0, 0);
   backface-visibility: hidden;
+  contain: paint;
 }
 
 #stars {

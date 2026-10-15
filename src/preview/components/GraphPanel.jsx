@@ -38,9 +38,8 @@ export default function GraphPanel() {
               role="tab"
               aria-selected={view === id}
               onClick={() => dispatch({ type: 'SET_VIEW', view: id })}
-              className={`border px-3 py-1 font-stencil text-[9.5px] uppercase tracking-[0.2em] transition-colors duration-150 focus-visible:outline focus-visible:outline-1 focus-visible:outline-ivory/70 ${
-                view === id ? 'border-ivory/50 bg-ivory/10 text-ivory' : 'border-ivory/12 text-parchment hover:border-ivory/30 hover:text-cream'
-              }`}
+              className={`border px-3 py-1 font-stencil text-[9.5px] uppercase tracking-[0.2em] transition-colors duration-150 focus-visible:outline focus-visible:outline-1 focus-visible:outline-ivory/70 ${view === id ? 'border-ivory/50 bg-ivory/10 text-ivory' : 'border-ivory/12 text-parchment hover:border-ivory/30 hover:text-cream'
+                }`}
             >
               {label}
             </button>
@@ -279,9 +278,8 @@ function SeriesGraph({ variable, seriesMap }) {
               type="button"
               aria-pressed={granularity === id}
               onClick={() => dispatch({ type: 'SET_GRANULARITY', granularity: id })}
-              className={`border px-2.5 py-1 font-stencil text-[9px] uppercase tracking-[0.18em] transition-colors duration-150 focus-visible:outline focus-visible:outline-1 focus-visible:outline-ivory/70 ${
-                granularity === id ? 'border-ivory/50 bg-ivory/10 text-ivory' : 'border-ivory/12 text-parchment hover:border-ivory/30 hover:text-cream'
-              }`}
+              className={`border px-2.5 py-1 font-stencil text-[9px] uppercase tracking-[0.18em] transition-colors duration-150 focus-visible:outline focus-visible:outline-1 focus-visible:outline-ivory/70 ${granularity === id ? 'border-ivory/50 bg-ivory/10 text-ivory' : 'border-ivory/12 text-parchment hover:border-ivory/30 hover:text-cream'
+                }`}
             >
               {label}
             </button>
@@ -352,18 +350,34 @@ function WaveformGraph() {
     const canvas = canvasRef.current
     if (!canvas) return
     let raf
+    let lastDraw = 0
     const buf = new Float32Array(2048)
 
-    const draw = () => {
-      const w = canvas.clientWidth
-      const h = canvas.clientHeight
-      if (!w || !h) {
+    const draw = (now = performance.now()) => {
+      const analyser = engine.analyser
+      const live = analyser && state.playState === 'playing'
+
+      // Throttle playback drawing to ~60fps
+      if (live && now - lastDraw < 16) {
         raf = requestAnimationFrame(draw)
         return
       }
+      lastDraw = now
+
+      const w = canvas.clientWidth
+      const h = canvas.clientHeight
+      if (!w || !h) {
+        if (live) raf = requestAnimationFrame(draw)
+        return
+      }
       const dpr = Math.min(window.devicePixelRatio || 1, 2)
-      canvas.width = w * dpr
-      canvas.height = h * dpr
+      const targetW = Math.round(w * dpr)
+      const targetH = Math.round(h * dpr)
+      if (canvas.width !== targetW || canvas.height !== targetH) {
+        canvas.width = targetW
+        canvas.height = targetH
+      }
+
       const ctx = canvas.getContext('2d')
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
       ctx.clearRect(0, 0, w, h)
@@ -377,8 +391,6 @@ function WaveformGraph() {
       ctx.lineTo(w, mid)
       ctx.stroke()
 
-      const analyser = engine.analyser
-      const live = analyser && state.playState === 'playing'
       if (live) {
         analyser.getFloatTimeDomainData(buf)
         ctx.strokeStyle = EMBER + '0.95)'
@@ -392,6 +404,9 @@ function WaveformGraph() {
           else ctx.lineTo(x, y)
         }
         ctx.stroke()
+        if (!document.hidden) {
+          raf = requestAnimationFrame(draw)
+        }
       } else {
         ctx.strokeStyle = IVORY + '0.45)'
         ctx.lineWidth = 1
@@ -408,12 +423,21 @@ function WaveformGraph() {
           mid - 8,
         )
       }
-      raf = requestAnimationFrame(draw)
     }
 
-    draw() /* draw immediately — rAF is paused in hidden tabs, the idle message must still appear */
-    raf = requestAnimationFrame(draw)
-    return () => cancelAnimationFrame(raf)
+    draw()
+
+    const onVis = () => {
+      if (!document.hidden && state.playState === 'playing') {
+        raf = requestAnimationFrame(draw)
+      }
+    }
+    document.addEventListener('visibilitychange', onVis)
+
+    return () => {
+      if (raf) cancelAnimationFrame(raf)
+      document.removeEventListener('visibilitychange', onVis)
+    }
   }, [state.playState])
 
   return (

@@ -276,9 +276,9 @@ export default function PhenomenologicalConversion() {
         </div>
 
         <div className="flex flex-col justify-end lg:col-span-5 lg:pl-8 xl:pl-14 pb-1.5">
-          <p className="max-w-md font-elegant text-[15.5px] leading-relaxed text-cream/85 md:text-[16.5px]">
+          <p className="max-w-md font-elegant text-[17px] leading-relaxed text-cream/85 md:text-[18px]">
             For decades, planetary observations have been trapped in visual charts: color
-            ramps, isotherms, and 2D graphs. Prism Tone translates those measurements into sonic language.
+            ramps, isotherms & 2D graphs. We translate those measurements into sonic language.
           </p>
           <div className="mt-8 flex items-center gap-4 border-t border-ivory/10 pt-4">
             <span className="font-data text-[11px] uppercase tracking-[0.2em] text-parchment md:text-[11.5px]">
@@ -325,7 +325,7 @@ export default function PhenomenologicalConversion() {
                 </p>
 
                 {/* Card Narrative */}
-                <p className="mt-4 font-elegant text-[15.5px] leading-relaxed text-cream/80 md:text-[16.5px]">
+                <p className="mt-4 font-elegant text-[16.5px] leading-relaxed text-cream/80 md:text-[17.5px]">
                   {s.desc}
                 </p>
               </div>

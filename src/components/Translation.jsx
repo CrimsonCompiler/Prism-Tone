@@ -56,7 +56,7 @@ export default function Translation() {
         {/* Left column: normal body text centered vertically in the middle of the mapping rows */}
         <div className="flex flex-col justify-center lg:col-span-4 lg:self-center">
           <Fade delay={0.15}>
-            <p className="max-w-[280px] font-elegant text-[14px] md:text-[14.5px] leading-[1.7] text-cream/75">
+            <p className="max-w-[310px] font-elegant text-[16px] md:text-[16.5px] leading-[1.7] text-cream/75">
               Nothing is invented. Each sonic property is bound to a physical quantity — when the
               planet moves, the music moves with it.
             </p>

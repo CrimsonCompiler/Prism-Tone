@@ -50,18 +50,27 @@ export default function Hero() {
           </Kicker>
         </motion.div>
 
-        {/* Bottom narrative over the lower Earth arc, safely spaced above scroll cue */}
-        <motion.p
+        {/* Bottom narrative and CTA over the Earth arc */}
+        <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1.2, delay: 1.35, ease: EASE }}
-          className="pb-20 md:pb-24 lg:pb-28 font-elegant text-[12px] md:text-[13px] lg:text-[14.5px] uppercase tracking-[0.36em] md:tracking-[0.44em] text-cream/90 pointer-events-auto"
+          className="pb-[9vh] sm:pb-[10.5vh] md:pb-[11.5vh] lg:pb-[12.5vh] flex flex-col items-center gap-6 sm:gap-7 md:gap-7.5 pointer-events-auto"
         >
-          Making the Invisible - Audible
-        </motion.p>
+          <p className="font-elegant text-[12.5px] md:text-[13.5px] lg:text-[15px] uppercase tracking-[0.36em] md:tracking-[0.44em] text-cream/90">
+            Making the Invisible - Audible
+          </p>
+
+          <a
+            href="preview.html"
+            className="border border-ivory/35 bg-ink/75 px-7 py-2.5 sm:px-9 sm:py-3 font-stencil text-[10.5px] sm:text-[11.5px] md:text-[12px] uppercase tracking-[0.34em] text-ivory backdrop-blur-md transition-all duration-300 hover:border-ivory hover:bg-ivory hover:text-ink hover:shadow-[0_0_24px_rgba(242,237,227,0.25)] cursor-pointer"
+          >
+            Get Started
+          </a>
+        </motion.div>
       </motion.div>
 
-      {/* Scientific annotations + scroll cue */}
+      {/* Scientific annotations */}
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
@@ -71,19 +80,6 @@ export default function Hero() {
         <div className="space-y-1 text-left">
           <Annot>Fig. 01 - Earth, night side</Annot>
           <Annot>Src · NASA Visible Earth - VIIRS</Annot>
-        </div>
-
-        <div className="absolute bottom-4 left-1/2 flex -translate-x-1/2 flex-col items-center gap-2 md:bottom-6 md:gap-3">
-          <span className="font-stencil text-[8.5px] uppercase tracking-[0.38em] text-beige md:text-[9px]">
-            Scroll to explore
-          </span>
-          <span className="relative block h-8 w-px overflow-hidden bg-ivory/15 md:h-11">
-            <motion.span
-              animate={{ y: ['-110%', '110%'] }}
-              transition={{ duration: 2.1, repeat: Infinity, ease: 'easeInOut', repeatDelay: 0.5 }}
-              className="absolute inset-x-0 h-1/2 bg-ivory/70"
-            />
-          </span>
         </div>
 
         <div className="space-y-1 text-right">
