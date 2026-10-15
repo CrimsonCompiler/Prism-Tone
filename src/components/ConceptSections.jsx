@@ -275,99 +275,310 @@ export function ConceptIdea() {
 }
 
 /* =========================================================================
-   SECTION 4: THE THINGS WE KEEP CLOSE (6 PRINCIPLES)
+   SECTION 4: THE SONIC PALETTE (CHAPTER IV)
    ========================================================================= */
-const PRINCIPLES = [
-  {
-    n: '01',
-    tag: 'KEEP',
-    title: 'Honest mapping',
-    desc: 'Each variable is paired with one declared sonic parameter. The rule is visible; the sound is the proof.',
-  },
-  {
-    n: '02',
-    tag: 'KEEP',
-    title: 'Slow listening',
-    desc: 'Prism Tone is for the long listen — for ambient rooms, classrooms, and curious evenings — not for the short scroll.',
-  },
-  {
-    n: '03',
-    tag: 'KEEP',
-    title: 'Two doors, one room',
-    desc: 'A sighted user and a blind user should describe the same planet. Sound and image must agree, never contradict.',
-  },
-  {
-    n: '04',
-    tag: 'KEEP',
-    title: 'Graceful failure',
-    desc: 'If a layer fails, the rest still plays. The composition is a stack of fallbacks, not a single fragile chain.',
-  },
-  {
-    n: '05',
-    tag: 'KEEP',
-    title: 'Open by default',
-    desc: 'Mappings, data sources, and code are inspectable. The instrument is public; the science is shared.',
-  },
-  {
-    n: '06',
-    tag: 'KEEP',
-    title: 'Quiet wonder',
-    desc: 'We resist spectacle. The data is already extraordinary; our job is to keep the frame still.',
-  },
-]
+export function ConceptPalette() {
+  const paletteLayers = [
+    {
+      n: '01',
+      title: 'Thermal Flux',
+      mapping: 'Temperature → Pitch',
+      source: 'NASA POWER',
+      desc: 'Temperature variations shape the pitch of the melodic layer. As temperatures rise, the tone moves upward in frequency, making long-term warming trends audible.',
+      spec: '220 Hz — 880 Hz',
+      specLabel: 'PROPOSED FREQUENCY RANGE',
+      viz: 'pitch',
+    },
+    {
+      n: '02',
+      title: 'Hydrologic Cadence',
+      mapping: 'Precipitation → Rhythm',
+      source: 'NASA POWER',
+      desc: 'Rainfall influences the density of rhythmic events. Lower precipitation produces sparse notes, while heavier rainfall creates increasingly active patterns.',
+      spec: 'SPARSE → DENSE',
+      specLabel: 'RHYTHMIC DENSITY',
+      viz: 'rhythm',
+    },
+    {
+      n: '03',
+      title: 'Thermal Static',
+      mapping: 'Fire Activity → Percussion',
+      source: 'NASA FIRMS',
+      desc: 'Active fire observations and Fire Radiative Power influence percussive activity. Changes in fire intensity can trigger more frequent and pronounced sonic events.',
+      spec: 'INTENSITY → IMPACT',
+      specLabel: 'PERCUSSIVE RESPONSE',
+      viz: 'static',
+    },
+    {
+      n: '04',
+      title: 'Tectonic Bass',
+      mapping: 'Water Storage → Low Frequencies',
+      source: 'GRACE / GRACE-FO',
+      desc: 'Terrestrial water-storage anomalies shape the low-frequency layer. Long-term changes in stored water become subtle shifts in the depth & intensity of the bass.',
+      spec: '30 Hz — 80 Hz',
+      specLabel: 'PROPOSED FREQUENCY RANGE',
+      viz: 'bass',
+    },
+    {
+      n: '05',
+      title: 'Spectral Vegetation',
+      mapping: 'Vegetation → Harmonic Texture',
+      source: 'MODIS / VIIRS',
+      desc: 'Vegetation indices influence the richness of the sustained harmonic layer. Changes in vegetation conditions can alter the density and texture of the sound.',
+      spec: 'SPARSE → RICH',
+      specLabel: 'HARMONIC TEXTURE',
+      viz: 'vegetation',
+    },
+  ]
 
-export function ConceptPrinciples() {
   return (
-    <section className="relative w-full pt-16 md:pt-24 lg:pt-32 pb-20 md:pb-28 border-t border-white/10">
-      {/* Top Header: 2-line Heading + Right Description spread wide */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-end justify-between mb-16 md:mb-20 lg:mb-24">
-        {/* Left Headline (2 lines as requested) */}
-        <div className="lg:col-span-7 xl:col-span-8">
-          <Fade>
-            <h2 className="font-display font-light text-4xl sm:text-5xl md:text-6xl lg:text-[4.8rem] xl:text-[5.6rem] 2xl:text-[6.2rem] leading-[1.06] tracking-[-0.035em] text-ivory">
-              The things
-              <br />
-              <span className="italic font-normal">we keep</span> close.
+    <section className="relative w-full py-20 md:py-28 lg:py-36 border-t border-white/10">
+      {/* Top Header Bar: HOW EARTH'S SIGNALS SHAPE THE SOUND & Chapter Meta */}
+      <Fade delay={0.1}>
+        <div className="flex items-center justify-between pb-8 md:pb-12 text-[#cad7ce]">
+          <span className="font-stencil text-[10px] md:text-[11.5px] tracking-[0.34em] uppercase">
+            HOW EARTH'S SIGNALS SHAPE THE SOUND
+          </span>
+          <span className="font-stencil text-[9.5px] md:text-[11px] uppercase tracking-[0.34em] text-ivory/60">
+            CENTRAL THEME - CHAPTER IV
+          </span>
+        </div>
+      </Fade>
+
+      {/* Main Headline (Left) + Right Description */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-end justify-between mb-16 md:mb-20">
+        {/* Left Headline */}
+        <div className="lg:col-span-6 xl:col-span-5">
+          <Fade delay={0.15}>
+            <h2 className="font-display font-light text-4xl sm:text-5xl md:text-6xl lg:text-[4.6rem] xl:text-[5.2rem] leading-[1.06] tracking-[-0.035em] text-ivory">
+              The Sonic
+              <span className="italic font-normal"> Palette.</span>
             </h2>
           </Fade>
         </div>
 
-        {/* Right Subtext anchored right */}
-        <div className="lg:col-span-5 xl:col-span-4 lg:flex lg:justify-end lg:pb-3">
-          <Fade delay={0.15}>
-            <p className="max-w-lg lg:max-w-md font-elegant text-sm sm:text-[15px] md:text-base leading-relaxed text-ivory/80 font-light lg:ml-auto">
-              A short list of principles — small enough to memorise, sturdy enough to design against.
+        {/* Right Subtext */}
+        <div className="lg:col-span-6 xl:col-span-7 lg:flex lg:justify-end lg:pb-3">
+          <Fade delay={0.25}>
+            <p className="max-w-xl font-elegant text-sm sm:text-[15px] md:text-base leading-relaxed text-ivory/80 font-light lg:ml-auto">
+              Every layer translates a different environmental signal into a distinct sonic behaviour. Together, they form an evolving acoustic portrait of a changing planet.
             </p>
           </Fade>
         </div>
       </div>
 
-      {/* 2-Column Grid for the 6 Principles with generous horizontal spread */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-x-16 lg:gap-x-24 xl:gap-x-32 2xl:gap-x-40 gap-y-12 md:gap-y-16">
-        {PRINCIPLES.map((item, idx) => (
-          <Fade key={item.n} delay={0.08 * idx}>
-            <div className="border-t border-white/15 pt-5 pb-2 flex flex-col justify-between">
-              {/* Top metadata row: index + tag */}
-              <div className="flex items-center justify-between font-data text-[10px] md:text-[11px] tracking-[0.24em] text-[#cad7ce]">
-                <span>{item.n}</span>
-                <span className="font-stencil tracking-[0.32em] text-ivory/50 uppercase text-[9px] md:text-[10px]">
-                  {item.tag}
-                </span>
+      {/* Unique Pattern: Horizontal Acoustic Score Tracks */}
+      <div>
+        {paletteLayers.map((layer, idx) => (
+          <Fade key={layer.n} delay={0.1 * idx}>
+            <div className="group border-t border-white/10 py-8 md:py-10 lg:py-11 transition-colors duration-500 hover:bg-white/[0.015] -mx-4 px-4 sm:-mx-6 sm:px-6 md:-mx-8 md:px-8">
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-center">
+                {/* 1. Track Number, Title & Sensor Mapping */}
+                <div className="lg:col-span-4 xl:col-span-4">
+                  <div className="flex items-center gap-3">
+                    <span className="font-stencil text-[11px] tracking-[0.28em] text-[#cad7ce]">
+                      {layer.n}
+                    </span>
+                    <span className="h-px w-4 bg-white/20" />
+                    <span className="font-stencil text-[9.5px] uppercase tracking-[0.22em] text-ivory/50">
+                      SOURCE · {layer.source}
+                    </span>
+                  </div>
+
+                  <h3 className="mt-3.5 font-display text-2xl sm:text-3xl lg:text-[1.95rem] font-light text-ivory leading-tight group-hover:text-white transition-colors">
+                    {layer.title}
+                  </h3>
+
+                  <div className="mt-3 flex items-center gap-2">
+                    <span className="font-data text-[11px] sm:text-[11.5px] tracking-[0.16em] text-[#8ea792] uppercase font-light">
+                      {layer.mapping}
+                    </span>
+                  </div>
+                </div>
+
+                {/* 2. Bespoke Acoustic Waveform Visualization */}
+                <div className="lg:col-span-3 xl:col-span-3 py-2">
+                  <div className="max-w-[200px]">
+                    <WaveformViz type={layer.viz} />
+                  </div>
+                </div>
+
+                {/* 3. Narrative Translation Description */}
+                <div className="lg:col-span-3 xl:col-span-3">
+                  <p className="font-elegant text-sm md:text-[14px] lg:text-[14.5px] leading-relaxed text-ivory/70 font-light">
+                    {layer.desc}
+                  </p>
+                </div>
+
+                {/* 4. Acoustic Specification Badge */}
+                <div className="lg:col-span-2 xl:col-span-2 lg:text-right">
+                  <p className="font-data text-xs sm:text-[13px] tracking-[0.16em] text-[#cad7ce] uppercase font-medium">
+                    {layer.spec}
+                  </p>
+                  <p className="mt-1 font-stencil text-[9px] uppercase tracking-[0.2em] text-ivory/45">
+                    {layer.specLabel}
+                  </p>
+                </div>
               </div>
-
-              {/* Title */}
-              <h3 className="mt-4 font-display text-2xl sm:text-[1.75rem] lg:text-[1.9rem] font-light text-ivory leading-snug">
-                {item.title}
-              </h3>
-
-              {/* Italic descriptive body */}
-              <p className="mt-3.5 font-display italic text-sm md:text-[15.5px] leading-relaxed text-ivory/75 font-normal">
-                {item.desc}
-              </p>
             </div>
           </Fade>
         ))}
       </div>
+
+      {/* A Note on Mapping: Clean Footnote with vertical accent line on left */}
+      <Fade delay={0.3}>
+        <div className="mt-14 md:mt-20 grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-12 items-baseline">
+          <div className="lg:col-span-4 border-l-2 border-[#8ea792] pl-4 sm:pl-5">
+            <span className="font-stencil text-[10px] md:text-[11px] uppercase tracking-[0.34em] text-[#8ea792]">
+              A NOTE ON MAPPING
+            </span>
+            <p className="mt-1.5 font-display italic text-lg sm:text-xl text-ivory/90 font-light">
+              Scientific Interpretability & Coherence
+            </p>
+          </div>
+
+          <div className="lg:col-span-8">
+            <p className="font-elegant text-sm sm:text-[15px] leading-relaxed text-ivory/75 font-light">
+              These relationships describe the proposed sonification design. Exact mappings and frequency ranges will be refined through implementation and testing to balance scientific interpretability, perceptual clarity, and musical coherence.
+            </p>
+          </div>
+        </div>
+      </Fade>
+
+      <br /> <br /> <br /> <br />
+
+      {/* Fail-Safe Architectural Strategy (Hackathon Reliability Assurance) */}
+      <Fade delay={0.35}>
+        <div className="mt-10 md:mt-14 border border-white/10 bg-white/[0.015] backdrop-blur-[2px] p-6 sm:p-8 lg:p-9">
+          {/* Header Row */}
+          <div className="flex items-center justify-between text-[#cad7ce] pb-6 sm:pb-8">
+            <span className="font-stencil text-[10px] md:text-[11px] tracking-[0.34em] uppercase">
+              FAIL-SAFE ARCHITECTURAL STRATEGY
+            </span>
+            <span className="font-stencil text-[9.5px] md:text-[10.5px] uppercase tracking-[0.3em] text-ivory/50">
+              HACKATHON RELIABILITY ASSURANCE
+            </span>
+          </div>
+
+          {/* 4 Tier Cards */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
+            {[
+              {
+                tier: 'TIER 1',
+                title: 'Photographic 3D View',
+                desc: 'Cinematic Earth crescent with slow orbital rotation',
+              },
+              {
+                tier: 'TIER 2',
+                title: 'Canvas / SVG Layer',
+                desc: 'Hardware-accelerated waveform & vector charts',
+              },
+              {
+                tier: 'TIER 3',
+                title: 'Cached Telemetry',
+                desc: 'Local NASA historical baselines for offline stability',
+              },
+              {
+                tier: 'TIER 4',
+                title: 'Web Audio Synthesis',
+                desc: 'Auto client-side procedural sound generation',
+              },
+            ].map((item) => (
+              <div
+                key={item.tier}
+                className="border border-white/10 bg-white/[0.02] p-5 sm:p-6 text-center flex flex-col justify-center items-center hover:border-white/20 transition-all duration-300"
+              >
+                <span className="font-stencil text-[9.5px] md:text-[10px] tracking-[0.28em] text-[#cad7ce] uppercase">
+                  {item.tier}
+                </span>
+                <h4 className="mt-2.5 font-display text-base sm:text-lg lg:text-[1.12rem] font-light text-ivory leading-snug">
+                  {item.title}
+                </h4>
+                <p className="mt-2 font-elegant text-xs sm:text-[13px] text-ivory/60 font-light leading-relaxed">
+                  {item.desc}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </Fade>
     </section>
   )
+}
+
+function WaveformViz({ type }) {
+  if (type === 'pitch') {
+    return (
+      <svg viewBox="0 0 160 36" fill="none" className="w-full h-8 text-[#8ea792]/80">
+        <path
+          d="M 0 18 Q 20 6, 40 18 T 70 18 T 94 18 T 112 18 T 126 18 T 136 18 T 144 18 T 150 18 T 155 18 T 160 18"
+          stroke="currentColor"
+          strokeWidth="1.5"
+          strokeLinecap="round"
+        />
+        <circle cx="160" cy="18" r="2.5" fill="#cad7ce" />
+      </svg>
+    )
+  }
+  if (type === 'rhythm') {
+    const bars = [6, 22, 45, 75, 96, 112, 124, 134, 142, 148, 153, 157, 160]
+    return (
+      <svg viewBox="0 0 160 36" fill="none" className="w-full h-8 text-[#8ea792]/80">
+        <line x1="0" y1="18" x2="160" y2="18" stroke="rgba(242,237,227,0.15)" strokeWidth="1" strokeDasharray="2 3" />
+        {bars.map((x, i) => (
+          <line
+            key={i}
+            x1={x}
+            y1={18 - 4 - (i % 3) * 3}
+            x2={x}
+            y2={18 + 4 + (i % 3) * 3}
+            stroke="currentColor"
+            strokeWidth="1.5"
+            strokeLinecap="round"
+          />
+        ))}
+      </svg>
+    )
+  }
+  if (type === 'static') {
+    return (
+      <svg viewBox="0 0 160 36" fill="none" className="w-full h-8 text-[#c19a5b]/80">
+        <path
+          d="M 0 18 L 24 18 L 28 8 L 32 28 L 36 18 L 68 18 L 72 4 L 76 32 L 80 18 L 108 18 L 111 10 L 114 26 L 117 18 L 134 18 L 137 6 L 140 30 L 143 18 L 160 18"
+          stroke="currentColor"
+          strokeWidth="1.4"
+          strokeLinejoin="round"
+        />
+      </svg>
+    )
+  }
+  if (type === 'bass') {
+    return (
+      <svg viewBox="0 0 160 36" fill="none" className="w-full h-8 text-[#3f75bb]/90">
+        <path
+          d="M 0 18 C 25 3, 55 3, 80 18 C 105 33, 135 33, 160 18"
+          stroke="currentColor"
+          strokeWidth="2.5"
+          strokeLinecap="round"
+        />
+        <path
+          d="M 0 18 C 25 3, 55 3, 80 18 C 105 33, 135 33, 160 18"
+          stroke="currentColor"
+          strokeWidth="6"
+          strokeLinecap="round"
+          opacity="0.18"
+        />
+      </svg>
+    )
+  }
+  if (type === 'vegetation') {
+    return (
+      <svg viewBox="0 0 160 36" fill="none" className="w-full h-8 text-[#739a69]/85">
+        <path d="M 0 12 Q 40 4, 80 12 T 160 12" stroke="currentColor" strokeWidth="1.2" opacity="0.4" />
+        <path d="M 0 18 Q 40 26, 80 18 T 160 18" stroke="currentColor" strokeWidth="1.6" />
+        <path d="M 0 24 Q 40 16, 80 24 T 160 24" stroke="currentColor" strokeWidth="1.2" opacity="0.6" />
+      </svg>
+    )
+  }
+  return null
 }

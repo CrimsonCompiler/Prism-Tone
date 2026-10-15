@@ -13,6 +13,7 @@ export default defineConfig({
         system: resolve(__dirname, 'system.html'),
         team: resolve(__dirname, 'team.html'),
         concept: resolve(__dirname, 'concept.html'),
+        preview: resolve(__dirname, 'preview.html'),
       },
     },
   },

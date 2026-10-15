@@ -174,13 +174,13 @@ export default function ExperiencePreview() {
             </div>
 
             <div className="flex items-center justify-between border-t border-ivory/10 pt-6">
-              <button
-                type="button"
+              <a
+                href="preview.html"
                 className="group flex items-center gap-3 border border-ivory/25 px-5 py-2.5 font-stencil text-[10.5px] md:text-[11.5px] uppercase tracking-[0.34em] text-ivory transition-colors duration-300 hover:bg-ivory hover:text-ink cursor-pointer"
               >
                 <span className="block h-2 w-2 bg-current" aria-hidden="true" />
-                Play
-              </button>
+                Open preview
+              </a>
               <p className="font-stencil text-[10px] md:text-[11px] uppercase tracking-[0.22em] text-parchment/80">
                 headphones recommended
               </p>

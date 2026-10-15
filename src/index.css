@@ -178,6 +178,49 @@ body.system-page {
   mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
 }
 
+/* Preview page — visible focus state for keyboard-operable map regions */
+.map-focus:focus {
+  outline: none;
+}
+
+.map-focus:focus-visible {
+  stroke: #f2ede3;
+  stroke-width: 2.4;
+  filter: drop-shadow(0 0 5px rgba(242, 237, 227, 0.65));
+}
+
+/* Preview page — thin range inputs (timeline scrubber, volume) */
+input[type='range'].pt-range {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 2px;
+  background: rgba(242, 237, 227, 0.25);
+  cursor: pointer;
+}
+
+input[type='range'].pt-range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 12px;
+  height: 12px;
+  border-radius: 9999px;
+  background: #f2ede3;
+  border: none;
+}
+
+input[type='range'].pt-range::-moz-range-thumb {
+  width: 12px;
+  height: 12px;
+  border-radius: 9999px;
+  background: #f2ede3;
+  border: none;
+}
+
+input[type='range'].pt-range:focus-visible {
+  outline: 1px solid rgba(242, 237, 227, 0.7);
+  outline-offset: 4px;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .grain {
     animation: none;

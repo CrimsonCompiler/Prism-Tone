@@ -2,7 +2,7 @@ import { MotionConfig, motion } from 'motion/react'
 import { useLenisScroll } from './hooks/useLenisScroll'
 import Nav from './components/Nav'
 import ConceptBackground from './components/ConceptBackground'
-import { ConceptObservation, ConceptProblem, ConceptIdea, ConceptPrinciples } from './components/ConceptSections'
+import { ConceptObservation, ConceptProblem, ConceptIdea, ConceptPalette } from './components/ConceptSections'
 
 export default function ConceptApp() {
   useLenisScroll()
@@ -37,8 +37,8 @@ export default function ConceptApp() {
           {/* Section 3: A New Transport for Data — The Idea (Chapter III) */}
           <ConceptIdea />
 
-          {/* Section 4: The things we keep close (Principles) */}
-          <ConceptPrinciples />
+          {/* Section 4: The Sonic Palette — How Earth's Signals Shape the Sound (Chapter IV) */}
+          <ConceptPalette />
         </main>
       </div>
     </MotionConfig>
