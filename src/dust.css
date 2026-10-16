@@ -21,6 +21,13 @@
   contain: paint;
 }
 
+.bg-animation.is-paused #stars,
+.bg-animation.is-paused #stars2,
+.bg-animation.is-paused #stars3,
+.bg-animation.is-paused #stars4 {
+  animation-play-state: paused !important;
+}
+
 #stars {
   width: 1px;
   height: 1px;

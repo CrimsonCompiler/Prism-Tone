@@ -7,14 +7,30 @@ function useDrift(base, amp, period = 8) {
   const [v, setV] = useState(base)
   useEffect(() => {
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
-    const id = setInterval(() => {
+    let id = null
+    const tick = () => {
       const t = Date.now() / 1000
       const n =
         Math.sin((t * Math.PI * 2) / period) * 0.6 +
         Math.sin((t * Math.PI * 2) / (period * 2.63) + 1.3) * 0.4
       setV(base + amp * n)
-    }, 240)
-    return () => clearInterval(id)
+    }
+    const start = () => {
+      if (!id && !document.hidden) id = setInterval(tick, 240)
+    }
+    const stop = () => {
+      if (id) {
+        clearInterval(id)
+        id = null
+      }
+    }
+    start()
+    const onVis = () => (document.hidden ? stop() : start())
+    document.addEventListener('visibilitychange', onVis)
+    return () => {
+      stop()
+      document.removeEventListener('visibilitychange', onVis)
+    }
   }, [base, amp, period])
   return v
 }
@@ -62,8 +78,23 @@ function Param({ label, base, amp, unit, decimals = 1, period = 8, index = 0 }) 
 function Timecode() {
   const [ms, setMs] = useState(2520 * 1000 + 4170)
   useEffect(() => {
-    const id = setInterval(() => setMs((m) => m + 100), 100)
-    return () => clearInterval(id)
+    let id = null
+    const start = () => {
+      if (!id && !document.hidden) id = setInterval(() => setMs((m) => m + 100), 100)
+    }
+    const stop = () => {
+      if (id) {
+        clearInterval(id)
+        id = null
+      }
+    }
+    start()
+    const onVis = () => (document.hidden ? stop() : start())
+    document.addEventListener('visibilitychange', onVis)
+    return () => {
+      stop()
+      document.removeEventListener('visibilitychange', onVis)
+    }
   }, [])
   const pad = (n) => String(n).padStart(2, '0')
   const cs = Math.floor(ms / 100) % 10

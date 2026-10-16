@@ -1,9 +1,23 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef } from 'react'
+import { useHeroActive } from '../hooks/useHeroActive'
 
 export default function BackgroundEffects() {
+  const heroActive = useHeroActive(1.25)
   const containerRef = useRef(null)
   const canvasRef = useRef(null)
-  const [inView, setInView] = useState(true)
+  const heroActiveRef = useRef(heroActive)
+  heroActiveRef.current = heroActive
+
+  const loopControls = useRef({ start: null, stop: null })
+
+  // Synchronize rAF particle animation loop with hero visibility
+  useEffect(() => {
+    if (heroActive) {
+      loopControls.current.start?.()
+    } else {
+      loopControls.current.stop?.()
+    }
+  }, [heroActive])
 
   useEffect(() => {
     const canvas = canvasRef.current
@@ -14,7 +28,6 @@ export default function BackgroundEffects() {
 
     let rafId = null
     let running = false
-    let isIntersecting = true
     let particles = []
     let winW = container.clientWidth || window.innerWidth
     let winH = container.clientHeight || window.innerHeight
@@ -133,9 +146,15 @@ export default function BackgroundEffects() {
       }
     }
 
+    let resizeTimer = null
+    const onResize = () => {
+      clearTimeout(resizeTimer)
+      resizeTimer = setTimeout(resize, 120)
+    }
+
     resize()
 
-    window.addEventListener('resize', resize, { passive: true })
+    window.addEventListener('resize', onResize, { passive: true })
     window.addEventListener('mousemove', onMouseMove, { passive: true })
     if (window.DeviceOrientationEvent && !isDesktop) {
       window.addEventListener('deviceorientation', onDeviceOrientation, { passive: true })
@@ -219,24 +238,16 @@ export default function BackgroundEffects() {
       }
     }
 
-    const io = new IntersectionObserver(
-      ([entry]) => {
-        isIntersecting = entry.isIntersecting
-        setInView(isIntersecting)
-        if (isIntersecting && !document.hidden) {
-          startLoop()
-        } else {
-          stopLoop()
-        }
-      },
-      { rootMargin: '120px' }
-    )
-    io.observe(container)
+    loopControls.current = { start: startLoop, stop: stopLoop }
+
+    if (heroActiveRef.current && !document.hidden) {
+      startLoop()
+    }
 
     const onVisibilityChange = () => {
       if (document.hidden) {
         stopLoop()
-      } else if (isIntersecting) {
+      } else if (heroActiveRef.current) {
         startLoop()
       }
     }
@@ -244,8 +255,9 @@ export default function BackgroundEffects() {
 
     return () => {
       stopLoop()
-      io.disconnect()
-      window.removeEventListener('resize', resize)
+      clearTimeout(resizeTimer)
+      loopControls.current = { start: null, stop: null }
+      window.removeEventListener('resize', onResize)
       window.removeEventListener('mousemove', onMouseMove)
       document.removeEventListener('visibilitychange', onVisibilityChange)
       if (window.DeviceOrientationEvent && !isDesktop) {
@@ -257,15 +269,19 @@ export default function BackgroundEffects() {
   return (
     <div
       ref={containerRef}
-      className={`pointer-events-none absolute inset-0 z-0 overflow-hidden ${inView ? '' : 'hidden'
-        }`}
+      className="pointer-events-none absolute inset-0 z-0 overflow-hidden"
       aria-hidden="true"
     >
       {/* 3D Interactive Connected Particles (Particleground) Canvas */}
       <canvas ref={canvasRef} className="absolute inset-0 h-full w-full" />
 
       {/* Cosmic Dust Particle Drift Animation — strictly Hero-scoped */}
-      <div className="bg-animation absolute inset-0 h-full w-full opacity-65" style={{ contain: 'strict' }}>
+      <div
+        className={`bg-animation absolute inset-0 h-full w-full opacity-65 ${
+          heroActive ? '' : 'is-paused'
+        }`}
+        style={{ contain: 'strict' }}
+      >
         <div id="stars" />
         <div id="stars2" />
         <div id="stars3" />

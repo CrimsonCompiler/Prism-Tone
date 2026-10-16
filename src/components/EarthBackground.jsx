@@ -11,7 +11,6 @@ export default function EarthBackground() {
       {/* Atmospheric blue (#3f75bb) swatch - top right wash */}
       <motion.div
         animate={{
-          scale: [1, 1.07, 1],
           opacity: [0.22, 0.28, 0.22],
         }}
         transition={{ duration: 18, repeat: Infinity, ease: 'easeInOut' }}
@@ -24,7 +23,6 @@ export default function EarthBackground() {
       {/* Earthy sage green (#739a69) swatch - bottom left wash */}
       <motion.div
         animate={{
-          scale: [1, 1.06, 1],
           opacity: [0.22, 0.28, 0.22],
         }}
         transition={{ duration: 22, repeat: Infinity, ease: 'easeInOut', delay: 2 }}
