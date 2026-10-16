@@ -69,6 +69,10 @@ body.concept-page {
   background: #111417;
 }
 
+body.team-page {
+  background: #0c0d11;
+}
+
 ::selection {
   background: var(--color-ivory);
   color: var(--color-ink);

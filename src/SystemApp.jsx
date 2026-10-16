@@ -9,7 +9,7 @@ function ProgressLine() {
   const { scrollYProgress } = useScroll()
   return (
     <motion.div
-      style={{ scaleY: scrollYProgress }}
+      style={{ scaleY: scrollYProgress, willChange: 'transform' }}
       className="fixed left-0 top-0 z-40 h-full w-px origin-top bg-ivory/30"
       aria-hidden="true"
     />

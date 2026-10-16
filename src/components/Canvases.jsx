@@ -29,7 +29,7 @@ function tag(ctx, text, x, y, { alpha = 0.5, size = 8, align = 'left', color = B
   ctx.fillStyle = color(alpha)
   try {
     ctx.letterSpacing = '2px'
-  } catch {}
+  } catch { }
   ctx.fillText(text.toUpperCase(), x, y)
   ctx.restore()
 }
@@ -390,9 +390,9 @@ function drawWaveform(ctx, w, h, t) {
       const y =
         h * 0.5 +
         (Math.sin(x * f + t * sp) * 0.7 + Math.sin(x * f * 2.6 - t * sp * 1.5) * 0.3) *
-          h * 0.36 *
-          env *
-          (0.85 + 0.15 * Math.sin(t * 0.35))
+        h * 0.36 *
+        env *
+        (0.85 + 0.15 * Math.sin(t * 0.35))
       x === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y)
     }
     ctx.stroke()
@@ -550,7 +550,7 @@ function drawPrism(ctx, w, h, t) {
 
 export function PrismCanvas({ className = '' }) {
   const drawRef = useRef(drawPrism)
-  const ref = useCanvasLoop(drawRef, { fps: 48 })
+  const ref = useCanvasLoop(drawRef, { fps: 30 })
   return (
     <canvas
       ref={ref}
@@ -642,7 +642,7 @@ function drawOrbit(ctx, w, h, t) {
 
 export function OrbitCanvas({ className = '' }) {
   const drawRef = useRef(drawOrbit)
-  const ref = useCanvasLoop(drawRef, { fps: 45 })
+  const ref = useCanvasLoop(drawRef, { fps: 30 })
   return (
     <canvas ref={ref} className={className} role="img" aria-label="Live orbital sweep visualization" />
   )
@@ -653,7 +653,7 @@ export function OrbitCanvas({ className = '' }) {
 ———————————————————————————————————————————————————————— */
 export function SignalField({ className = '' }) {
   const drawRef = useRef(drawSignalField)
-  const ref = useCanvasLoop(drawRef, { fps: 48 })
+  const ref = useCanvasLoop(drawRef, { fps: 30 })
   return (
     <canvas
       ref={ref}

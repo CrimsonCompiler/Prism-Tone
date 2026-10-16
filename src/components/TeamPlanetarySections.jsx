@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, memo } from 'react'
 import { motion, useInView } from 'motion/react'
 
 const HUES = {
@@ -129,17 +129,21 @@ const MEMBERS = [
   },
 ]
 
+const STARS_CACHE = {}
 function getStars(seed, count = 65) {
-  return Array.from({ length: count }).map((_, i) => {
-    const x = ((seed * 9301 + 49297 + i * 131) % 233280) / 233280
-    const y = ((seed * 9301 + 49297 + i * 311) % 233280) / 233280
-    return {
-      x: x * 100,
-      y: y * 100,
-      size: 0.35 + y * 0.75,
-      opacity: 0.2 + x * 0.65,
-    }
-  })
+  if (!STARS_CACHE[seed]) {
+    STARS_CACHE[seed] = Array.from({ length: count }).map((_, i) => {
+      const x = ((seed * 9301 + 49297 + i * 131) % 233280) / 233280
+      const y = ((seed * 9301 + 49297 + i * 311) % 233280) / 233280
+      return {
+        x: x * 100,
+        y: y * 100,
+        size: 0.35 + y * 0.75,
+        opacity: 0.2 + x * 0.65,
+      }
+    })
+  }
+  return STARS_CACHE[seed]
 }
 
 /* 
@@ -151,7 +155,7 @@ function getStars(seed, count = 65) {
  * - Delicate continental contour curves & geodesic orbital arcs inside the sphere.
  * - Twinkling cosmic stars in the sky above.
  */
-function PlanetaryHorizonStage({ hueKey, seed, side = 'left' }) {
+const PlanetaryHorizonStage = memo(function PlanetaryHorizonStage({ hueKey, seed, side = 'left' }) {
   const theme = HUES[hueKey] || HUES.aurora
   const stars = getStars(seed, 65)
   const idSuffix = `${hueKey}-${seed}`
@@ -293,10 +297,10 @@ function PlanetaryHorizonStage({ hueKey, seed, side = 'left' }) {
       />
     </svg>
   )
-}
+})
 
 /* Individual Member Section */
-function MemberSection({ member }) {
+const MemberSection = memo(function MemberSection({ member }) {
   const ref = useRef(null)
   const isInView = useInView(ref, { once: false, margin: '-15% 0px -15% 0px' })
   const isLeftPlanet = member.planetSide === 'left'
@@ -421,23 +425,30 @@ function MemberSection({ member }) {
       </div>
     </section>
   )
-}
+})
 
 /* Master Planetary Sections Component */
 export default function TeamPlanetarySections() {
   const [activeMember, setActiveMember] = useState('01')
 
   useEffect(() => {
+    let ticking = false
     const handleScroll = () => {
-      const offsets = MEMBERS.map((m) => {
-        const el = document.getElementById(`member-${m.n}`)
-        if (!el) return { n: m.n, top: Infinity }
-        const rect = el.getBoundingClientRect()
-        return { n: m.n, top: Math.abs(rect.top - 140) }
-      })
-      offsets.sort((a, b) => a.top - b.top)
-      if (offsets[0] && offsets[0].top < window.innerHeight * 0.8) {
-        setActiveMember(offsets[0].n)
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          const offsets = MEMBERS.map((m) => {
+            const el = document.getElementById(`member-${m.n}`)
+            if (!el) return { n: m.n, top: Infinity }
+            const rect = el.getBoundingClientRect()
+            return { n: m.n, top: Math.abs(rect.top - 140) }
+          })
+          offsets.sort((a, b) => a.top - b.top)
+          if (offsets[0] && offsets[0].top < window.innerHeight * 0.8) {
+            setActiveMember(offsets[0].n)
+          }
+          ticking = false
+        })
+        ticking = true
       }
     }
 
