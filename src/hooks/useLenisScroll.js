@@ -11,8 +11,8 @@ export function useLenisScroll() {
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
 
     const lenis = new Lenis({
-      lerp: 0.085, // Fluid momentum rate matching modern Awwwards / oval.earth experience
-      wheelMultiplier: 0.95, // Balanced scroll step
+      lerp: 0.1, // Responsive momentum rate matching modern Awwwards experience
+      wheelMultiplier: 1.0, // Crisp 1:1 scroll step
       touchMultiplier: 1.5,
       smoothWheel: true,
       syncTouch: false,

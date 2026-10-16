@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, Fragment } from 'react'
+import { memo, useEffect, useRef, useState, Fragment } from 'react'
 import { PrismCanvas } from './Canvases'
 import { Annot, Fade } from './ui'
 
@@ -127,7 +127,7 @@ class PrismToneEngine {
 
 const prismEngine = typeof window !== 'undefined' ? new PrismToneEngine() : null
 
-export function PrismSystem() {
+export const PrismSystem = memo(function PrismSystem() {
   const [isPlaying, setIsPlaying] = useState(false)
 
   useEffect(() => {
@@ -231,7 +231,7 @@ export function PrismSystem() {
       </div>
     </section>
   )
-}
+})
 
 /* =========================================================================
    SECTION 2: PIPELINE / SIGNAL FLOW
@@ -245,7 +245,7 @@ const STAGES = [
   ['05', 'OUTPUT', 'Stereo audio'],
 ]
 
-export function Pipeline() {
+export const Pipeline = memo(function Pipeline() {
   return (
     <section id="pipeline" className="relative z-30 px-6 pt-14 pb-28 md:px-12 md:pt-18 md:pb-36 lg:px-20 lg:pt-20 lg:pb-40">
       <Fade>
@@ -263,7 +263,7 @@ export function Pipeline() {
             {STAGES.map(([n, name, sub], i) => (
               <Fragment key={n}>
                 <Fade delay={0.06 * i} className="lg:flex-1">
-                  <div className="h-full border border-white/10 bg-white/[0.03] backdrop-blur-sm p-5 md:p-6">
+                  <div className="h-full border border-white/10 bg-white/[0.03] p-5 md:p-6">
                     <p className="font-data text-[11px] md:text-[12px] tracking-[0.3em] text-[#86ab8e]">{n}</p>
                     <p className="mt-4 font-display font-light uppercase leading-none text-[#f7f4ed] text-[1.25rem] md:text-[1.35rem] xl:text-[1.5rem] whitespace-nowrap">
                       {name}
@@ -289,7 +289,7 @@ export function Pipeline() {
       </Fade>
     </section>
   )
-}
+})
 
 /* =========================================================================
    SECTION 3: ATMOSPHERIC MAPPINGS & SONIFICATION FORMULAS
@@ -419,7 +419,7 @@ const FORMULA_CARDS = [
 ]
 
 /* --- SVG Visualization Renderers --- */
-function CardWaveform({ type, val, min, max }) {
+const CardWaveform = memo(function CardWaveform({ type, val, min, max }) {
   const norm = Math.max(0, Math.min(1, (val - min) / (max - min)))
 
   if (type === 'curve') {
@@ -595,10 +595,10 @@ function CardWaveform({ type, val, min, max }) {
   }
 
   return null
-}
+})
 
 /* --- Formula Modulation Matrix Component --- */
-export function SonificationFormulas() {
+export const SonificationFormulas = memo(function SonificationFormulas() {
   const [values, setValues] = useState(() => {
     const init = {}
     FORMULA_CARDS.forEach((c) => {
@@ -848,7 +848,7 @@ export function SonificationFormulas() {
 
             return (
               <Fade key={card.id} delay={0.08 * idx}>
-                <div className="group relative flex h-full flex-col justify-between border border-ivory/15 bg-black/55 backdrop-blur-md p-5 sm:p-6 transition-all duration-300 hover:border-ivory/30 hover:bg-black/70">
+                <div className="group relative flex h-full flex-col justify-between border border-ivory/15 bg-[#0d1416]/90 p-5 sm:p-6 transition-all duration-300 hover:border-ivory/30 hover:bg-[#0d1416]">
                   {/* 1. Top Bar: Formula & Sensor Source */}
                   <div>
                     <div className="flex items-center justify-between gap-2 border-b border-ivory/10 pb-3">
@@ -962,7 +962,7 @@ export function SonificationFormulas() {
       </div>
     </section>
   )
-}
+})
 
 /* =========================================================================
    SECTION 4: SYSTEM QUOTES / PERSPECTIVES ON SONIFICATION
@@ -981,7 +981,7 @@ const QUOTES = [
   },
 ]
 
-export function SystemQuotes() {
+export const SystemQuotes = memo(function SystemQuotes() {
   return (
     <section
       id="epilogue-quotes"
@@ -1058,4 +1058,4 @@ export function SystemQuotes() {
       </div>
     </section>
   )
-}
+})

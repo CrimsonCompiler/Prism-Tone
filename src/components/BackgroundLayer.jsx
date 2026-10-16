@@ -25,7 +25,7 @@ function seededRandom(seed) {
   }
 }
 
-// ---------- faint star field (120 stars) ----------
+// ---------- faint star field (60 stars) ----------
 function makeStars(count, opts) {
   const rng = seededRandom(opts.seed)
   const stars = []
@@ -42,13 +42,13 @@ function makeStars(count, opts) {
   return stars
 }
 
-const FAINT_STARS = makeStars(120, {
+const FAINT_STARS = makeStars(60, {
   seed: 17,
   minSize: 0.5,
   maxSize: 1.1,
   opacityRange: [0.25, 0.55],
 })
-const BRIGHT_STARS = makeStars(18, {
+const BRIGHT_STARS = makeStars(14, {
   seed: 91,
   minSize: 1.2,
   maxSize: 2.2,
@@ -84,14 +84,14 @@ function makeConstellation() {
 }
 const CONSTELLATION = makeConstellation()
 
-// ---------- drifting particles (28) ----------
+// ---------- drifting particles (14) ----------
 function makeParticles() {
   const rng = seededRandom(7)
   const list = []
-  for (let i = 0; i < 28; i++) {
+  for (let i = 0; i < 14; i++) {
     list.push({
       x: rng() * 100,
-      size: 0.6 + rng() * 1.6,
+      size: 0.8 + rng() * 1.6,
       duration: 18 + rng() * 22,
       delay: -rng() * 20,
       driftX: (rng() - 0.5) * 30,
@@ -110,13 +110,13 @@ const TRAILS = [
   { top: '82%', width: '36%', duration: 36, delay: 22, glow: 8 },
 ]
 
-// ---------- nebula blobs (5) — ivory low-alpha versions of the reference nebulae ----------
+// ---------- nebula blobs (5) — soft radial gradients (no heavy blur filter) ----------
 const NEBULAE = [
-  { top: '-8%', left: '-6%', size: '60vw', alpha: 0.07, blur: 80 },
-  { top: '-4%', right: '-8%', size: '52vw', alpha: 0.06, blur: 80 },
-  { top: '40%', right: '-4%', size: '46vw', alpha: 0.05, blur: 70 },
-  { bottom: '-12%', left: '-2%', size: '54vw', alpha: 0.045, blur: 70 },
-  { bottom: '-6%', right: '4%', size: '38vw', alpha: 0.035, blur: 70 },
+  { top: '-8%', left: '-6%', size: '60vw', alpha: 0.08 },
+  { top: '-4%', right: '-8%', size: '52vw', alpha: 0.07 },
+  { top: '40%', right: '-4%', size: '46vw', alpha: 0.06 },
+  { bottom: '-12%', left: '-2%', size: '54vw', alpha: 0.055 },
+  { bottom: '-6%', right: '4%', size: '38vw', alpha: 0.045 },
 ]
 
 // ---------- orbital arcs (3 SVG ellipses) ----------
@@ -169,7 +169,6 @@ export default function BackgroundLayer() {
               width: n.size,
               height: n.size,
               '--a': n.alpha,
-              filter: `blur(${n.blur}px)`,
             }}
           />
         ))}
@@ -276,7 +275,7 @@ export default function BackgroundLayer() {
         ))}
       </svg>
 
-      {/* 6. Drifting particles (28) — drifting upward */}
+      {/* 6. Drifting particles (14) — drifting upward */}
       <div className="bg-particles" aria-hidden="true">
         {PARTICLES.map((p, i) => (
           <span
@@ -291,8 +290,6 @@ export default function BackgroundLayer() {
               '--d': `${p.duration}s`,
               '--del': `${p.delay}s`,
               '--dx': `${p.driftX}px`,
-              filter: 'blur(0.4px)',
-              boxShadow: '0 0 6px rgba(242,237,227,0.6)',
             }}
           />
         ))}

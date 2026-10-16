@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { memo, useMemo } from 'react'
 import { motion, useScroll, useTransform } from 'motion/react'
 
 /* ---------- Horizon haze + base earthy slate gradient ---------- */
@@ -20,23 +20,26 @@ function AtmosphericGlows() {
     <div className="absolute inset-0 pointer-events-none overflow-hidden" aria-hidden="true">
       {/* Oceanic atmosphere blue wash - top right */}
       <div
-        className="absolute -top-[5%] -right-[5%] w-[65vw] h-[65vw] max-w-[850px] max-h-[850px] rounded-full blur-[115px] opacity-[0.14]"
+        className="absolute -top-[5%] -right-[5%] w-[65vw] h-[65vw] max-w-[850px] max-h-[850px] rounded-full opacity-[0.14]"
         style={{
-          background: 'radial-gradient(circle, #3f75bb 0%, rgba(63, 117, 187, 0.35) 45%, transparent 70%)',
+          background:
+            'radial-gradient(circle, #3f75bb 0%, rgba(63, 117, 187, 0.35) 30%, rgba(63, 117, 187, 0.12) 55%, transparent 75%)',
         }}
       />
       {/* Terrestrial moss sage green wash - bottom left */}
       <div
-        className="absolute bottom-[10%] -left-[5%] w-[65vw] h-[65vw] max-w-[850px] max-h-[850px] rounded-full blur-[115px] opacity-[0.14]"
+        className="absolute bottom-[10%] -left-[5%] w-[65vw] h-[65vw] max-w-[850px] max-h-[850px] rounded-full opacity-[0.14]"
         style={{
-          background: 'radial-gradient(circle, #739a69 0%, rgba(115, 154, 105, 0.35) 45%, transparent 70%)',
+          background:
+            'radial-gradient(circle, #739a69 0%, rgba(115, 154, 105, 0.35) 30%, rgba(115, 154, 105, 0.12) 55%, transparent 75%)',
         }}
       />
       {/* Mid-page atmospheric blend */}
       <div
-        className="absolute top-[45%] right-[15%] w-[55vw] h-[55vw] max-w-[700px] max-h-[700px] rounded-full blur-[125px] opacity-[0.09]"
+        className="absolute top-[45%] right-[15%] w-[55vw] h-[55vw] max-w-[700px] max-h-[700px] rounded-full opacity-[0.09]"
         style={{
-          background: 'radial-gradient(circle, #3f75bb 0%, #739a69 60%, transparent 75%)',
+          background:
+            'radial-gradient(circle, #3f75bb 0%, rgba(63, 117, 187, 0.4) 30%, rgba(115, 154, 105, 0.35) 55%, transparent 75%)',
         }}
       />
     </div>
@@ -47,7 +50,7 @@ function AtmosphericGlows() {
 function SubtleGrain() {
   return (
     <div
-      className="absolute inset-0 pointer-events-none opacity-[0.048] mix-blend-overlay"
+      className="absolute inset-0 pointer-events-none opacity-[0.035]"
       style={{
         backgroundImage:
           "url(\"data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.96 0 0 0 0 0.93 0 0 0 0 0.88 0 0 0 1 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E\")",
@@ -116,7 +119,7 @@ function buildContourPath({
 }
 
 /* ---------- TopoLayer: Spanned continuously across the full page height ---------- */
-function TopoLayer({
+const TopoLayer = memo(function TopoLayer({
   scrollYProgress,
   direction,
   opacity,
@@ -154,7 +157,7 @@ function TopoLayer({
   return (
     <motion.div
       className="absolute inset-0 pointer-events-none"
-      style={{ x: xScroll, y: yScroll, opacity }}
+      style={{ x: xScroll, y: yScroll, opacity, willChange: 'transform' }}
     >
       <svg
         className="w-full h-full"
@@ -174,7 +177,7 @@ function TopoLayer({
       </svg>
     </motion.div>
   )
-}
+})
 
 /* ---------- Full-Document Concept Background Export ---------- */
 export default function ConceptBackground() {

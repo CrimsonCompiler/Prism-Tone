@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { motion, useScroll, useTransform } from 'motion/react'
 import { StoryWave } from './Canvases'
 import { EASE, Fade } from './ui'
@@ -358,7 +358,7 @@ class StorySoundEngine {
 
 const soundEngine = typeof window !== 'undefined' ? new StorySoundEngine() : null
 
-function Story({ s, activeSoundId, onToggleSound }) {
+const Story = memo(function Story({ s, activeSoundId, onToggleSound }) {
   const ref = useRef(null)
   const { scrollYProgress } = useScroll({ target: ref, offset: ['start end', 'end start'] })
   const y = useTransform(scrollYProgress, [0, 1], [30, -30])
@@ -479,7 +479,7 @@ function Story({ s, activeSoundId, onToggleSound }) {
       </div>
     </article>
   )
-}
+})
 
 export default function EarthStories() {
   const [activeSoundId, setActiveSoundId] = useState(null)
@@ -490,15 +490,17 @@ export default function EarthStories() {
     }
   }, [])
 
-  const handleToggleSound = (id) => {
-    if (activeSoundId === id) {
-      soundEngine?.stop()
-      setActiveSoundId(null)
-    } else {
-      soundEngine?.play(id)
-      setActiveSoundId(id)
-    }
-  }
+  const handleToggleSound = useCallback((id) => {
+    setActiveSoundId((prev) => {
+      if (prev === id) {
+        soundEngine?.stop()
+        return null
+      } else {
+        soundEngine?.play(id)
+        return id
+      }
+    })
+  }, [])
 
   return (
     <section id="stories" className="relative border-t border-[#f9eed8]/10 px-6 py-32 md:px-12 md:py-44 lg:px-20">
@@ -547,8 +549,8 @@ export default function EarthStories() {
    Palette: ivory (#f9eed8) on ink-700, with ember (#c08a55) reserved for wildfire.
 ============================================================================= */
 
-// Generate a smooth temperature curve path
-function tempPath() {
+// Generate a smooth temperature curve path (precomputed once)
+const TEMP_PATH = (() => {
   const pts = []
   const n = 60
   for (let i = 0; i <= n; i++) {
@@ -563,10 +565,10 @@ function tempPath() {
   return pts
     .map((p, i) => (i === 0 ? `M${p[0]} ${p[1]}` : `L${p[0]} ${p[1]}`))
     .join(' ')
-}
+})()
 
 // FIG · 02 — WIND: vector field
-function WindField() {
+const WIND_CELLS = (() => {
   const cells = []
   const cols = 18
   const rows = 9
@@ -579,9 +581,13 @@ function WindField() {
       cells.push({ x, y, angle, len, key: `${r}-${c}` })
     }
   }
+  return cells
+})()
+
+const WindField = memo(function WindField() {
   return (
     <svg viewBox="0 0 100 100" preserveAspectRatio="none" className="w-full h-full">
-      {cells.map((c) => (
+      {WIND_CELLS.map((c) => (
         <g key={c.key} transform={`translate(${c.x} ${c.y}) rotate(${c.angle})`}>
           <line
             x1={-c.len / 2}
@@ -599,20 +605,21 @@ function WindField() {
       ))}
     </svg>
   )
-}
+})
 
 // FIG · 03 — RAINFALL: animated droplets
-function Rainfall() {
-  const drops = Array.from({ length: 80 }).map((_, i) => ({
-    x: Math.random() * 100,
-    delay: Math.random() * 2,
-    duration: 1.4 + Math.random() * 1.8,
-    length: 4 + Math.random() * 8,
-    key: i,
-  }))
+const RAINFALL_DROPS = Array.from({ length: 48 }).map((_, i) => ({
+  x: ((i * 17.3 + 7) % 96) + 2,
+  delay: (i * 0.12) % 2,
+  duration: 1.4 + ((i * 0.21) % 1.6),
+  length: 4 + ((i * 0.45) % 6),
+  key: i,
+}))
+
+const Rainfall = memo(function Rainfall() {
   return (
     <svg viewBox="0 0 100 100" preserveAspectRatio="none" className="w-full h-full">
-      {drops.map((d) => (
+      {RAINFALL_DROPS.map((d) => (
         <motion.line
           key={d.key}
           x1={d.x}
@@ -633,7 +640,7 @@ function Rainfall() {
       ))}
     </svg>
   )
-}
+})
 
 // FIG · 04 — ICE: fragmented breathing shards
 function IceFragment({ x, y, r, rot, delay }) {
@@ -658,7 +665,7 @@ function IceFragment({ x, y, r, rot, delay }) {
   )
 }
 
-function Ice() {
+const Ice = memo(function Ice() {
   const fragments = [
     { x: 20, y: 30, r: 14, rot: 12, delay: 0 },
     { x: 48, y: 22, r: 10, rot: -8, delay: 1.2 },
@@ -676,20 +683,22 @@ function Ice() {
       ))}
     </svg>
   )
-}
+})
 
 // FIG · 05 — WILDFIRE: glowing embers + halos
-function Wildfire() {
-  const points = Array.from({ length: 35 }).map((_, i) => ({
-    x: Math.random() * 100,
-    y: Math.random() * 100,
-    r: 0.4 + Math.random() * 1.2,
-    delay: Math.random() * 4,
-    key: i,
-  }))
+const WILDFIRE_POINTS = Array.from({ length: 24 }).map((_, i) => ({
+  x: ((i * 23.7 + 13) % 92) + 4,
+  y: ((i * 31.1 + 19) % 92) + 4,
+  r: 0.5 + ((i * 0.17) % 1.0),
+  delay: (i * 0.25) % 3.5,
+  duration: 3 + ((i * 0.2) % 2),
+  key: i,
+}))
+
+const Wildfire = memo(function Wildfire() {
   return (
     <svg viewBox="0 0 100 100" preserveAspectRatio="none" className="w-full h-full">
-      {points.map((p) => (
+      {WILDFIRE_POINTS.map((p) => (
         <motion.circle
           key={p.key}
           cx={p.x}
@@ -699,14 +708,14 @@ function Wildfire() {
           initial={{ opacity: 0.2 }}
           animate={{ opacity: [0.15, 0.7, 0.15] }}
           transition={{
-            duration: 3 + Math.random() * 2,
+            duration: p.duration,
             delay: p.delay,
             repeat: Infinity,
             ease: 'easeInOut',
           }}
         />
       ))}
-      {points.slice(0, 8).map((p, i) => (
+      {WILDFIRE_POINTS.slice(0, 6).map((p, i) => (
         <motion.circle
           key={`halo-${i}`}
           cx={p.x}
@@ -727,41 +736,34 @@ function Wildfire() {
       ))}
     </svg>
   )
-}
+})
 
 // FIG · 06 — DEFORESTATION: dense canopy of tree-cells progressively cleared
 // along a fishbone logging road. Reads instantly as forest being consumed.
-function Deforestation() {
-  // Build a dense grid of small tree-cells (the intact canopy).
-  // Each cell is a tiny hexagon/dot. Cells close to the road get "cleared"
-  // (turned dark + faded out) on a stagger, so the forest visibly retreats.
+const DEFORESTATION_CELLS = (() => {
   const cols = 28
   const rows = 18
   const cellSize = 100 / cols
-  const cells_list = []
+  const cells = []
+  const spurs = [
+    [22, 70, 18, 38],
+    [22, 70, 34, 56],
+    [38, 60, 32, 22],
+    [38, 60, 50, 70],
+    [52, 52, 60, 20],
+    [52, 52, 44, 84],
+    [68, 42, 80, 70],
+    [68, 42, 74, 14],
+    [82, 34, 90, 60],
+  ]
   for (let r = 0; r < rows; r++) {
     for (let c = 0; c < cols; c++) {
       const x = c * cellSize + cellSize / 2
       const y = r * cellSize + cellSize / 2
-      // Distance from the main road (a line from bottom-left to top-right).
-      // Road: from (8, 78) to (92, 30) in 0..100 coords.
       const roadY = 78 - ((x - 8) / (92 - 8)) * (78 - 30)
       const dRoad = Math.abs(y - roadY)
-      // Distance from any of the fishbone spurs (sample a few).
-      const spurs = [
-        [22, 70, 18, 38],
-        [22, 70, 34, 56],
-        [38, 60, 32, 22],
-        [38, 60, 50, 70],
-        [52, 52, 60, 20],
-        [52, 52, 44, 84],
-        [68, 42, 80, 70],
-        [68, 42, 74, 14],
-        [82, 34, 90, 60],
-      ]
       let dSpur = Infinity
       for (const [x1, y1, x2, y2] of spurs) {
-        // perpendicular distance from point (x,y) to segment
         const dx = x2 - x1
         const dy = y2 - y1
         const t = Math.max(0, Math.min(1, ((x - x1) * dx + (y - y1) * dy) / (dx * dx + dy * dy)))
@@ -770,24 +772,26 @@ function Deforestation() {
         const d = Math.hypot(x - px, y - py)
         if (d < dSpur) dSpur = d
       }
-      // A cell is "cleared" if it's close enough to the road or a spur,
-      // and only if it's on the "advance side" (we'll use a probability
-      // driven by distance so it looks organic, not a uniform strip).
       const proximity = Math.min(dRoad, dSpur)
-      // Cells well inside the forest keep full opacity.
-      // Cells near the road flip to "cleared" with high probability.
-      const cleared = proximity < cellSize * 1.6 ? Math.random() < 0.92 : proximity < cellSize * 3 ? Math.random() < 0.35 : false
-      cells_list.push({
+      const pseudoHash = Math.abs(Math.sin(r * 31.7 + c * 59.3) * 10000)
+      const randVal = pseudoHash - Math.floor(pseudoHash)
+      const cleared = proximity < cellSize * 1.6 ? randVal < 0.92 : proximity < cellSize * 3 ? randVal < 0.35 : false
+      cells.push({
         x,
         y,
         r: cellSize * 0.22,
         cleared,
-        // Stagger the clear moment so the front advances over time
-        delay: 0.4 + Math.random() * 2.4,
+        delay: 0.4 + randVal * 2.4,
         key: `${r}-${c}`,
       })
     }
   }
+  return cells
+})()
+
+const Deforestation = memo(function Deforestation() {
+  const intactCells = useMemo(() => DEFORESTATION_CELLS.filter((c) => !c.cleared), [])
+  const clearedCells = useMemo(() => DEFORESTATION_CELLS.filter((c) => c.cleared), [])
 
   return (
     <svg viewBox="0 0 100 100" preserveAspectRatio="none" className="w-full h-full">
@@ -800,25 +804,27 @@ function Deforestation() {
       </defs>
       <rect x="0" y="0" width="100" height="100" fill="url(#clearedGrad)" />
 
-      {/* The canopy: a dense field of small cells. */}
-      {/* Intact cells render as ivory dots; cleared cells animate to dark/transparent. */}
-      {cells_list.map((c) => (
+      {/* The canopy: intact cells rendered statically in a single group (zero JS animation overhead) */}
+      <g fill="#f9eed8" opacity={0.85}>
+        {intactCells.map((c) => (
+          <circle key={c.key} cx={c.x} cy={c.y} r={c.r} />
+        ))}
+      </g>
+
+      {/* Cleared cells: retreat on scroll entrance */}
+      {clearedCells.map((c) => (
         <motion.circle
           key={c.key}
           cx={c.x}
           cy={c.y}
           r={c.r}
-          fill={c.cleared ? '#f9eed8' : '#f9eed8'}
-          initial={{ opacity: c.cleared ? 0.85 : 0.9 }}
-          animate={
-            c.cleared
-              ? { opacity: [0.85, 0.05, 0.05] }
-              : { opacity: [0.9, 0.55, 0.9] }
-          }
+          fill="#f9eed8"
+          initial={{ opacity: 0.85 }}
+          whileInView={{ opacity: 0.05 }}
+          viewport={{ once: true }}
           transition={{
-            duration: c.cleared ? 1.6 : 5 + Math.random() * 3,
-            delay: c.cleared ? c.delay : Math.random() * 2,
-            repeat: c.cleared ? 0 : Infinity,
+            duration: 1.6,
+            delay: c.delay,
             ease: 'easeInOut',
           }}
         />
@@ -924,7 +930,7 @@ function Deforestation() {
       />
     </svg>
   )
-}
+})
 
 // The reusable DataTile wrapper — 4:3 frame with corner crosshairs, labels, and
 // the FIG · 0X stencil. Every figure is wrapped in this.
@@ -1002,7 +1008,7 @@ function CornerMark({ className, rotate }) {
 }
 
 // The full grid of six figures, rendered at the end of the EarthStories page.
-function FiguresGrid() {
+const FiguresGrid = memo(function FiguresGrid() {
   return (
     <div className="mt-28 md:mt-40 pt-16 md:pt-24">
       <Fade delay={0.1}>
@@ -1053,7 +1059,7 @@ function FiguresGrid() {
               />
             ))}
             <motion.path
-              d={`${tempPath()} L 600 450 L 0 450 Z`}
+              d={`${TEMP_PATH} L 600 450 L 0 450 Z`}
               fill="url(#tempFill)"
               initial={{ pathLength: 0, opacity: 0 }}
               whileInView={{ pathLength: 1, opacity: 1 }}
@@ -1061,7 +1067,7 @@ function FiguresGrid() {
               transition={{ duration: 2 }}
             />
             <motion.path
-              d={tempPath()}
+              d={TEMP_PATH}
               fill="none"
               stroke="#f9eed8"
               strokeWidth="1.5"
@@ -1148,4 +1154,4 @@ function FiguresGrid() {
       </div>
     </div>
   )
-}
+})

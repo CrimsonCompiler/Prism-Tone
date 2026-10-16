@@ -9,7 +9,6 @@ export default function Hero() {
   const { scrollYProgress } = useScroll({ target: ref, offset: ['start start', 'end start'] })
   const yText = useTransform(scrollYProgress, [0, 1], [0, -90])
   const fade = useTransform(scrollYProgress, [0, 0.72], [1, 0])
-  const scale = useTransform(scrollYProgress, [0, 1], [1, 1.07])
 
   return (
     <section ref={ref} id="top" className="sticky top-[-45vh] z-0 h-[100svh] min-h-[500px] md:min-h-[560px] lg:min-h-[620px] overflow-hidden">
@@ -17,7 +16,7 @@ export default function Hero() {
       <BackgroundEffects />
 
       {/* Earth */}
-      <motion.div style={{ scale }} className="absolute inset-0">
+      <div className="absolute inset-0">
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -29,7 +28,7 @@ export default function Hero() {
         <div className="vignette pointer-events-none absolute inset-0" />
         <div className="pointer-events-none absolute inset-x-0 top-0 h-28 bg-gradient-to-b from-ink/70 to-transparent" />
         <div className="pointer-events-none absolute inset-x-0 bottom-0 h-36 bg-gradient-to-t from-ink/80 to-transparent" />
-      </motion.div>
+      </div>
 
       {/* Titles */}
       <motion.div

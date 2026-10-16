@@ -7,14 +7,14 @@ import { useEffect, useRef } from 'react'
  *
  * draw: (ctx, cssWidth, cssHeight, timeSeconds) => void
  */
-export function useCanvasLoop(drawRef, { fps = 60 } = {}) {
+export function useCanvasLoop(drawRef, { fps = 30 } = {}) {
   const ref = useRef(null)
 
   useEffect(() => {
     const canvas = ref.current
     if (!canvas) return
     const ctx = canvas.getContext('2d')
-    const dpr = Math.min(window.devicePixelRatio || 1, 2)
+    const dpr = Math.min(window.devicePixelRatio || 1, 1.5)
     const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
 
     let raf = 0

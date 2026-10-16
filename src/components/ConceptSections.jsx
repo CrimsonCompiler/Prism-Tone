@@ -1,27 +1,29 @@
+import { memo } from 'react'
 import { motion } from 'motion/react'
 import { Fade } from './ui'
 
 /* =========================================================================
    SECTION 1: OBSERVATION / THE PLANET IN DIGITS & DATA
    ========================================================================= */
-export function ConceptObservation() {
-  const observationColumns = [
-    {
-      roman: 'I.',
-      title: 'Translation',
-      desc: 'A consistent, reversible bridge between a NASA variable and a sonic parameter.',
-    },
-    {
-      roman: 'II.',
-      title: 'Resonance',
-      desc: "The chosen sounds carry emotional weight - reflect the data's behaviour, not just its value.",
-    },
-    {
-      roman: 'III.',
-      title: 'Accessibility',
-      desc: 'Science should have more than one way in. Sound is the second door - a path for ears, not only eyes.',
-    },
-  ]
+const OBSERVATION_COLUMNS = [
+  {
+    roman: 'I.',
+    title: 'Translation',
+    desc: 'A consistent, reversible bridge between a NASA variable and a sonic parameter.',
+  },
+  {
+    roman: 'II.',
+    title: 'Resonance',
+    desc: "The chosen sounds carry emotional weight - reflect the data's behaviour, not just its value.",
+  },
+  {
+    roman: 'III.',
+    title: 'Accessibility',
+    desc: 'Science should have more than one way in. Sound is the second door - a path for ears, not only eyes.',
+  },
+]
+
+export const ConceptObservation = memo(function ConceptObservation() {
 
   return (
     <section className="relative w-full pb-24 md:pb-32 lg:pb-40">
@@ -63,7 +65,7 @@ export function ConceptObservation() {
       {/* Three Bottom Columns (I. Translation, II. Resonance, III. Accessibility) */}
       <Fade delay={0.5}>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-10 md:gap-14 lg:gap-20 xl:gap-28 pt-12 md:pt-16 mt-12 md:mt-16">
-          {observationColumns.map((col) => (
+          {OBSERVATION_COLUMNS.map((col) => (
             <div key={col.roman} className="flex flex-col">
               <span className="font-data text-[12px] md:text-[13px] tracking-[0.28em] text-[#cad7ce] uppercase font-light">
                 {col.roman}
@@ -80,39 +82,39 @@ export function ConceptObservation() {
       </Fade>
     </section>
   )
-}
+})
 
 /* =========================================================================
    SECTION 2: THE CRISIS OF PERCEPTION / THE PROBLEM
    ========================================================================= */
-export function ConceptProblem() {
-  const problemCards = [
-    {
-      n: '01',
-      title: 'Emotional Distance',
-      desc: 'Planetary change is often presented as numbers on a screen. A rising temperature curve may be scientifically precise, yet difficult to emotionally connect with the scale and urgency of a changing planet.',
-      impact: 'IMPACT: DISCONNECTED PERCEPTION',
-    },
-    {
-      n: '02',
-      title: 'Visual Dependency',
-      desc: 'Maps, charts, and satellite imagery make Earth science heavily dependent on sight. Without meaningful alternatives, many of these visual data patterns remain difficult to access for people who are blind or have visual impairments.',
-      impact: 'IMPACT: LIMITED ACCESSIBILITY',
-    },
-    {
-      n: '03',
-      title: 'Hidden Patterns',
-      desc: 'Earth’s systems are interconnected, but their signals are often examined through separate graphs and datasets. Subtle fluctuations, long-term trends, and relationships between variables can be difficult to recognise across multiple visual representations.',
-      impact: 'IMPACT: OVERLOOKED CONNECTIONS',
-    },
-    {
-      n: '04',
-      title: 'Data Without Experience',
-      desc: 'Scientific datasets contain continuous records of planetary change, yet static charts and spreadsheets offer limited ways to experience those changes dynamically. The information is available, but its movement through time can be difficult.',
-      impact: 'IMPACT: PASSIVE UNDERSTANDING',
-    },
-  ]
+const PROBLEM_CARDS = [
+  {
+    n: '01',
+    title: 'Emotional Distance',
+    desc: 'Planetary change is often presented as numbers on a screen. A rising temperature curve may be scientifically precise, yet difficult to emotionally connect with the scale and urgency of a changing planet.',
+    impact: 'IMPACT: DISCONNECTED PERCEPTION',
+  },
+  {
+    n: '02',
+    title: 'Visual Dependency',
+    desc: 'Maps, charts, and satellite imagery make Earth science heavily dependent on sight. Without meaningful alternatives, many of these visual data patterns remain difficult to access for people who are blind or have visual impairments.',
+    impact: 'IMPACT: LIMITED ACCESSIBILITY',
+  },
+  {
+    n: '03',
+    title: 'Hidden Patterns',
+    desc: 'Earth’s systems are interconnected, but their signals are often examined through separate graphs and datasets. Subtle fluctuations, long-term trends, and relationships between variables can be difficult to recognise across multiple visual representations.',
+    impact: 'IMPACT: OVERLOOKED CONNECTIONS',
+  },
+  {
+    n: '04',
+    title: 'Data Without Experience',
+    desc: 'Scientific datasets contain continuous records of planetary change, yet static charts and spreadsheets offer limited ways to experience those changes dynamically. The information is available, but its movement through time can be difficult.',
+    impact: 'IMPACT: PASSIVE UNDERSTANDING',
+  },
+]
 
+export const ConceptProblem = memo(function ConceptProblem() {
   return (
     <section className="relative w-full py-20 md:py-28 lg:py-36 border-t border-white/10">
       {/* Top Header Bar: THE CRISIS OF PERCEPTION & Chapter Meta */}
@@ -154,10 +156,10 @@ export function ConceptProblem() {
       {/* Four Bottom Cards aligned across a single baseline */}
       <Fade delay={0.4}>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-6 xl:gap-8 pt-12 md:pt-16 mt-12 md:mt-16">
-          {problemCards.map((card) => (
+          {PROBLEM_CARDS.map((card) => (
             <div
               key={card.n}
-              className="border border-white/10 bg-white/[0.02] backdrop-blur-[2px] p-6 sm:p-7 lg:p-6 xl:p-8 flex flex-col justify-between h-full"
+              className="border border-white/10 bg-white/[0.02] p-6 sm:p-7 lg:p-6 xl:p-8 flex flex-col justify-between h-full"
             >
               <div>
                 <span className="font-stencil text-[10px] md:text-[11px] tracking-[0.28em] text-[#cad7ce]">
@@ -182,30 +184,30 @@ export function ConceptProblem() {
       </Fade>
     </section>
   )
-}
+})
 
 /* =========================================================================
    SECTION 3: A NEW TRANSPORT FOR DATA / THE IDEA (CHAPTER III)
    ========================================================================= */
-export function ConceptIdea() {
-  const ideaColumns = [
-    {
-      letter: 'A.',
-      title: 'Sound as Another Dimension',
-      desc: 'Visuals reveal where Earth is changing; sound reveals how those changes unfold through time. By translating shifts in environmental data into rhythms, we tried another way to perceive patterns.',
-    },
-    {
-      letter: 'B.',
-      title: 'Mapping, Not Metaphor',
-      desc: 'Every sound has a defined relationship with the data behind it. The mapping remains interpretable, connecting what users hear to what the data actually represents.',
-    },
-    {
-      letter: 'C.',
-      title: 'From Data to Experience',
-      desc: 'Earth science becomes more than something to examine on a screen. As data-driven sounds evolve with visualizations, users can explore planetary changes through both sight & hearing.',
-    },
-  ]
+const IDEA_COLUMNS = [
+  {
+    letter: 'A.',
+    title: 'Sound as Another Dimension',
+    desc: 'Visuals reveal where Earth is changing; sound reveals how those changes unfold through time. By translating shifts in environmental data into rhythms, we tried another way to perceive patterns.',
+  },
+  {
+    letter: 'B.',
+    title: 'Mapping, Not Metaphor',
+    desc: 'Every sound has a defined relationship with the data behind it. The mapping remains interpretable, connecting what users hear to what the data actually represents.',
+  },
+  {
+    letter: 'C.',
+    title: 'From Data to Experience',
+    desc: 'Earth science becomes more than something to examine on a screen. As data-driven sounds evolve with visualizations, users can explore planetary changes through both sight & hearing.',
+  },
+]
 
+export const ConceptIdea = memo(function ConceptIdea() {
   return (
     <section className="relative w-full py-20 md:py-28 lg:py-36 border-t border-white/10">
       {/* Top Header Bar: A NEW TRANSPORT FOR DATA & Chapter Meta */}
@@ -249,7 +251,7 @@ export function ConceptIdea() {
       {/* Three Columns (A, B, C) */}
       <Fade delay={0.35}>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-12 md:gap-16 lg:gap-20 xl:gap-24 2xl:gap-28 pt-12 md:pt-16 lg:pt-20">
-          {ideaColumns.map((col) => (
+          {IDEA_COLUMNS.map((col) => (
             <div key={col.letter} className="flex flex-col">
               <div>
                 <span className="font-stencil text-[11px] md:text-[12px] tracking-[0.28em] text-[#cad7ce]">
@@ -272,65 +274,88 @@ export function ConceptIdea() {
       </Fade>
     </section>
   )
-}
+})
 
 /* =========================================================================
    SECTION 4: THE SONIC PALETTE (CHAPTER IV)
    ========================================================================= */
-export function ConceptPalette() {
-  const paletteLayers = [
-    {
-      n: '01',
-      title: 'Thermal Flux',
-      mapping: 'Temperature → Pitch',
-      source: 'NASA POWER',
-      desc: 'Temperature variations shape the pitch of the melodic layer. As temperatures rise, the tone moves upward in frequency, making long-term warming trends audible.',
-      spec: '220 Hz — 880 Hz',
-      specLabel: 'PROPOSED FREQUENCY RANGE',
-      viz: 'pitch',
-    },
-    {
-      n: '02',
-      title: 'Hydrologic Cadence',
-      mapping: 'Precipitation → Rhythm',
-      source: 'NASA POWER',
-      desc: 'Rainfall influences the density of rhythmic events. Lower precipitation produces sparse notes, while heavier rainfall creates increasingly active patterns.',
-      spec: 'SPARSE → DENSE',
-      specLabel: 'RHYTHMIC DENSITY',
-      viz: 'rhythm',
-    },
-    {
-      n: '03',
-      title: 'Thermal Static',
-      mapping: 'Fire Activity → Percussion',
-      source: 'NASA FIRMS',
-      desc: 'Active fire observations and Fire Radiative Power influence percussive activity. Changes in fire intensity can trigger more frequent and pronounced sonic events.',
-      spec: 'INTENSITY → IMPACT',
-      specLabel: 'PERCUSSIVE RESPONSE',
-      viz: 'static',
-    },
-    {
-      n: '04',
-      title: 'Tectonic Bass',
-      mapping: 'Water Storage → Low Frequencies',
-      source: 'GRACE / GRACE-FO',
-      desc: 'Terrestrial water-storage anomalies shape the low-frequency layer. Long-term changes in stored water become subtle shifts in the depth & intensity of the bass.',
-      spec: '30 Hz — 80 Hz',
-      specLabel: 'PROPOSED FREQUENCY RANGE',
-      viz: 'bass',
-    },
-    {
-      n: '05',
-      title: 'Spectral Vegetation',
-      mapping: 'Vegetation → Harmonic Texture',
-      source: 'MODIS / VIIRS',
-      desc: 'Vegetation indices influence the richness of the sustained harmonic layer. Changes in vegetation conditions can alter the density and texture of the sound.',
-      spec: 'SPARSE → RICH',
-      specLabel: 'HARMONIC TEXTURE',
-      viz: 'vegetation',
-    },
-  ]
+const PALETTE_LAYERS = [
+  {
+    n: '01',
+    title: 'Thermal Flux',
+    mapping: 'Temperature → Pitch',
+    source: 'NASA POWER',
+    desc: 'Temperature variations shape the pitch of the melodic layer. As temperatures rise, the tone moves upward in frequency, making long-term warming trends audible.',
+    spec: '220 Hz — 880 Hz',
+    specLabel: 'PROPOSED FREQUENCY RANGE',
+    viz: 'pitch',
+  },
+  {
+    n: '02',
+    title: 'Hydrologic Cadence',
+    mapping: 'Precipitation → Rhythm',
+    source: 'NASA POWER',
+    desc: 'Rainfall influences the density of rhythmic events. Lower precipitation produces sparse notes, while heavier rainfall creates increasingly active patterns.',
+    spec: 'SPARSE → DENSE',
+    specLabel: 'RHYTHMIC DENSITY',
+    viz: 'rhythm',
+  },
+  {
+    n: '03',
+    title: 'Thermal Static',
+    mapping: 'Fire Activity → Percussion',
+    source: 'NASA FIRMS',
+    desc: 'Active fire observations and Fire Radiative Power influence percussive activity. Changes in fire intensity can trigger more frequent and pronounced sonic events.',
+    spec: 'INTENSITY → IMPACT',
+    specLabel: 'PERCUSSIVE RESPONSE',
+    viz: 'static',
+  },
+  {
+    n: '04',
+    title: 'Tectonic Bass',
+    mapping: 'Water Storage → Low Frequencies',
+    source: 'GRACE / GRACE-FO',
+    desc: 'Terrestrial water-storage anomalies shape the low-frequency layer. Long-term changes in stored water become subtle shifts in the depth & intensity of the bass.',
+    spec: '30 Hz — 80 Hz',
+    specLabel: 'PROPOSED FREQUENCY RANGE',
+    viz: 'bass',
+  },
+  {
+    n: '05',
+    title: 'Spectral Vegetation',
+    mapping: 'Vegetation → Harmonic Texture',
+    source: 'MODIS / VIIRS',
+    desc: 'Vegetation indices influence the richness of the sustained harmonic layer. Changes in vegetation conditions can alter the density and texture of the sound.',
+    spec: 'SPARSE → RICH',
+    specLabel: 'HARMONIC TEXTURE',
+    viz: 'vegetation',
+  },
+]
 
+const FAIL_SAFE_TIERS = [
+  {
+    tier: 'TIER 1',
+    title: 'Photographic 3D View',
+    desc: 'Cinematic Earth crescent with slow orbital rotation',
+  },
+  {
+    tier: 'TIER 2',
+    title: 'Canvas / SVG Layer',
+    desc: 'Hardware-accelerated waveform & vector charts',
+  },
+  {
+    tier: 'TIER 3',
+    title: 'Cached Telemetry',
+    desc: 'Local NASA historical baselines for offline stability',
+  },
+  {
+    tier: 'TIER 4',
+    title: 'Web Audio Synthesis',
+    desc: 'Auto client-side procedural sound generation',
+  },
+]
+
+export const ConceptPalette = memo(function ConceptPalette() {
   return (
     <section className="relative w-full py-20 md:py-28 lg:py-36 border-t border-white/10">
       {/* Top Header Bar: HOW EARTH'S SIGNALS SHAPE THE SOUND & Chapter Meta */}
@@ -369,7 +394,7 @@ export function ConceptPalette() {
 
       {/* Unique Pattern: Horizontal Acoustic Score Tracks */}
       <div>
-        {paletteLayers.map((layer, idx) => (
+        {PALETTE_LAYERS.map((layer, idx) => (
           <Fade key={layer.n} delay={0.1 * idx}>
             <div className="group border-t border-white/10 py-8 md:py-10 lg:py-11 transition-colors duration-500 hover:bg-white/[0.015] -mx-4 px-4 sm:-mx-6 sm:px-6 md:-mx-8 md:px-8">
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8 xl:gap-10 items-center">
@@ -449,7 +474,7 @@ export function ConceptPalette() {
 
       {/* Fail-Safe Architectural Strategy (Hackathon Reliability Assurance) */}
       <Fade delay={0.35}>
-        <div className="mt-10 md:mt-14 border border-white/10 bg-white/[0.015] backdrop-blur-[2px] p-6 sm:p-8 lg:p-9">
+        <div className="mt-10 md:mt-14 border border-white/10 bg-white/[0.015] p-6 sm:p-8 lg:p-9">
           {/* Header Row */}
           <div className="flex items-center justify-between text-[#cad7ce] pb-6 sm:pb-8">
             <span className="font-stencil text-[10px] md:text-[11px] tracking-[0.34em] uppercase">
@@ -462,28 +487,7 @@ export function ConceptPalette() {
 
           {/* 4 Tier Cards */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-            {[
-              {
-                tier: 'TIER 1',
-                title: 'Photographic 3D View',
-                desc: 'Cinematic Earth crescent with slow orbital rotation',
-              },
-              {
-                tier: 'TIER 2',
-                title: 'Canvas / SVG Layer',
-                desc: 'Hardware-accelerated waveform & vector charts',
-              },
-              {
-                tier: 'TIER 3',
-                title: 'Cached Telemetry',
-                desc: 'Local NASA historical baselines for offline stability',
-              },
-              {
-                tier: 'TIER 4',
-                title: 'Web Audio Synthesis',
-                desc: 'Auto client-side procedural sound generation',
-              },
-            ].map((item) => (
+            {FAIL_SAFE_TIERS.map((item) => (
               <div
                 key={item.tier}
                 className="border border-white/10 bg-white/[0.02] p-6 sm:p-7 md:p-8 text-center flex flex-col justify-center items-center hover:border-white/20 transition-all duration-300"
@@ -504,9 +508,11 @@ export function ConceptPalette() {
       </Fade>
     </section>
   )
-}
+})
 
-function WaveformViz({ type }) {
+const RHYTHM_BARS = [6, 22, 45, 75, 96, 112, 124, 134, 142, 148, 153, 157, 160]
+
+const WaveformViz = memo(function WaveformViz({ type }) {
   if (type === 'pitch') {
     return (
       <svg viewBox="0 0 160 36" fill="none" className="w-full h-8 text-[#8ea792]/80">
@@ -521,11 +527,10 @@ function WaveformViz({ type }) {
     )
   }
   if (type === 'rhythm') {
-    const bars = [6, 22, 45, 75, 96, 112, 124, 134, 142, 148, 153, 157, 160]
     return (
       <svg viewBox="0 0 160 36" fill="none" className="w-full h-8 text-[#8ea792]/80">
         <line x1="0" y1="18" x2="160" y2="18" stroke="rgba(242,237,227,0.15)" strokeWidth="1" strokeDasharray="2 3" />
-        {bars.map((x, i) => (
+        {RHYTHM_BARS.map((x, i) => (
           <line
             key={i}
             x1={x}
@@ -581,4 +586,4 @@ function WaveformViz({ type }) {
     )
   }
   return null
-}
+})

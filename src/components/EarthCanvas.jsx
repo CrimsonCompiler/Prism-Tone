@@ -1,6 +1,7 @@
 import { Canvas, useFrame, useThree } from '@react-three/fiber'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import * as THREE from 'three'
+import { useHeroActive } from '../hooks/useHeroActive'
 
 const REDUCED = () =>
   typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches
@@ -50,7 +51,7 @@ const atmoFragment = /* glsl */ `
     float v = 0.0;
     float a = 0.5;
     mat2 rot = mat2(0.8, 0.6, -0.6, 0.8);
-    for (int i = 0; i < 3; i++) {
+    for (int i = 0; i < 2; i++) {
       v += a * noise(p);
       p = rot * p * 2.05 + vec2(11.3);
       a *= 0.5;
@@ -222,7 +223,6 @@ function Earth({ variant = 'hero' }) {
     }
   }, [gl])
 
-  const lastRender = useRef(0)
   useFrame((state, delta) => {
     // Clamp delta to maximum of 33ms (30fps equivalent) to prevent large rotational jumps on hitches
     const d = Math.min(delta, 0.033)
@@ -230,14 +230,7 @@ function Earth({ variant = 'hero' }) {
     if (group.current) group.current.rotation.y += d * speed
     if (clouds.current) clouds.current.rotation.y += d * speed * 1.3
     atmoUniforms.uTime.value += d
-
-    // Throttle actual WebGL rasterization to max 60fps (skips duplicate draws on 120Hz/144Hz displays)
-    const now = performance.now()
-    if (now - lastRender.current >= 16) {
-      lastRender.current = now
-      state.gl.render(state.scene, state.camera)
-    }
-  }, 1)
+  })
 
   if (!tex) return null
 
@@ -249,7 +242,7 @@ function Earth({ variant = 'hero' }) {
       rotation={[0, 2.35, 0.09]}
     >
       <mesh>
-        <sphereGeometry args={[2.55, 96, 96]} />
+        <sphereGeometry args={[2.55, 64, 64]} />
         <meshPhongMaterial
           map={tex.day}
           bumpMap={tex.topo}
@@ -264,13 +257,13 @@ function Earth({ variant = 'hero' }) {
       </mesh>
 
       <mesh ref={clouds} scale={[1.009, 1.009, 1.009]}>
-        <sphereGeometry args={[2.55, 64, 64]} />
+        <sphereGeometry args={[2.55, 48, 48]} />
         <meshLambertMaterial map={tex.cloudTex} transparent opacity={0.38} depthWrite={false} />
       </mesh>
 
       {/* ethereal drifting clouds & painterly atmospheric gradient — no strict border */}
       <mesh scale={[1.032, 1.032, 1.032]}>
-        <sphereGeometry args={[2.55, 64, 64]} />
+        <sphereGeometry args={[2.55, 48, 48]} />
         <shaderMaterial
           vertexShader={atmoVertex}
           fragmentShader={atmoFragment}
@@ -285,9 +278,21 @@ function Earth({ variant = 'hero' }) {
   )
 }
 
-function Scene({ variant }) {
+function Ticker({ active, fps = 30 }) {
+  const invalidate = useThree((s) => s.invalidate)
+  useEffect(() => {
+    if (!active) return
+    invalidate()
+    const id = setInterval(invalidate, 1000 / fps)
+    return () => clearInterval(id)
+  }, [active, fps, invalidate])
+  return null
+}
+
+function Scene({ variant, active }) {
   return (
     <>
+      <Ticker active={active} fps={30} />
       <ambientLight intensity={0.1} color="#f2ede3" />
       {/* single warm key light raking from the left — the planet stays mostly in darkness */}
       <directionalLight position={[-7, 2.5, 3.5]} intensity={2.2} color="#ffeed6" />
@@ -299,37 +304,13 @@ function Scene({ variant }) {
 }
 
 export default function EarthCanvas({ variant = 'hero', className = '' }) {
-  const wrapRef = useRef(null)
-  const [active, setActive] = useState(false)
-
-  useEffect(() => {
-    const el = wrapRef.current
-    if (!el) return
-    let isIntersecting = false
-    const updateActive = () => {
-      setActive(isIntersecting && !document.hidden)
-    }
-    const io = new IntersectionObserver(
-      ([entry]) => {
-        isIntersecting = entry.isIntersecting
-        updateActive()
-      },
-      { rootMargin: '100px' }
-    )
-    io.observe(el)
-
-    document.addEventListener('visibilitychange', updateActive)
-    return () => {
-      io.disconnect()
-      document.removeEventListener('visibilitychange', updateActive)
-    }
-  }, [])
+  const heroActive = useHeroActive(1.25)
 
   return (
-    <div ref={wrapRef} className={`h-full w-full ${className}`}>
+    <div className={`h-full w-full ${className}`}>
       <Canvas
-        frameloop={active ? 'always' : 'never'}
-        dpr={[1, 1.5]}
+        frameloop={heroActive ? 'demand' : 'never'}
+        dpr={[1, 1.25]}
         camera={{ fov: 42, position: [0, 0.55, 5.6], near: 0.1, far: 130 }}
         gl={{
           antialias: true,
@@ -343,7 +324,7 @@ export default function EarthCanvas({ variant = 'hero', className = '' }) {
           gl.toneMappingExposure = 1.12
         }}
       >
-        <Scene variant={variant} />
+        <Scene variant={variant} active={heroActive} />
       </Canvas>
     </div>
   )
