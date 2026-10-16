@@ -216,7 +216,6 @@ input[type='range'].pt-range:focus-visible {
   position: absolute;
   inset: 0;
   pointer-events: none;
-  animation: bg-nebula-breathe 60s ease-in-out infinite alternate;
 }
 
 .bg-nebula {
@@ -232,16 +231,6 @@ input[type='range'].pt-range:focus-visible {
   position: absolute;
   inset: 0;
   pointer-events: none;
-}
-
-@keyframes bg-nebula-breathe {
-  from {
-    transform: scale(1);
-  }
-
-  to {
-    transform: scale(1.05);
-  }
 }
 
 /* 2. Horizon haze */
@@ -264,7 +253,6 @@ input[type='range'].pt-range:focus-visible {
   background: rgba(242, 237, 227, 0.85);
   box-shadow: 0 0 2px rgba(242, 237, 227, 0.4);
   animation: bg-star-twinkle var(--d) ease-in-out var(--del) infinite;
-  will-change: opacity;
 }
 
 @keyframes bg-star-twinkle {
@@ -290,7 +278,6 @@ input[type='range'].pt-range:focus-visible {
 
 .bg-const-line {
   animation: bg-const-pulse var(--d) ease-in-out var(--del) infinite;
-  will-change: opacity;
 }
 
 @keyframes bg-const-pulse {
@@ -316,7 +303,6 @@ input[type='range'].pt-range:focus-visible {
 
 .bg-arc {
   animation: bg-arc-spin var(--d) linear infinite;
-  will-change: transform;
 }
 
 @keyframes bg-arc-spin {
@@ -342,7 +328,6 @@ input[type='range'].pt-range:focus-visible {
   border-radius: 50%;
   background: rgba(242, 237, 227, 0.85);
   animation: bg-particle-rise var(--d) linear var(--del) infinite;
-  will-change: transform, opacity;
 }
 
 @keyframes bg-particle-rise {
@@ -381,7 +366,6 @@ input[type='range'].pt-range:focus-visible {
     0 0 calc(var(--glow, 6px) * 2) rgba(242, 237, 227, 0.2);
   transform: translateX(-50%);
   animation: bg-trail-sweep var(--d) linear var(--del) infinite;
-  will-change: transform, opacity;
 }
 
 @keyframes bg-trail-sweep {
@@ -404,13 +388,12 @@ input[type='range'].pt-range:focus-visible {
   }
 }
 
-/* 9. Subtle grain — fractalNoise SVG, mix-blend-overlay, 5% opacity */
+/* 9. Subtle grain — fractalNoise SVG, 3.5% opacity */
 .bg-grain-overlay {
   position: absolute;
   inset: 0;
   pointer-events: none;
-  opacity: 0.05;
-  mix-blend-mode: overlay;
+  opacity: 0.035;
   background-repeat: repeat;
 }
 

@@ -1,4 +1,4 @@
-import { memo, useEffect, useMemo, useRef, useState } from 'react'
+import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { motion, useScroll, useTransform } from 'motion/react'
 import { StoryWave } from './Canvases'
 import { EASE, Fade } from './ui'
@@ -358,7 +358,7 @@ class StorySoundEngine {
 
 const soundEngine = typeof window !== 'undefined' ? new StorySoundEngine() : null
 
-function Story({ s, activeSoundId, onToggleSound }) {
+const Story = memo(function Story({ s, activeSoundId, onToggleSound }) {
   const ref = useRef(null)
   const { scrollYProgress } = useScroll({ target: ref, offset: ['start end', 'end start'] })
   const y = useTransform(scrollYProgress, [0, 1], [30, -30])
@@ -479,7 +479,7 @@ function Story({ s, activeSoundId, onToggleSound }) {
       </div>
     </article>
   )
-}
+})
 
 export default function EarthStories() {
   const [activeSoundId, setActiveSoundId] = useState(null)
@@ -490,15 +490,17 @@ export default function EarthStories() {
     }
   }, [])
 
-  const handleToggleSound = (id) => {
-    if (activeSoundId === id) {
-      soundEngine?.stop()
-      setActiveSoundId(null)
-    } else {
-      soundEngine?.play(id)
-      setActiveSoundId(id)
-    }
-  }
+  const handleToggleSound = useCallback((id) => {
+    setActiveSoundId((prev) => {
+      if (prev === id) {
+        soundEngine?.stop()
+        return null
+      } else {
+        soundEngine?.play(id)
+        return id
+      }
+    })
+  }, [])
 
   return (
     <section id="stories" className="relative border-t border-[#f9eed8]/10 px-6 py-32 md:px-12 md:py-44 lg:px-20">
@@ -547,8 +549,8 @@ export default function EarthStories() {
    Palette: ivory (#f9eed8) on ink-700, with ember (#c08a55) reserved for wildfire.
 ============================================================================= */
 
-// Generate a smooth temperature curve path
-function tempPath() {
+// Generate a smooth temperature curve path (precomputed once)
+const TEMP_PATH = (() => {
   const pts = []
   const n = 60
   for (let i = 0; i <= n; i++) {
@@ -563,10 +565,10 @@ function tempPath() {
   return pts
     .map((p, i) => (i === 0 ? `M${p[0]} ${p[1]}` : `L${p[0]} ${p[1]}`))
     .join(' ')
-}
+})()
 
 // FIG · 02 — WIND: vector field
-function WindField() {
+const WIND_CELLS = (() => {
   const cells = []
   const cols = 18
   const rows = 9
@@ -579,9 +581,13 @@ function WindField() {
       cells.push({ x, y, angle, len, key: `${r}-${c}` })
     }
   }
+  return cells
+})()
+
+const WindField = memo(function WindField() {
   return (
     <svg viewBox="0 0 100 100" preserveAspectRatio="none" className="w-full h-full">
-      {cells.map((c) => (
+      {WIND_CELLS.map((c) => (
         <g key={c.key} transform={`translate(${c.x} ${c.y}) rotate(${c.angle})`}>
           <line
             x1={-c.len / 2}
@@ -599,7 +605,7 @@ function WindField() {
       ))}
     </svg>
   )
-}
+})
 
 // FIG · 03 — RAINFALL: animated droplets
 const RAINFALL_DROPS = Array.from({ length: 48 }).map((_, i) => ({
@@ -659,7 +665,7 @@ function IceFragment({ x, y, r, rot, delay }) {
   )
 }
 
-function Ice() {
+const Ice = memo(function Ice() {
   const fragments = [
     { x: 20, y: 30, r: 14, rot: 12, delay: 0 },
     { x: 48, y: 22, r: 10, rot: -8, delay: 1.2 },
@@ -677,7 +683,7 @@ function Ice() {
       ))}
     </svg>
   )
-}
+})
 
 // FIG · 05 — WILDFIRE: glowing embers + halos
 const WILDFIRE_POINTS = Array.from({ length: 24 }).map((_, i) => ({
@@ -1053,7 +1059,7 @@ const FiguresGrid = memo(function FiguresGrid() {
               />
             ))}
             <motion.path
-              d={`${tempPath()} L 600 450 L 0 450 Z`}
+              d={`${TEMP_PATH} L 600 450 L 0 450 Z`}
               fill="url(#tempFill)"
               initial={{ pathLength: 0, opacity: 0 }}
               whileInView={{ pathLength: 1, opacity: 1 }}
@@ -1061,7 +1067,7 @@ const FiguresGrid = memo(function FiguresGrid() {
               transition={{ duration: 2 }}
             />
             <motion.path
-              d={tempPath()}
+              d={TEMP_PATH}
               fill="none"
               stroke="#f9eed8"
               strokeWidth="1.5"
