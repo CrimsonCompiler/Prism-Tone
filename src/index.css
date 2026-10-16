@@ -65,6 +65,10 @@ body.system-page {
   background: #1e2a2c;
 }
 
+body.concept-page {
+  background: #111417;
+}
+
 ::selection {
   background: var(--color-ivory);
   color: var(--color-ink);
