@@ -16,6 +16,8 @@ import { describeStep, idleCaption, endCaption } from '../lib/captions'
 import { engine } from '../lib/sonify'
 import { LIVE_VARIABLES, VARIABLE_BY_ID, YEAR_MIN, YEAR_MAX } from '../data/datasets'
 import { DIVISION_BY_ID, GEOJSON_URL } from '../data/bangladesh'
+import baselineData from '../data/nasaPowerBaseline.json'
+import bangladeshGeoJson from '../data/bangladesh-divisions.json'
 
 const PreviewContext = createContext(null)
 
@@ -23,11 +25,21 @@ const GUIDE_KEY = 'pt-preview-guide-dismissed'
 
 function initialGuideOpen() {
   try {
-    return sessionStorage.getItem(GUIDE_KEY) !== '1'
+    return sessionStorage.getItem(GUIDE_KEY) === '1'
   } catch {
-    return true
+    return false
   }
 }
+
+const initialNational = deriveNational(baselineData.series, LIVE_VARIABLES.map((v) => v.param))
+
+const initialCaptionText = idleCaption({
+  variable: VARIABLE_BY_ID['T2M'],
+  scopeName: 'Bangladesh',
+  scopeKind: 'national',
+  hasData: true,
+  ready: true,
+})
 
 const initialState = {
   variableId: 'T2M',
@@ -43,19 +55,19 @@ const initialState = {
   granularity: 'monthly', // monthly | annual
 
   data: {
-    status: 'idle', // idle | loading | ready | error
-    divisions: {},
-    national: {},
-    outcomes: {},
-    meta: {},
+    status: 'ready',
+    divisions: baselineData.series,
+    national: initialNational,
+    outcomes: baselineData.outcomes,
+    meta: baselineData.meta,
     retryCount: 0,
   },
-  geo: { status: 'idle', json: null },
+  geo: { status: 'ready', json: bangladeshGeoJson },
 
   playState: 'idle', // idle | playing | paused
   position: 0,
-  caption: { text: 'Loading NASA POWER data for Bangladesh…', cls: 'interpretation' },
-  guideOpen: initialGuideOpen(),
+  caption: { text: initialCaptionText, cls: 'interpretation' },
+  guideOpen: false,
   unavailableNoticeId: null,
 }
 
@@ -204,6 +216,7 @@ export function PreviewProvider({ children }) {
   /* ---- data load: 8 division point-samples from NASA POWER (re-runs on retry) ---- */
   const retryCount = state.data.retryCount
   useEffect(() => {
+    if (retryCount === 0 && state.data.status === 'ready') return
     let cancelled = false
     dispatch({ type: 'DATA_LOADING' })
     loadAllDivisions()
@@ -238,6 +251,7 @@ export function PreviewProvider({ children }) {
 
   /* ---- map geometry (local vendored copy of GADM 4.1 level 1, simplified) ---- */
   useEffect(() => {
+    if (state.geo.status === 'ready' && state.geo.json) return
     let cancelled = false
     dispatch({ type: 'GEO_STATUS', status: 'loading' })
     fetch(GEOJSON_URL)

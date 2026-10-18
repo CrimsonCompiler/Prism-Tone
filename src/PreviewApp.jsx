@@ -44,14 +44,12 @@ export default function PreviewApp() {
       <main className="relative z-10 bg-transparent text-[#f5f2eb]">
         <div className="h-20 sm:h-22 md:h-24" aria-hidden="true" />
         <PreviewProvider>
-          <div className="mx-auto w-full max-w-[1440px] px-4 pb-24 sm:px-6 md:px-10 lg:px-16">
+          <div className="mx-auto w-full max-w-[1780px] 2xl:max-w-[1840px] px-3 sm:px-6 md:px-8 lg:px-10 xl:px-12 pb-24">
             <PreviewHero />
 
-            <div className="mt-8">
-              <StatusBanner />
-            </div>
+            <StatusBanner />
 
-            <div className="mt-10 md:mt-12">
+            <div className="mt-8 md:mt-10">
               <VariableSelector />
             </div>
 
