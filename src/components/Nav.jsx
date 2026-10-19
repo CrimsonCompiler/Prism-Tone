@@ -50,9 +50,6 @@ export default function Nav({ page = 'index' }) {
             alt="Prism Tone"
             className="h-8 sm:h-9 md:h-11 lg:h-13 w-auto object-contain transition-transform duration-300 group-hover:scale-[1.02]"
           />
-          <span className="whitespace-nowrap font-stencil text-[7.5px] sm:text-[8.5px] md:text-[9.5px] lg:text-[10px] uppercase tracking-[0.2em] md:tracking-[0.25em] text-[#f9eed8]/80 transition-colors duration-300 group-hover:text-[#f9eed8]">
-            [N · 37.7749° / W · 122.4194°]
-          </span>
         </a>
 
         <div className="flex items-center gap-2 sm:gap-3 md:gap-4 lg:gap-5 xl:gap-8 2xl:gap-10 shrink-0">

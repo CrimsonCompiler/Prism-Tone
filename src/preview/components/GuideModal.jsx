@@ -11,7 +11,7 @@ const GUIDE_KEY = 'pt-preview-guide-dismissed'
 
 const STEPS = [
   ['Choose a variable', 'Six categories are listed. Temperature, rainfall and wind are live NASA POWER datasets — the other three are honestly marked unavailable rather than faked.'],
-  ['Explore the map', 'The choropleth shows the selected variable across Bangladesh’s 8 divisions for the displayed month. Activate any division — on the map or in the region list — to zoom into it.'],
+  ['Explore the map', 'The GPU-accelerated MapLibre choropleth displays the selected variable across the South Asian Subcontinent (Bangladesh, India, Pakistan, Nepal, Bhutan, Sri Lanka, Maldives). Activate any region — on the map or in the navigation list — to fly into it.'],
   ['Select a time', 'Pick a year, a single month, or a custom range. The record runs 1981–2025; yearly playback walks all twelve months.'],
   ['Play the audio', 'One month becomes one sound event. Play, pause, resume and stop from the control bar; progress shows exactly which month is sounding.'],
   ['Read the captions', 'The caption panel narrates each step: the value, how it compares to the 1991–2020 normal, and what the sound is doing. It keeps working when audio is off.'],
@@ -83,7 +83,7 @@ export default function GuideModal() {
               <span className="font-data text-[10px] uppercase tracking-[0.14em] text-parchment">9 steps · ~2 min</span>
             </div>
             <h2 id="pt-guide-title" className="mt-2 font-meno text-[26px] font-light leading-tight text-ivory md:text-[30px]" style={{ fontFamily: 'Meno Banner' }}>
-              Listen to Bangladesh, honestly
+              Listen to the Subcontinent, honestly
             </h2>
             <ol className="mt-5 flex flex-col gap-4">
               {STEPS.map(([title, body], i) => (

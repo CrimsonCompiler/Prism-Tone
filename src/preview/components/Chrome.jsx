@@ -9,12 +9,17 @@ import { fmtTime } from '../lib/format'
 export function PreviewHero() {
   return (
     <header className="border-b border-ivory/10 pt-4 sm:pt-6 md:pt-7 pb-5 md:pb-6">
-      <h1
-        className="font-meno font-light leading-[1.05] tracking-[-0.015em] text-ivory text-[clamp(1.75rem,3vw,2.75rem)] pl-0.5 sm:pl-1"
-        style={{ fontFamily: '"Meno Banner", Georgia, serif' }}
-      >
-        Listen to Bangladesh.
-      </h1>
+      <div className="flex items-center justify-between">
+        <h1
+          className="font-meno font-light leading-[1.05] tracking-[-0.015em] text-ivory text-[clamp(1.75rem,3vw,2.75rem)] pl-0.5 sm:pl-1"
+          style={{ fontFamily: '"Meno Banner", Georgia, serif' }}
+        >
+          Listen to the Subcontinent.
+        </h1>
+        <span className="hidden sm:inline-block font-stencil text-[10px] uppercase tracking-[0.24em] text-parchment">
+          South Asia · 1981–2025
+        </span>
+      </div>
     </header>
   )
 }
@@ -89,7 +94,7 @@ export function SourceBar() {
           {meta && meta.apiVersion ? ` — API ${meta.apiVersion}` : ''}
         </span>
         <span>retrieved {meta && meta.fetchedAt ? fmtTime(meta.fetchedAt) : '—'} · session cache</span>
-        <span>boundaries — GADM 4.1 (gadm.org)</span>
+        <span>boundaries — Natural Earth 1:50m (naturalearthdata.com)</span>
         <span>no value on this page is simulated</span>
       </div>
     </footer>

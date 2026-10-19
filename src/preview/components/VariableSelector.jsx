@@ -21,7 +21,7 @@ export default function VariableSelector() {
         </span>
       </div>
 
-      <div className="mt-4 grid grid-cols-2 gap-2 md:grid-cols-3 xl:grid-cols-6" role="listbox" aria-label="Environmental variable">
+      <div className="mt-3 grid grid-cols-2 sm:grid-cols-3 gap-2" role="listbox" aria-label="Environmental variable">
         {VARIABLES.map((v) => {
           const live = v.status === 'live'
           const selected = state.variableId === v.id
@@ -37,20 +37,18 @@ export default function VariableSelector() {
               onClick={() =>
                 live ? dispatch({ type: 'SET_VARIABLE', id: v.id }) : dispatch({ type: 'SHOW_UNAVAILABLE', id: v.id })
               }
-              className={`group relative border px-3 py-3 text-left transition-colors duration-200 focus-visible:outline focus-visible:outline-1 focus-visible:outline-ivory/70 ${
-                selected
+              className={`group relative border px-3 py-3 text-left transition-colors duration-200 focus-visible:outline focus-visible:outline-1 focus-visible:outline-ivory/70 ${selected
                   ? 'border-ivory/60 bg-ivory/10'
                   : live
                     ? 'border-ivory/12 hover:border-ivory/35 hover:bg-ivory/5'
                     : 'cursor-not-allowed border-ivory/8 opacity-55'
-              }`}
+                }`}
             >
               <span className="flex items-baseline justify-between">
                 <span className="font-stencil text-[10px] tracking-[0.22em] text-parchment">{v.index}</span>
                 <span
-                  className={`h-1.5 w-1.5 rounded-full ${
-                    live ? (selected ? 'bg-ember' : 'bg-sage/80') : 'bg-ivory/25'
-                  }`}
+                  className={`h-1.5 w-1.5 rounded-full ${live ? (selected ? 'bg-ember' : 'bg-sage/80') : 'bg-ivory/25'
+                    }`}
                   aria-hidden="true"
                 />
               </span>

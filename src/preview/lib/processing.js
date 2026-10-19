@@ -59,14 +59,9 @@ export function getMonthly(seriesMap, year, month) {
 
 /* ---------- national aggregate (derived, labelled) ---------- */
 
-const MIN_DIVISIONS_FOR_NATIONAL = 6
-
-/**
- * National series = mean of division-centroid samples for each YYYYMM.
- * Requires at least 6 of 8 divisions to have a valid value, else null —
- * a national figure from two stations would be dishonest precision.
- */
 export function deriveNational(divisionSeries, params) {
+  const totalRegions = Object.keys(divisionSeries || {}).length || 7
+  const minRequired = Math.max(2, Math.floor(totalRegions * 0.5))
   const national = {}
   for (const p of params) {
     const acc = {}
@@ -82,7 +77,7 @@ export function deriveNational(divisionSeries, params) {
     }
     national[p] = {}
     for (const [key, { sum, n }] of Object.entries(acc)) {
-      national[p][key] = n >= MIN_DIVISIONS_FOR_NATIONAL ? sum / n : null
+      national[p][key] = n >= minRequired ? sum / n : null
     }
   }
   return national
@@ -90,8 +85,8 @@ export function deriveNational(divisionSeries, params) {
 
 export function scopeSeries(data, scope, param) {
   if (!data || data.status !== 'ready') return null
-  if (scope.type === 'division') {
-    const div = data.divisions[scope.id]
+  if (scope.type === 'division' || scope.type === 'region') {
+    const div = data.divisions && data.divisions[scope.id]
     return div ? div[param] || null : null
   }
   return (data.national && data.national[param]) || null

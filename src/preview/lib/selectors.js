@@ -5,7 +5,7 @@
 
 import { monthsInSelection, monthKey, keyToLabel, extent, meanOf, baselineNormal, getMonthly } from './processing'
 import { YEAR_MIN, YEAR_MAX, BASELINE } from '../data/datasets'
-import { DIVISIONS } from '../data/bangladesh'
+import { REGIONS as DIVISIONS } from '../data/subcontinent'
 
 /** Month key the map and readouts should display. Null in range mode when idle (→ show range mean). */
 export function displayKey(state, steps, position, playState) {

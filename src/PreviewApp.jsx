@@ -5,7 +5,7 @@ import Nav from './components/Nav'
 import { PreviewProvider } from './preview/state/PreviewContext'
 import { PreviewHero, StatusBanner, SourceBar } from './preview/components/Chrome'
 import VariableSelector from './preview/components/VariableSelector'
-import BangladeshMap from './preview/components/BangladeshMap'
+import SubcontinentMap from './preview/components/SubcontinentMap'
 import ScopePanel from './preview/components/ScopePanel'
 import Timeline from './preview/components/Timeline'
 import PlayerBar from './preview/components/PlayerBar'
@@ -49,45 +49,54 @@ export default function PreviewApp() {
 
             <StatusBanner />
 
-            <div className="mt-8 md:mt-10">
-              <VariableSelector />
-            </div>
+            {/* Main Interactive Studio Grid: Map on the Left, Navigation on the Right */}
+            <div className="mt-8 grid gap-6 lg:grid-cols-12 xl:gap-8 items-start">
+              {/* Left Column: Interactive MapLibre Subcontinent Map & Transport */}
+              <div className="flex flex-col gap-6 lg:col-span-8 xl:col-span-9">
+                <SubcontinentMap />
 
-            <div className="mt-10 grid gap-6 md:mt-12 lg:grid-cols-12">
-              <div className="lg:col-span-7">
-                <BangladeshMap />
-              </div>
-              <div className="lg:col-span-5">
-                <ScopePanel />
-              </div>
-            </div>
+                {/* Timeline directly under Map */}
+                <div className="w-full">
+                  <Timeline />
+                </div>
 
-            <div className="mt-6 md:mt-8">
-              <Timeline />
-            </div>
-
-            <div className="mt-6 grid gap-6 md:mt-8 lg:grid-cols-12">
-              <div className="lg:col-span-7">
-                <PlayerBar />
+                {/* Audio Transport Player */}
+                <div className="w-full">
+                  <PlayerBar />
+                </div>
               </div>
-              <div className="lg:col-span-5">
+
+              {/* Right Column: Navigation Sidebar (Variables, Regions, Summary, Captions) */}
+              <div className="flex flex-col gap-6 lg:col-span-4 xl:col-span-3">
+                {/* 01 Environmental Variable Selector */}
+                <div className="border border-ivory/10 bg-coal/40 p-4 md:p-5">
+                  <VariableSelector />
+                </div>
+
+                {/* 02 Subcontinent Region Navigation */}
+                <div className="min-h-[380px]">
+                  <ScopePanel />
+                </div>
+
+                {/* 03 Selected Scope Climatological Summary */}
+                <SummaryPanel />
+
+                {/* 04 Realtime Acoustic & Environmental Narration */}
                 <CaptionsPanel />
               </div>
             </div>
 
-            <div className="mt-6 grid gap-6 md:mt-8 lg:grid-cols-12">
-              <div className="lg:col-span-5">
-                <SummaryPanel />
-              </div>
-              <div className="lg:col-span-7">
-                <GraphPanel />
-              </div>
+            {/* Long-term Climatological Record & Graph Analysis */}
+            <div className="mt-12 md:mt-16">
+              <GraphPanel />
             </div>
 
+            {/* Scientific Mapping Panel */}
             <div className="mt-10 md:mt-14">
               <MappingPanel />
             </div>
 
+            {/* Attribution & Sources */}
             <div className="mt-10 md:mt-14">
               <SourceBar />
             </div>
