@@ -18,7 +18,7 @@
  *  - cached responses live in sessionStorage only for the session
  */
 
-import { DIVISIONS } from '../data/bangladesh'
+import { CONTINENTS as DIVISIONS } from '../data/world'
 import { YEAR_MIN, YEAR_MAX, SOURCE } from '../data/datasets'
 
 const API_ROOT = 'https://power.larc.nasa.gov/api/temporal/monthly/point'

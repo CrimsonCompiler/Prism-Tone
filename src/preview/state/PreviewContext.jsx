@@ -15,7 +15,9 @@ import { deriveNational, monthsInSelection, scopeSeries, monthlyArray, extent, m
 import { describeStep, idleCaption, endCaption } from '../lib/captions'
 import { engine } from '../lib/sonify'
 import { LIVE_VARIABLES, VARIABLE_BY_ID, YEAR_MIN, YEAR_MAX } from '../data/datasets'
-import { DIVISION_BY_ID, GEOJSON_URL } from '../data/bangladesh'
+import { REGION_BY_ID, DIVISION_BY_ID, GEOJSON_URL, REGIONAL, GLOBAL } from '../data/world'
+import baselineData from '../data/worldPowerBaseline.json'
+import worldGeoJson from '../data/world-regions.json'
 
 const PreviewContext = createContext(null)
 
@@ -23,11 +25,21 @@ const GUIDE_KEY = 'pt-preview-guide-dismissed'
 
 function initialGuideOpen() {
   try {
-    return sessionStorage.getItem(GUIDE_KEY) !== '1'
+    return sessionStorage.getItem(GUIDE_KEY) === '1'
   } catch {
-    return true
+    return false
   }
 }
+
+const initialNational = deriveNational(baselineData.series, LIVE_VARIABLES.map((v) => v.param))
+
+const initialCaptionText = idleCaption({
+  variable: VARIABLE_BY_ID['T2M'],
+  scopeName: 'Global (World)',
+  scopeKind: 'national',
+  hasData: true,
+  ready: true,
+})
 
 const initialState = {
   variableId: 'T2M',
@@ -43,19 +55,20 @@ const initialState = {
   granularity: 'monthly', // monthly | annual
 
   data: {
-    status: 'idle', // idle | loading | ready | error
-    divisions: {},
-    national: {},
-    outcomes: {},
-    meta: {},
+    status: 'ready',
+    divisions: baselineData.series,
+    national: initialNational,
+    outcomes: baselineData.outcomes,
+    meta: baselineData.meta,
     retryCount: 0,
   },
-  geo: { status: 'idle', json: null },
+  geo: { status: 'ready', json: worldGeoJson },
 
   playState: 'idle', // idle | playing | paused
   position: 0,
-  caption: { text: 'Loading NASA POWER data for Bangladesh…', cls: 'interpretation' },
-  guideOpen: initialGuideOpen(),
+  caption: { text: initialCaptionText, cls: 'interpretation' },
+  guideOpen: false,
+  continentModalOpen: false,
   unavailableNoticeId: null,
 }
 
@@ -172,13 +185,15 @@ function reducer(state, action) {
       return { ...state, caption: action.caption }
     case 'GUIDE':
       return { ...state, guideOpen: action.open }
+    case 'CONTINENT_MODAL':
+      return { ...state, continentModalOpen: action.open }
     default:
       return state
   }
 }
 
 function divisionName(id) {
-  return DIVISION_BY_ID[id] ? DIVISION_BY_ID[id].name : id
+  return REGION_BY_ID[id] ? REGION_BY_ID[id].name : DIVISION_BY_ID[id] ? DIVISION_BY_ID[id].name : id
 }
 
 function captionArgs(state, variable) {
@@ -186,7 +201,7 @@ function captionArgs(state, variable) {
   const hasData = seriesMap && Object.values(seriesMap).some((v) => v !== null)
   return {
     variable,
-    scopeName: state.scope.type === 'division' ? divisionName(state.scope.id) : 'Bangladesh',
+    scopeName: (state.scope.type === 'division' || state.scope.type === 'region') ? divisionName(state.scope.id) : 'Global (World)',
     scopeKind: state.scope.type,
     hasData,
     ready: state.data.status === 'ready',
@@ -204,6 +219,7 @@ export function PreviewProvider({ children }) {
   /* ---- data load: 8 division point-samples from NASA POWER (re-runs on retry) ---- */
   const retryCount = state.data.retryCount
   useEffect(() => {
+    if (retryCount === 0 && state.data.status === 'ready') return
     let cancelled = false
     dispatch({ type: 'DATA_LOADING' })
     loadAllDivisions()
@@ -238,6 +254,7 @@ export function PreviewProvider({ children }) {
 
   /* ---- map geometry (local vendored copy of GADM 4.1 level 1, simplified) ---- */
   useEffect(() => {
+    if (state.geo.status === 'ready' && state.geo.json) return
     let cancelled = false
     dispatch({ type: 'GEO_STATUS', status: 'loading' })
     fetch(GEOJSON_URL)

@@ -4,7 +4,5 @@ import './index.css'
 import PreviewApp from './PreviewApp.jsx'
 
 createRoot(document.getElementById('root')).render(
-  <StrictMode>
-    <PreviewApp />
-  </StrictMode>,
+  <PreviewApp />
 )

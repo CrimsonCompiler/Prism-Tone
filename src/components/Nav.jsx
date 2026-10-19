@@ -13,7 +13,7 @@ const LINKS = [
 export default function Nav({ page = 'index' }) {
   const { scrollY } = useScroll()
   const [solid, setSolid] = useState(false)
-  useMotionValueEvent(scrollY, 'change', (v) => setSolid(v > 80))
+  useMotionValueEvent(scrollY, 'change', (v) => setSolid(v > 20))
 
   const hrefFor = (href) =>
     page === 'index' ? href : href.startsWith('#') ? `index.html${href}` : href
@@ -25,18 +25,22 @@ export default function Nav({ page = 'index' }) {
     (page === 'concept' && label === 'Concept') ||
     (page === 'preview' && label === 'Preview')
 
+  const isPreview = page === 'preview'
+
   return (
     <motion.header
       initial={{ y: -18, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 1, delay: 0.5, ease: EASE }}
-      className={`fixed inset-x-0 top-0 z-[80] transition-colors duration-500 ${solid
-        ? (page === 'system'
-          ? 'border-b border-white/10 bg-[#162022]/90 backdrop-blur-md shadow-lg shadow-black/20'
-          : page === 'concept'
-            ? 'border-b border-white/10 bg-[#13191c]/90 backdrop-blur-md shadow-lg shadow-black/20'
-            : 'border-b border-ivory/10 bg-ink/90 backdrop-blur-md shadow-lg shadow-black/20')
-        : 'border-b border-transparent bg-transparent'
+      className={`fixed inset-x-0 top-0 z-[80] transition-colors duration-300 ${isPreview
+          ? 'border-b border-ivory/10 bg-[#101212] backdrop-blur-xl shadow-lg shadow-black/40'
+          : solid
+            ? (page === 'system'
+              ? 'border-b border-white/10 bg-[#162022] backdrop-blur-md shadow-lg shadow-black/20'
+              : page === 'concept'
+                ? 'border-b border-white/10 bg-[#13191c] backdrop-blur-md shadow-lg shadow-black/20'
+                : 'border-b border-ivory/10 bg-[#121313] backdrop-blur-md shadow-lg shadow-black/20')
+            : 'border-b border-transparent bg-transparent'
         }`}
     >
       <nav className="flex h-18 sm:h-20 md:h-22 lg:h-24 items-center justify-between px-3 sm:px-6 md:px-8 lg:px-12 xl:px-16 w-full">
@@ -50,9 +54,6 @@ export default function Nav({ page = 'index' }) {
             alt="Prism Tone"
             className="h-8 sm:h-9 md:h-11 lg:h-13 w-auto object-contain transition-transform duration-300 group-hover:scale-[1.02]"
           />
-          <span className="whitespace-nowrap font-stencil text-[7.5px] sm:text-[8.5px] md:text-[9.5px] lg:text-[10px] uppercase tracking-[0.2em] md:tracking-[0.25em] text-[#f9eed8]/80 transition-colors duration-300 group-hover:text-[#f9eed8]">
-            [N · 37.7749° / W · 122.4194°]
-          </span>
         </a>
 
         <div className="flex items-center gap-2 sm:gap-3 md:gap-4 lg:gap-5 xl:gap-8 2xl:gap-10 shrink-0">

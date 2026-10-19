@@ -3,63 +3,33 @@
  */
 
 import { usePreview } from '../state/PreviewContext'
-import { YEAR_MIN, YEAR_MAX, SOURCE } from '../data/datasets'
+import { SOURCE } from '../data/datasets'
 import { fmtTime } from '../lib/format'
 
 export function PreviewHero() {
-  const { state, dispatch } = usePreview()
-  const ok = state.data.status === 'ready'
-  const okCount = Object.values(state.data.outcomes || {}).filter((o) => o.ok).length
+  const { dispatch } = usePreview()
 
   return (
-    <header className="border-b border-ivory/10 pb-8 md:pb-10">
-      <div className="flex items-center gap-3">
-        <span
-          className="font-meno text-[11px] md:text-[12px] uppercase tracking-[0.26em] text-beige"
-          style={{ fontFamily: '"Meno Banner", "Source Serif 4", Georgia, serif' }}
-        >
-          Preview · Bangladesh
-        </span>
-        <span className="h-px w-14 bg-ivory/25 md:w-20" aria-hidden="true" />
-        <span className="font-data text-[10px] uppercase tracking-[0.18em] text-parchment">
-          {YEAR_MIN}–{YEAR_MAX}
-        </span>
-      </div>
-
-      <div className="mt-6 grid gap-6 lg:grid-cols-12 lg:items-end">
+    <header className="border-b border-ivory/10 pt-4 sm:pt-6 md:pt-7 pb-5 md:pb-6">
+      <div className="flex items-center justify-between gap-4">
         <h1
-          className="font-meno font-light leading-[0.95] tracking-[-0.015em] text-ivory text-[clamp(2.2rem,4.6vw,4.4rem)] lg:col-span-8"
-          style={{ fontFamily: 'Meno Banner' }}
+          className="font-meno font-light leading-[1.05] tracking-[-0.015em] text-ivory text-[clamp(1.75rem,3vw,2.75rem)] pl-0.5 sm:pl-1"
+          style={{ fontFamily: '"Meno Banner", Georgia, serif' }}
         >
-          Listen to Bangladesh.
+          Listen to the World.
         </h1>
-        <div className="lg:col-span-4">
-          <p className="max-w-md font-elegant text-[15px] leading-relaxed text-cream/85 md:text-[16px]">
-            Forty-five years of NASA Earth observation for the eight divisions — temperature, rainfall and
-            wind, retrieved live, explored on the map, and turned into sound by a documented, data-driven
-            mapping. What cannot be sourced honestly is labelled unavailable.
-          </p>
-          <div className="mt-4 flex flex-wrap items-center gap-3">
-            <button
-              type="button"
-              onClick={() => dispatch({ type: 'GUIDE', open: true })}
-              className="border border-ivory/25 px-4 py-2 font-stencil text-[10px] uppercase tracking-[0.24em] text-ivory transition-colors duration-200 hover:bg-ivory/10 focus-visible:outline focus-visible:outline-1 focus-visible:outline-ivory/70"
-            >
-              Open guide
-            </button>
-            <span className="flex items-center gap-2 font-stencil text-[9px] uppercase tracking-[0.18em] text-parchment" role="status">
-              <span
-                className={`h-1.5 w-1.5 rounded-full ${ok ? 'bg-sage' : state.data.status === 'error' ? 'bg-ember' : 'bg-ember animate-pulse'}`}
-                aria-hidden="true"
-              />
-              {ok
-                ? `${SOURCE.name} connected — ${okCount}/8 divisions`
-                : state.data.status === 'error'
-                  ? 'data retrieval failed'
-                  : 'contacting NASA POWER…'}
-            </span>
-          </div>
-        </div>
+        <button
+          id="global-continents-hero-btn"
+          type="button"
+          onClick={() => dispatch({ type: 'CONTINENT_MODAL', open: true })}
+          className="group flex items-center gap-2.5 rounded border border-ivory/25 bg-coal/70 px-4 py-2 backdrop-blur-md transition-all hover:border-ivory/60 hover:bg-ivory/10 hover:shadow-lg hover:shadow-black/50 cursor-pointer"
+          title="Open Continent Selection Popup"
+        >
+          <span className="h-2 w-2 rounded-full bg-ember animate-pulse" aria-hidden="true" />
+          <span className="font-stencil text-[11px] uppercase tracking-[0.24em] text-ivory group-hover:text-white font-medium">
+            Select Continent ▾
+          </span>
+        </button>
       </div>
     </header>
   )
@@ -70,17 +40,7 @@ export function StatusBanner() {
   const { data, geo } = state
 
   if (data.status === 'loading' || data.status === 'idle') {
-    return (
-      <div className="border border-ivory/12 bg-coal/40 px-4 py-3 md:px-5" role="status">
-        <p className="font-stencil text-[10px] uppercase tracking-[0.22em] text-cream/85">
-          Retrieving the NASA POWER monthly record — 8 division point-samples, {YEAR_MIN}–{YEAR_MAX}…
-        </p>
-        <p className="mt-1 font-ui text-[12px] text-cream/60">
-          First load takes a few seconds; responses are cached for the session. The page is usable as soon
-          as the first divisions land.
-        </p>
-      </div>
-    )
+    return null
   }
 
   if (data.status === 'error') {
@@ -145,7 +105,7 @@ export function SourceBar() {
           {meta && meta.apiVersion ? ` — API ${meta.apiVersion}` : ''}
         </span>
         <span>retrieved {meta && meta.fetchedAt ? fmtTime(meta.fetchedAt) : '—'} · session cache</span>
-        <span>boundaries — GADM 4.1 (gadm.org)</span>
+        <span>boundaries — Natural Earth 1:50m (naturalearthdata.com)</span>
         <span>no value on this page is simulated</span>
       </div>
     </footer>
