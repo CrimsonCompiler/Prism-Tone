@@ -17,6 +17,7 @@ import { keyToLabel } from '../lib/processing'
 import { CONTINENTS, CONTINENT_BY_ID, WORLD_BOUNDS } from '../data/world'
 import { fmtValue } from '../lib/format'
 import worldGeoJson from '../data/world-regions.json'
+import worldCountriesGeoJson from '../data/world-countries.json'
 
 // Register worker bundle explicitly for Vite bundler compatibility
 if (typeof maplibregl.setWorkerUrl === 'function') {
@@ -105,7 +106,7 @@ export default function SubcontinentMap() {
       center: [15.0, 18.0],
       zoom: 1.55,
       minZoom: 1.1,
-      maxZoom: 9.5,
+      maxZoom: 13.0,
       renderWorldCopies: false, // Disables infinite horizontal world repetition
       maxBounds: [
         [-179.9, -84.0],
@@ -138,6 +139,11 @@ export default function SubcontinentMap() {
             data: worldGeoJson,
           })
 
+          map.addSource('countries-geojson', {
+            type: 'geojson',
+            data: worldCountriesGeoJson,
+          })
+
           /* Match expression for immediate continent pastel fill (no delay on hard reload) */
           const initialColorMatch = ['match', ['get', 'id']]
           for (const r of CONTINENTS) {
@@ -152,27 +158,59 @@ export default function SubcontinentMap() {
           }
           borderMatch.push('#f2ede3')
 
+          // Find the first symbol layer so ALL fills, borders, and lines are rendered strictly BELOW text
+          const styleLayers = map.getStyle().layers || []
+          const firstSymbolLayer = styleLayers.find((l) => l.type === 'symbol')
+          const labelBeforeId = firstSymbolLayer ? firstSymbolLayer.id : undefined
+
+          // 1. Continental pastel choropleth base fill (rendered below labels)
           map.addLayer({
             id: 'world-fill',
             type: 'fill',
             source: 'world-geojson',
             paint: {
               'fill-color': initialColorMatch,
-              'fill-opacity': 0.82,
+              'fill-opacity': 0.70,
             },
-          })
+          }, labelBeforeId)
 
+          // 2. Clear national country borders (all 177 countries) - placed strictly BELOW text
+          map.addLayer({
+            id: 'country-borders-black',
+            type: 'line',
+            source: 'countries-geojson',
+            paint: {
+              'line-color': '#000000',
+              'line-width': [
+                'interpolate', ['linear'], ['zoom'],
+                1, 0.85,
+                3, 1.45,
+                5, 2.1,
+                8, 2.9,
+                11, 3.8
+              ],
+              'line-opacity': [
+                'interpolate', ['linear'], ['zoom'],
+                1, 0.70,
+                3, 0.85,
+                6, 0.95
+              ],
+            },
+          }, labelBeforeId)
+
+          // 3. Continent outer accent boundary lines - placed strictly BELOW text
           map.addLayer({
             id: 'world-borders',
             type: 'line',
             source: 'world-geojson',
             paint: {
               'line-color': borderMatch,
-              'line-width': 2.0,
+              'line-width': 2.2,
               'line-opacity': 0.95,
             },
-          })
+          }, labelBeforeId)
 
+          // 4. White active continent border on selection - placed strictly BELOW text
           map.addLayer({
             id: 'world-selected-border',
             type: 'line',
@@ -183,6 +221,55 @@ export default function SubcontinentMap() {
               'line-opacity': 1,
             },
             filter: ['==', ['get', 'id'], ''],
+          }, labelBeforeId)
+
+          // 5. If map has no built-in vector labels (e.g. fallback raster), add fallback country names
+          if (!map.getLayer('Country labels')) {
+            map.addLayer({
+              id: 'country-names-label',
+              type: 'symbol',
+              source: 'countries-geojson',
+              minzoom: 1.8,
+              layout: {
+                'text-field': ['get', 'name'],
+                'text-font': ['Noto Sans Regular', 'Open Sans Regular'],
+                'text-size': [
+                  'interpolate', ['linear'], ['zoom'],
+                  2, 10,
+                  3.5, 13,
+                  6, 16,
+                  9, 18
+                ],
+                'text-transform': 'none',
+                'text-letter-spacing': 0.04,
+                'text-allow-overlap': false,
+              },
+              paint: {
+                'text-color': '#ffffff',
+                'text-halo-width': 0,
+              },
+            })
+          }
+
+          // 6. Style all built-in text symbol layers with solid pure white (no border/halo)
+          styleLayers.forEach((layer) => {
+            if (layer.type === 'symbol') {
+              // Hide redundant continent label to prevent watermark text across oceans/continents
+              if (layer.id.toLowerCase().includes('continent')) {
+                try {
+                  map.setLayoutProperty(layer.id, 'visibility', 'none')
+                } catch (_) { }
+                return
+              }
+
+              // Apply solid pure white text with no border/halo
+              if (layer.layout && layer.layout['text-field']) {
+                try {
+                  map.setPaintProperty(layer.id, 'text-color', '#ffffff')
+                  map.setPaintProperty(layer.id, 'text-halo-width', 0)
+                } catch (_) { }
+              }
+            }
           })
 
           map.on('click', 'world-fill', (e) => {
@@ -415,10 +502,6 @@ export default function SubcontinentMap() {
         <div className="flex flex-wrap items-center gap-2.5">
           <span className="font-stencil text-[11.5px] uppercase tracking-[0.26em] text-beige">
             Global Planetary Overview
-          </span>
-          <span className="h-3 w-px bg-ivory/20" aria-hidden="true" />
-          <span className="font-data text-[10.5px] uppercase tracking-[0.18em] text-parchment">
-            {key ? keyToLabel(key) : `mean · ${state.range.startYear}–${state.range.endYear}`}
           </span>
         </div>
 

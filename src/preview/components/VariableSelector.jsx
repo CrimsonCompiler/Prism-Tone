@@ -93,16 +93,11 @@ export default function VariableSelector() {
                 type="button"
                 onClick={() => isLive && dispatch({ type: 'SET_VARIABLE', id })}
                 className={`flex items-center gap-2 rounded px-3 py-1.5 text-left text-xs transition-all cursor-pointer border ${isPrimary
-                    ? 'border-ember bg-ember/20 text-ivory font-semibold shadow-sm shadow-ember/20'
-                    : 'border-ivory/15 bg-coal/70 text-cream/80 hover:border-ivory/35 hover:bg-ivory/10'
+                  ? 'border-ember bg-ember/20 text-ivory font-semibold shadow-sm shadow-ember/20'
+                  : 'border-ivory/15 bg-coal/70 text-cream/80 hover:border-ivory/35 hover:bg-ivory/10'
                   }`}
                 title={isLive ? `Focus ${v.name} on map` : 'Planned variable'}
               >
-                <span
-                  className={`h-2 w-2 rounded-full ${isPrimary ? 'bg-ember' : isLive ? 'bg-sage/70' : 'bg-ivory/30'
-                    }`}
-                  aria-hidden="true"
-                />
                 <span className="font-ui font-medium text-[13px]">{v.name}</span>
                 <span className="font-stencil text-[9.5px] uppercase tracking-wider text-parchment/70">
                   {v.unit}
@@ -165,8 +160,8 @@ export default function VariableSelector() {
                   role="option"
                   aria-selected={isChecked}
                   className={`group flex items-center justify-between rounded-lg p-3 sm:p-3.5 transition-all cursor-pointer border select-none ${isChecked
-                      ? 'border-ember/60 bg-amber-950/25 shadow-sm'
-                      : 'border-ivory/10 bg-coal/40 hover:border-ivory/30 hover:bg-ivory/5'
+                    ? 'border-ember/60 bg-amber-950/25 shadow-sm'
+                    : 'border-ivory/10 bg-coal/40 hover:border-ivory/30 hover:bg-ivory/5'
                     }`}
                 >
                   {/* Left Side: Checkbox + Name (+ Focus badge) — No 1, 2, 3 numbers */}
@@ -174,8 +169,8 @@ export default function VariableSelector() {
                     {/* Custom Checkbox */}
                     <div
                       className={`flex h-5 w-5 shrink-0 items-center justify-center rounded border transition-colors ${isChecked
-                          ? 'border-ember bg-ember text-[#121414]'
-                          : 'border-ivory/30 bg-black/40 group-hover:border-ivory/60'
+                        ? 'border-ember bg-ember text-[#121414]'
+                        : 'border-ivory/30 bg-black/40 group-hover:border-ivory/60'
                         }`}
                     >
                       {isChecked && (

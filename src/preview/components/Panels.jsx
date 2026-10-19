@@ -24,7 +24,7 @@ export function CaptionsPanel() {
   return (
     <section aria-label="Live captions">
       <div className="flex items-baseline justify-between">
-        <p className="font-stencil text-[11px] md:text-[12px] uppercase tracking-[0.28em] text-beige">03 · Live captions</p>
+        <p className="font-stencil text-[11px] md:text-[12px] uppercase tracking-[0.28em] text-beige">Live captions</p>
         <span className={`font-stencil text-[9px] uppercase tracking-[0.2em] text-parchment/80`}>
           {CLS_LABEL[state.caption.cls] || 'note'}
         </span>
@@ -47,7 +47,7 @@ export function SummaryPanel() {
   if (state.data.status === 'loading' || state.data.status === 'idle') {
     return (
       <div className="flex h-full flex-col border border-ivory/10 bg-coal/40 p-4 md:p-5" role="status">
-        <p className="font-stencil text-[11px] uppercase tracking-[0.26em] text-beige">02 · Data summary</p>
+        <p className="font-stencil text-[11px] uppercase tracking-[0.26em] text-beige">Data summary</p>
         <p className="mt-4 font-ui text-[13px] text-cream/70">Retrieving the NASA POWER global climate record…</p>
       </div>
     )
@@ -56,7 +56,7 @@ export function SummaryPanel() {
   if (state.data.status === 'error') {
     return (
       <div className="flex h-full flex-col border border-ivory/10 bg-coal/40 p-4 md:p-5" role="alert">
-        <p className="font-stencil text-[11px] uppercase tracking-[0.26em] text-beige">02 · Data summary</p>
+        <p className="font-stencil text-[11px] uppercase tracking-[0.26em] text-beige">Data summary</p>
         <p className="mt-4 font-ui text-[13px] leading-relaxed text-cream/75">
           No summary can be shown — the NASA POWER data could not be retrieved. The controls above stay
           available; retry from the status banner once your connection is back.
@@ -76,7 +76,7 @@ export function SummaryPanel() {
     <div className="flex h-full flex-col border border-ivory/10 bg-coal/40">
       <div className="flex items-center justify-between border-b border-ivory/10 px-4 py-3 md:px-5">
         <div className="flex items-center gap-2">
-          <p className="font-stencil text-[11px] md:text-[12px] uppercase tracking-[0.28em] text-beige">02 · Data summary</p>
+          <p className="font-stencil text-[11px] md:text-[12px] uppercase tracking-[0.28em] text-beige">Data summary</p>
           <button
             type="button"
             onClick={() => dispatch({ type: 'CONTINENT_MODAL', open: true })}
