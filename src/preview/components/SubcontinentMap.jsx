@@ -10,12 +10,18 @@
 import { useEffect, useRef, useState, useMemo } from 'react'
 import * as maplibregl from 'maplibre-gl'
 import 'maplibre-gl/dist/maplibre-gl.css'
+import workerUrl from 'maplibre-gl/dist/maplibre-gl-worker.mjs?worker&url'
 import { usePreview } from '../state/PreviewContext'
 import { displayKey, divisionDisplayValues } from '../lib/selectors'
 import { keyToLabel } from '../lib/processing'
 import { REGIONS, REGION_BY_ID } from '../data/subcontinent'
 import { fmtValue } from '../lib/format'
 import subcontinentGeoJson from '../data/subcontinent-regions.json'
+
+// Register worker bundle explicitly for Vite bundler compatibility
+if (typeof maplibregl.setWorkerUrl === 'function') {
+  maplibregl.setWorkerUrl(workerUrl)
+}
 
 const MAPTILER_KEY = 'jQcfDpbcpnU83qU17Ihi'
 const MAPTILER_STYLE = `https://api.maptiler.com/maps/basic-v2-dark/style.json?key=${MAPTILER_KEY}`
