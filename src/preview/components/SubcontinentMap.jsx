@@ -462,39 +462,6 @@ export default function SubcontinentMap() {
           </button>
         </div>
 
-        {/* Bottom Legend Overlay (Bottom Left): Pastel Continents Palette */}
-        <div className="absolute bottom-4 left-4 z-10 border border-ivory/20 bg-black/90 px-3.5 py-2.5 backdrop-blur-md shadow-xl max-w-[calc(100%-120px)]">
-          <div className="flex items-baseline justify-between gap-5 font-stencil text-[9px] uppercase tracking-[0.18em] text-parchment">
-            <span>{variable.name} ({variable.unit})</span>
-            <span>7 Distinct Continents</span>
-          </div>
-          <div className="mt-2 flex flex-wrap items-center gap-2">
-            {CONTINENTS.map((c) => {
-              const isSel = state.scope.type === 'division' && state.scope.id === c.id
-              return (
-                <button
-                  key={c.id}
-                  type="button"
-                  onClick={() => dispatch({ type: 'SET_SCOPE', scope: { type: 'division', id: c.id } })}
-                  className={`flex items-center gap-1.5 px-2 py-0.5 rounded transition-all cursor-pointer ${isSel
-                    ? 'bg-ivory/15 outline outline-1 outline-ivory/50 scale-105'
-                    : 'hover:bg-ivory/8 opacity-85 hover:opacity-100'
-                    }`}
-                  title={`Focus on ${c.name}`}
-                >
-                  <span
-                    className="h-2 w-2 rounded-full"
-                    style={{ backgroundColor: c.color, boxShadow: `0 0 6px ${c.color}` }}
-                    aria-hidden="true"
-                  />
-                  <span className="font-stencil text-[9.5px] uppercase tracking-wider text-cream/90">
-                    {c.name}
-                  </span>
-                </button>
-              )
-            })}
-          </div>
-        </div>
 
         {/* Selected Continent Pill (Bottom Right) */}
         {state.scope.type === 'division' && CONTINENT_BY_ID[state.scope.id] && (

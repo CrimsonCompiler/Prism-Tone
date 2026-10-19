@@ -43,6 +43,7 @@ const initialCaptionText = idleCaption({
 
 const initialState = {
   variableId: 'T2M',
+  selectedVariableIds: ['T2M'],
   scope: { type: 'national' },
   timeMode: 'year', // year | month | range
   year: 2010,
@@ -102,8 +103,43 @@ function reducer(state, action) {
     case 'GEO_STATUS':
       return { ...state, geo: { status: action.status, json: action.json || null } }
 
-    case 'SET_VARIABLE':
-      return { ...state, variableId: action.id, unavailableNoticeId: null }
+    case 'SET_VARIABLE': {
+      const current = state.selectedVariableIds || [state.variableId]
+      const updated = current.includes(action.id) ? current : [...current, action.id]
+      return { ...state, variableId: action.id, selectedVariableIds: updated, unavailableNoticeId: null }
+    }
+    case 'TOGGLE_VARIABLE': {
+      const current = state.selectedVariableIds || [state.variableId]
+      const exists = current.includes(action.id)
+      let updated
+      if (exists) {
+        if (current.length === 1) {
+          updated = current
+        } else {
+          updated = current.filter((id) => id !== action.id)
+        }
+      } else {
+        updated = [...current, action.id]
+      }
+      let activeId = state.variableId
+      if (!updated.includes(activeId)) {
+        const firstLive = updated.find((id) => VARIABLE_BY_ID[id]?.status === 'live')
+        activeId = firstLive || updated[0]
+      } else if (!exists && VARIABLE_BY_ID[action.id]?.status === 'live') {
+        activeId = action.id
+      }
+      return {
+        ...state,
+        selectedVariableIds: updated,
+        variableId: activeId,
+        unavailableNoticeId: VARIABLE_BY_ID[action.id]?.status === 'unavailable' ? action.id : null,
+      }
+    }
+    case 'SET_SELECTED_VARIABLES': {
+      const ids = action.ids && action.ids.length > 0 ? action.ids : ['T2M']
+      let activeId = ids.includes(state.variableId) ? state.variableId : (ids.find((id) => VARIABLE_BY_ID[id]?.status === 'live') || ids[0])
+      return { ...state, selectedVariableIds: ids, variableId: activeId }
+    }
     case 'SHOW_UNAVAILABLE':
       return { ...state, unavailableNoticeId: action.id }
     case 'SET_SCOPE':
