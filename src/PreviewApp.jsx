@@ -6,7 +6,6 @@ import { PreviewProvider } from './preview/state/PreviewContext'
 import { PreviewHero, StatusBanner, SourceBar } from './preview/components/Chrome'
 import VariableSelector from './preview/components/VariableSelector'
 import SubcontinentMap from './preview/components/SubcontinentMap'
-import Timeline from './preview/components/Timeline'
 import PlayerBar from './preview/components/PlayerBar'
 import { CaptionsPanel, SummaryPanel, MappingPanel } from './preview/components/Panels'
 import GraphPanel from './preview/components/GraphPanel'
@@ -45,11 +44,6 @@ export default function PreviewApp() {
               {/* Left Column: Interactive MapLibre Global World Map & Transport */}
               <div className="flex flex-col gap-6 lg:col-span-8 xl:col-span-9">
                 <SubcontinentMap />
-
-                {/* Timeline directly under Map */}
-                <div className="w-full">
-                  <Timeline />
-                </div>
 
                 {/* Audio Transport Player */}
                 <div className="w-full">

@@ -133,9 +133,8 @@ export default function PlayerBar() {
                   type="button"
                   aria-pressed={rate === r}
                   onClick={() => dispatch({ type: 'SET_RATE', rate: r })}
-                  className={`border px-2.5 py-1 font-data text-[11px] tracking-[0.06em] transition-colors duration-150 focus-visible:outline focus-visible:outline-1 focus-visible:outline-ivory/70 ${
-                    rate === r ? 'border-ivory/50 bg-ivory/10 text-ivory' : 'border-ivory/12 text-parchment hover:border-ivory/30 hover:text-cream'
-                  }`}
+                  className={`border px-2.5 py-1 font-data text-[11px] tracking-[0.06em] transition-colors duration-150 focus-visible:outline focus-visible:outline-1 focus-visible:outline-ivory/70 ${rate === r ? 'border-ivory/50 bg-ivory/10 text-ivory' : 'border-ivory/12 text-parchment hover:border-ivory/30 hover:text-cream'
+                    }`}
                 >
                   {label}
                 </button>

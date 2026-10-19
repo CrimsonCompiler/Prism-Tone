@@ -18,6 +18,7 @@ import { CONTINENTS, CONTINENT_BY_ID, WORLD_BOUNDS } from '../data/world'
 import { fmtValue } from '../lib/format'
 import worldGeoJson from '../data/world-regions.json'
 import worldCountriesGeoJson from '../data/world-countries.json'
+import Timeline from './Timeline'
 
 // Register worker bundle explicitly for Vite bundler compatibility
 if (typeof maplibregl.setWorkerUrl === 'function') {
@@ -549,7 +550,7 @@ export default function SubcontinentMap() {
         {/* Selected Continent Pill (Bottom Right) */}
         {state.scope.type === 'division' && CONTINENT_BY_ID[state.scope.id] && (
           <div
-            className="absolute bottom-4 right-4 z-10 flex items-center gap-2 border bg-black/95 px-3.5 py-2 backdrop-blur-md shadow-xl"
+            className="absolute bottom-[114px] right-4 z-20 flex items-center gap-2 border bg-black/95 px-3.5 py-2 backdrop-blur-md shadow-xl"
             style={{ borderColor: CONTINENT_BY_ID[state.scope.id].border }}
           >
             <span
@@ -576,6 +577,11 @@ export default function SubcontinentMap() {
             </button>
           </div>
         )}
+
+        {/* Timeline Controls Docked to the Bottom of Map Screen */}
+        <div className="absolute bottom-0 left-0 right-0 z-20">
+          <Timeline />
+        </div>
       </div>
     </div>
   )

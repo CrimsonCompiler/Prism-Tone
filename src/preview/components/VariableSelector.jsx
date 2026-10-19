@@ -67,13 +67,13 @@ export default function VariableSelector() {
         <div className="flex items-center gap-2.5">
           {/* Animated chevron arrow */}
           <span
-            className={`flex h-4 w-4 items-center justify-center font-bold text-sm transition-transform duration-200 ${isOpen ? 'rotate-90 text-ember' : 'text-parchment group-hover:text-ember group-hover:translate-x-0.5'
+            className={`flex h-4 w-4 items-center justify-center font-bold text-sm transition-transform duration-200 ${isOpen ? 'rotate-90 text-ember' : 'text-ivory/70 group-hover:text-ember group-hover:translate-x-0.5'
               }`}
             aria-hidden="true"
           >
             ›
           </span>
-          <p className="font-stencil text-[12px] md:text-[13px] uppercase tracking-[0.24em] text-beige group-hover:text-white transition-colors">
+          <p className="font-stencil text-[12px] md:text-[13px] uppercase tracking-[0.24em] text-ivory font-medium group-hover:text-white transition-colors">
             Environmental variable
           </p>
         </div>
@@ -94,12 +94,12 @@ export default function VariableSelector() {
                 onClick={() => isLive && dispatch({ type: 'SET_VARIABLE', id })}
                 className={`flex items-center gap-2 rounded px-3 py-1.5 text-left text-xs transition-all cursor-pointer border ${isPrimary
                   ? 'border-ember bg-ember/20 text-ivory font-semibold shadow-sm shadow-ember/20'
-                  : 'border-ivory/15 bg-coal/70 text-cream/80 hover:border-ivory/35 hover:bg-ivory/10'
+                  : 'border-ivory/15 bg-coal/70 text-cream/90 hover:border-ivory/35 hover:bg-ivory/10'
                   }`}
                 title={isLive ? `Focus ${v.name} on map` : 'Planned variable'}
               >
-                <span className="font-ui font-medium text-[13px]">{v.name}</span>
-                <span className="font-stencil text-[9.5px] uppercase tracking-wider text-parchment/70">
+                <span className="font-ui font-medium text-[13px] text-ivory">{v.name}</span>
+                <span className="font-stencil text-[9.5px] uppercase tracking-wider text-cream/80">
                   {v.unit}
                 </span>
               </button>
@@ -107,8 +107,8 @@ export default function VariableSelector() {
           })}
         </div>
 
-        {/* Underlined instruction line with slightly increased font size */}
-        <p className="mt-3 text-[12.5px] sm:text-[13px] text-parchment/85 font-ui leading-normal">
+        {/* Underlined instruction line with clean, legible text color */}
+        <p className="mt-3 text-[12.5px] sm:text-[13px] text-cream/90 font-ui leading-normal">
           Hover or click above to open multi-select variables popup.
         </p>
       </div>
