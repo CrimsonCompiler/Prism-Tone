@@ -58,7 +58,7 @@ export default function ScopePanel() {
           </li>
 
           {CONTINENTS.map((d) => {
-            const v = values[d.id]
+            const v = (values && values[d.id]) || { value: null, status: 'loading' }
             const selected = state.scope.type === 'division' && state.scope.id === d.id
             const shown = v.value !== null
             return (
@@ -71,10 +71,20 @@ export default function ScopePanel() {
                   className={`flex w-full items-center justify-between gap-3 px-3 py-2.5 text-left transition-colors duration-200 focus-visible:outline focus-visible:outline-1 focus-visible:outline-ivory/70 ${selected ? 'bg-ivory/10' : 'hover:bg-ivory/5'
                     }`}
                 >
-                  <span>
-                    <span className="block font-ui text-[13px] font-medium tracking-[0.06em] text-ivory">{d.name}</span>
-                    <span className="block font-stencil text-[9px] uppercase tracking-[0.18em] text-parchment">
-                      {STATUS_NOTE[v.status] || 'point sample'}
+                  <span className="flex items-center gap-2.5">
+                    <span
+                      className="h-2.5 w-2.5 shrink-0 rounded-full"
+                      style={{
+                        backgroundColor: d.color,
+                        boxShadow: selected ? `0 0 8px ${d.color}` : 'none',
+                      }}
+                      aria-hidden="true"
+                    />
+                    <span>
+                      <span className="block font-ui text-[13px] font-medium tracking-[0.06em] text-ivory">{d.name}</span>
+                      <span className="block font-stencil text-[9px] uppercase tracking-[0.18em] text-parchment">
+                        {STATUS_NOTE[v.status] || 'point sample'}
+                      </span>
                     </span>
                   </span>
                   <span className="font-data text-[12px] tracking-[0.04em] text-cream/90">

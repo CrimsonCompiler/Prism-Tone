@@ -250,30 +250,27 @@ export default function SubcontinentMap() {
     const applyColors = () => {
       if (!map.getLayer('world-fill')) return
 
-      const [lo, hi] = extent
-      const span = hi - lo || 1
-
-      /* Build match expression for continent fill colors */
+      /* Build match expression for continent fill colors using distinct pastel palette */
       const colorMatch = ['match', ['get', 'id']]
       for (const r of CONTINENTS) {
-        const entry = values[r.id]
-        const v = entry ? entry.value : null
-        const norm = v !== null ? (v - lo) / span : null
-        const color = getChoroplethColor(norm)
-        colorMatch.push(r.id, color)
+        colorMatch.push(r.id, r.color)
       }
       colorMatch.push('#252929') // fallback
 
       map.setPaintProperty('world-fill', 'fill-color', colorMatch)
 
-      /* Update selected continent filter */
+      /* Update selected continent filter and border accent */
       const selectedId = state.scope.type === 'division' ? state.scope.id : ''
+      const selectedContinent = CONTINENT_BY_ID[selectedId]
       if (map.getLayer('world-selected-border')) {
         map.setFilter('world-selected-border', ['==', ['get', 'id'], selectedId])
+        if (selectedContinent) {
+          map.setPaintProperty('world-selected-border', 'line-color', selectedContinent.border)
+        }
       }
 
-      /* Set active fill opacity */
-      const opacityMatch = ['case', ['==', ['get', 'id'], selectedId], 0.92, 0.75]
+      /* Set active fill opacity: highlight selected continent while keeping others softly visible */
+      const opacityMatch = ['case', ['==', ['get', 'id'], selectedId], 0.95, 0.78]
       map.setPaintProperty('world-fill', 'fill-opacity', opacityMatch)
     }
 
@@ -321,6 +318,9 @@ export default function SubcontinentMap() {
       const entry = values[r.id]
       const valStr = entry && entry.value !== null ? fmtValue(entry.value, variable) : '—'
       const isSelected = state.scope.type === 'division' && state.scope.id === r.id
+      const markerColor = r.color || '#c19a5b'
+      const markerBorder = r.border || '#f2ede3'
+      const markerGlow = r.glow || 'rgba(193, 154, 91, 0.45)'
 
       const el = document.createElement('div')
       el.style.cursor = 'pointer'
@@ -333,32 +333,32 @@ export default function SubcontinentMap() {
           gap: 7px;
           padding: 4px 10px;
           border-radius: 4px;
-          border: 1px solid ${isSelected ? '#c19a5b' : 'rgba(242, 237, 227, 0.32)'};
-          background: ${isSelected ? 'rgba(12, 13, 13, 0.96)' : 'rgba(18, 20, 20, 0.90)'};
-          box-shadow: 0 4px 16px rgba(0, 0, 0, 0.75);
+          border: 1px solid ${isSelected ? markerBorder : 'rgba(242, 237, 227, 0.28)'};
+          background: ${isSelected ? 'rgba(12, 14, 15, 0.98)' : 'rgba(18, 20, 22, 0.88)'};
+          box-shadow: 0 4px 18px rgba(0, 0, 0, 0.85);
           backdrop-filter: blur(8px);
-          transition: transform 0.2s ease, border-color 0.2s ease;
-          ${isSelected ? 'transform: scale(1.08); outline: 1px solid rgba(193, 154, 91, 0.6);' : ''}
+          transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+          ${isSelected ? `transform: scale(1.1); box-shadow: 0 0 16px ${markerGlow}; outline: 1px solid ${markerBorder};` : ''}
         ">
           <span style="
-            width: 7px;
-            height: 7px;
+            width: 8px;
+            height: 8px;
             border-radius: 50%;
-            background: ${isSelected ? '#c19a5b' : 'rgba(242, 237, 227, 0.75)'};
-            ${isSelected ? 'box-shadow: 0 0 8px #c19a5b;' : ''}
+            background: ${markerColor};
+            box-shadow: 0 0 8px ${markerColor};
           "></span>
           <span style="
             font-family: 'Titillium Web', sans-serif;
             font-size: 11.5px;
             font-weight: 600;
-            color: #f2ede3;
-            letter-spacing: 0.06em;
+            color: #ffffff;
+            letter-spacing: 0.05em;
           ">${r.name}</span>
           <span style="
             font-family: 'Oxanium', monospace;
             font-size: 11px;
             font-weight: 700;
-            color: ${isSelected ? '#c19a5b' : '#e2d9c6'};
+            color: ${isSelected ? markerBorder : '#e4ddcf'};
           ">${valStr}</span>
         </div>
       `
@@ -444,35 +444,58 @@ export default function SubcontinentMap() {
           </button>
         </div>
 
-        {/* Bottom Legend Overlay (Bottom Left) */}
-        <div className="absolute bottom-4 left-4 z-10 border border-ivory/20 bg-black/90 px-3.5 py-2.5 backdrop-blur-md shadow-xl">
+        {/* Bottom Legend Overlay (Bottom Left): Pastel Continents Palette */}
+        <div className="absolute bottom-4 left-4 z-10 border border-ivory/20 bg-black/90 px-3.5 py-2.5 backdrop-blur-md shadow-xl max-w-[calc(100%-120px)]">
           <div className="flex items-baseline justify-between gap-5 font-stencil text-[9px] uppercase tracking-[0.18em] text-parchment">
             <span>{variable.name} ({variable.unit})</span>
-            <span>{values ? Object.values(values).filter((v) => v.value !== null).length : 0}/7 Continents</span>
+            <span>7 Distinct Continents</span>
           </div>
-          <div className="mt-2 flex items-center gap-2.5">
-            <span className="font-data text-[10px] text-cream/70">
-              {lo !== null && !isNaN(lo) ? fmtValue(lo, variable) : '—'}
-            </span>
-            <div
-              className="h-2.5 w-32 md:w-44 rounded-xs"
-              style={{
-                background:
-                  'linear-gradient(to right, rgb(24, 27, 27), rgb(104, 96, 78), rgb(193, 154, 91))',
-              }}
-              aria-hidden="true"
-            />
-            <span className="font-data text-[10px] text-ember font-medium">
-              {hi !== null && !isNaN(hi) ? fmtValue(hi, variable) : '—'}
-            </span>
+          <div className="mt-2 flex flex-wrap items-center gap-2">
+            {CONTINENTS.map((c) => {
+              const isSel = state.scope.type === 'division' && state.scope.id === c.id
+              return (
+                <button
+                  key={c.id}
+                  type="button"
+                  onClick={() => dispatch({ type: 'SET_SCOPE', scope: { type: 'division', id: c.id } })}
+                  className={`flex items-center gap-1.5 px-2 py-0.5 rounded transition-all cursor-pointer ${isSel
+                    ? 'bg-ivory/15 outline outline-1 outline-ivory/50 scale-105'
+                    : 'hover:bg-ivory/8 opacity-85 hover:opacity-100'
+                    }`}
+                  title={`Focus on ${c.name}`}
+                >
+                  <span
+                    className="h-2 w-2 rounded-full"
+                    style={{ backgroundColor: c.color, boxShadow: `0 0 6px ${c.color}` }}
+                    aria-hidden="true"
+                  />
+                  <span className="font-stencil text-[9.5px] uppercase tracking-wider text-cream/90">
+                    {c.name}
+                  </span>
+                </button>
+              )
+            })}
           </div>
         </div>
 
         {/* Selected Continent Pill (Bottom Right) */}
         {state.scope.type === 'division' && CONTINENT_BY_ID[state.scope.id] && (
-          <div className="absolute bottom-4 right-4 z-10 flex items-center gap-2 border border-ember/50 bg-black/95 px-3.5 py-2 backdrop-blur-md shadow-xl">
-            <span className="h-2 w-2 rounded-full bg-ember animate-pulse" aria-hidden="true" />
-            <span className="font-stencil text-[10px] uppercase tracking-[0.2em] text-ember font-medium">
+          <div
+            className="absolute bottom-4 right-4 z-10 flex items-center gap-2 border bg-black/95 px-3.5 py-2 backdrop-blur-md shadow-xl"
+            style={{ borderColor: CONTINENT_BY_ID[state.scope.id].border }}
+          >
+            <span
+              className="h-2.5 w-2.5 rounded-full animate-pulse"
+              style={{
+                backgroundColor: CONTINENT_BY_ID[state.scope.id].color,
+                boxShadow: `0 0 10px ${CONTINENT_BY_ID[state.scope.id].color}`,
+              }}
+              aria-hidden="true"
+            />
+            <span
+              className="font-stencil text-[10px] uppercase tracking-[0.2em] font-medium"
+              style={{ color: CONTINENT_BY_ID[state.scope.id].border }}
+            >
               {CONTINENT_BY_ID[state.scope.id].name}
             </span>
             <button
