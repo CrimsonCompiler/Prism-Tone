@@ -100,26 +100,30 @@ export default function SubcontinentMap() {
 
     let map = null
 
+    const mapOptions = {
+      container: mapContainer.current,
+      center: [15.0, 18.0],
+      zoom: 1.55,
+      minZoom: 1.1,
+      maxZoom: 9.5,
+      renderWorldCopies: false, // Disables infinite horizontal world repetition
+      maxBounds: [
+        [-179.9, -84.0],
+        [180.0, 85.0],
+      ],
+      attributionControl: false,
+    }
+
     try {
       map = new maplibregl.Map({
-        container: mapContainer.current,
+        ...mapOptions,
         style: MAPTILER_STYLE,
-        center: [15.0, 20.0],
-        zoom: 1.6,
-        minZoom: 1.0,
-        maxZoom: 9.5,
-        attributionControl: false,
       })
     } catch (e) {
       console.warn('MapLibre init error, falling back:', e)
       map = new maplibregl.Map({
-        container: mapContainer.current,
+        ...mapOptions,
         style: FALLBACK_STYLE,
-        center: [15.0, 20.0],
-        zoom: 1.6,
-        minZoom: 1.0,
-        maxZoom: 9.5,
-        attributionControl: false,
       })
     }
 
@@ -134,13 +138,27 @@ export default function SubcontinentMap() {
             data: worldGeoJson,
           })
 
+          /* Match expression for immediate continent pastel fill (no delay on hard reload) */
+          const initialColorMatch = ['match', ['get', 'id']]
+          for (const r of CONTINENTS) {
+            initialColorMatch.push(r.id, r.color)
+          }
+          initialColorMatch.push('#252929')
+
+          /* Match expression for each continent's distinct pastel border */
+          const borderMatch = ['match', ['get', 'id']]
+          for (const r of CONTINENTS) {
+            borderMatch.push(r.id, r.border || '#f2ede3')
+          }
+          borderMatch.push('#f2ede3')
+
           map.addLayer({
             id: 'world-fill',
             type: 'fill',
             source: 'world-geojson',
             paint: {
-              'fill-color': '#2a3030',
-              'fill-opacity': 0.72,
+              'fill-color': initialColorMatch,
+              'fill-opacity': 0.82,
             },
           })
 
@@ -149,9 +167,9 @@ export default function SubcontinentMap() {
             type: 'line',
             source: 'world-geojson',
             paint: {
-              'line-color': '#f2ede3',
-              'line-width': 1.6,
-              'line-opacity': 0.85,
+              'line-color': borderMatch,
+              'line-width': 2.0,
+              'line-opacity': 0.95,
             },
           })
 
@@ -160,8 +178,8 @@ export default function SubcontinentMap() {
             type: 'line',
             source: 'world-geojson',
             paint: {
-              'line-color': '#c19a5b',
-              'line-width': 3.5,
+              'line-color': '#ffffff',
+              'line-width': 3.6,
               'line-opacity': 1,
             },
             filter: ['==', ['get', 'id'], ''],
@@ -394,7 +412,7 @@ export default function SubcontinentMap() {
     <div className="relative flex w-full flex-col border border-ivory/15 bg-[#101212] shadow-2xl">
       {/* Top Map HUD Bar */}
       <div className="z-10 flex flex-wrap items-center justify-between gap-3 border-b border-ivory/10 bg-coal/75 px-4 py-3 backdrop-blur-md md:px-5">
-        <div className="flex items-center gap-2.5">
+        <div className="flex flex-wrap items-center gap-2.5">
           <span className="font-stencil text-[11.5px] uppercase tracking-[0.26em] text-beige">
             Global Planetary Overview
           </span>

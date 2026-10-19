@@ -68,6 +68,7 @@ const initialState = {
   position: 0,
   caption: { text: initialCaptionText, cls: 'interpretation' },
   guideOpen: false,
+  continentModalOpen: false,
   unavailableNoticeId: null,
 }
 
@@ -184,6 +185,8 @@ function reducer(state, action) {
       return { ...state, caption: action.caption }
     case 'GUIDE':
       return { ...state, guideOpen: action.open }
+    case 'CONTINENT_MODAL':
+      return { ...state, continentModalOpen: action.open }
     default:
       return state
   }

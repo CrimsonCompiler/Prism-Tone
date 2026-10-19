@@ -6,12 +6,12 @@ import { PreviewProvider } from './preview/state/PreviewContext'
 import { PreviewHero, StatusBanner, SourceBar } from './preview/components/Chrome'
 import VariableSelector from './preview/components/VariableSelector'
 import SubcontinentMap from './preview/components/SubcontinentMap'
-import ScopePanel from './preview/components/ScopePanel'
 import Timeline from './preview/components/Timeline'
 import PlayerBar from './preview/components/PlayerBar'
 import { CaptionsPanel, SummaryPanel, MappingPanel } from './preview/components/Panels'
 import GraphPanel from './preview/components/GraphPanel'
 import GuideModal from './preview/components/GuideModal'
+import ContinentModal from './preview/components/ContinentModal'
 
 function ProgressLine() {
   const { scrollYProgress } = useScroll()
@@ -57,22 +57,17 @@ export default function PreviewApp() {
                 </div>
               </div>
 
-              {/* Right Column: Navigation Sidebar (Variables, Continents, Summary, Captions) */}
+              {/* Right Column: Navigation Sidebar (Variables, Summary, Captions) */}
               <div className="flex flex-col gap-6 lg:col-span-4 xl:col-span-3">
                 {/* 01 Environmental Variable Selector */}
                 <div className="border border-ivory/10 bg-coal/40 p-4 md:p-5">
                   <VariableSelector />
                 </div>
 
-                {/* 02 Global Continents Navigation */}
-                <div className="min-h-[380px]">
-                  <ScopePanel />
-                </div>
-
-                {/* 03 Selected Scope Climatological Summary */}
+                {/* 02 Selected Scope Climatological Summary */}
                 <SummaryPanel />
 
-                {/* 04 Realtime Acoustic & Environmental Narration */}
+                {/* 03 Realtime Acoustic & Environmental Narration */}
                 <CaptionsPanel />
               </div>
             </div>
@@ -93,6 +88,7 @@ export default function PreviewApp() {
             </div>
 
             <GuideModal />
+            <ContinentModal />
           </div>
         </PreviewProvider>
       </main>

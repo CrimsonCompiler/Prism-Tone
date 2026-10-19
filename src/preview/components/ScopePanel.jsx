@@ -27,8 +27,16 @@ export default function ScopePanel() {
 
   return (
     <div className="flex h-full flex-col border border-ivory/10 bg-coal/40">
-      <div className="flex items-baseline justify-between border-b border-ivory/10 px-4 py-3 md:px-5">
-        <p className="font-stencil text-[11px] md:text-[12px] uppercase tracking-[0.28em] text-beige">Global Continents</p>
+      <div className="flex items-center justify-between border-b border-ivory/10 px-4 py-3 md:px-5">
+        <button
+          type="button"
+          onClick={() => dispatch({ type: 'CONTINENT_MODAL', open: true })}
+          className="group flex items-center gap-1.5 font-stencil text-[11px] md:text-[12px] uppercase tracking-[0.28em] text-beige hover:text-white cursor-pointer transition-colors"
+          title="Open Continents Grid Selection Popup"
+        >
+          <span>Global Continents</span>
+          <span className="text-[10px] text-ember opacity-80 group-hover:opacity-100">⊞</span>
+        </button>
         <span className="font-data text-[10px] md:text-[11px] uppercase tracking-[0.16em] text-parchment">
           {key ? keyToLabel(key) : `mean · ${state.range.startYear}–${state.range.endYear}`}
         </span>

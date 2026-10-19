@@ -11,6 +11,7 @@ import { usePreview } from '../state/PreviewContext'
 import { selectionSummary } from '../lib/selectors'
 import { fmtValue, fmtDelta, fmtPct } from '../lib/format'
 import { YEAR_MIN, YEAR_MAX, BASELINE, SOURCE } from '../data/datasets'
+import { CONTINENT_BY_ID } from '../data/world'
 
 const CLS_LABEL = {
   measured: 'measured',
@@ -23,7 +24,7 @@ export function CaptionsPanel() {
   return (
     <section aria-label="Live captions">
       <div className="flex items-baseline justify-between">
-        <p className="font-stencil text-[11px] md:text-[12px] uppercase tracking-[0.28em] text-beige">05 · Live captions</p>
+        <p className="font-stencil text-[11px] md:text-[12px] uppercase tracking-[0.28em] text-beige">03 · Live captions</p>
         <span className={`font-stencil text-[9px] uppercase tracking-[0.2em] text-parchment/80`}>
           {CLS_LABEL[state.caption.cls] || 'note'}
         </span>
@@ -41,12 +42,12 @@ export function CaptionsPanel() {
 }
 
 export function SummaryPanel() {
-  const { state, steps, seriesMap, variable } = usePreview()
+  const { state, dispatch, steps, seriesMap, variable } = usePreview()
 
   if (state.data.status === 'loading' || state.data.status === 'idle') {
     return (
       <div className="flex h-full flex-col border border-ivory/10 bg-coal/40 p-4 md:p-5" role="status">
-        <p className="font-stencil text-[11px] uppercase tracking-[0.26em] text-beige">06 · Data summary</p>
+        <p className="font-stencil text-[11px] uppercase tracking-[0.26em] text-beige">02 · Data summary</p>
         <p className="mt-4 font-ui text-[13px] text-cream/70">Retrieving the NASA POWER global climate record…</p>
       </div>
     )
@@ -55,7 +56,7 @@ export function SummaryPanel() {
   if (state.data.status === 'error') {
     return (
       <div className="flex h-full flex-col border border-ivory/10 bg-coal/40 p-4 md:p-5" role="alert">
-        <p className="font-stencil text-[11px] uppercase tracking-[0.26em] text-beige">06 · Data summary</p>
+        <p className="font-stencil text-[11px] uppercase tracking-[0.26em] text-beige">02 · Data summary</p>
         <p className="mt-4 font-ui text-[13px] leading-relaxed text-cream/75">
           No summary can be shown — the NASA POWER data could not be retrieved. The controls above stay
           available; retry from the status banner once your connection is back.
@@ -73,8 +74,32 @@ export function SummaryPanel() {
 
   return (
     <div className="flex h-full flex-col border border-ivory/10 bg-coal/40">
-      <div className="flex items-baseline justify-between border-b border-ivory/10 px-4 py-3 md:px-5">
-        <p className="font-stencil text-[11px] md:text-[12px] uppercase tracking-[0.28em] text-beige">06 · Data summary</p>
+      <div className="flex items-center justify-between border-b border-ivory/10 px-4 py-3 md:px-5">
+        <div className="flex items-center gap-2">
+          <p className="font-stencil text-[11px] md:text-[12px] uppercase tracking-[0.28em] text-beige">02 · Data summary</p>
+          <button
+            type="button"
+            onClick={() => dispatch({ type: 'CONTINENT_MODAL', open: true })}
+            className="flex items-center gap-1.5 rounded border border-ivory/20 bg-ivory/5 px-2 py-0.5 font-stencil text-[9px] uppercase tracking-wider text-ivory hover:border-ivory/50 hover:bg-ivory/15 cursor-pointer transition-all"
+            title="Change continent scope"
+          >
+            <span
+              className="h-1.5 w-1.5 rounded-full"
+              style={{
+                backgroundColor:
+                  state.scope.type === 'division' && CONTINENT_BY_ID[state.scope.id]
+                    ? CONTINENT_BY_ID[state.scope.id].color
+                    : '#d4a55b',
+              }}
+            />
+            <span>
+              {state.scope.type === 'division' && CONTINENT_BY_ID[state.scope.id]
+                ? CONTINENT_BY_ID[state.scope.id].name
+                : 'World'}
+            </span>
+            <span className="text-parchment/60">▾</span>
+          </button>
+        </div>
         <span className="font-data text-[10px] uppercase tracking-[0.14em] text-parchment">{s.selectionLabel}</span>
       </div>
 
