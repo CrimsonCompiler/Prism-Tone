@@ -51,7 +51,7 @@ export default function PreviewApp() {
 
             {/* Main Interactive Studio Grid: Map on the Left, Navigation on the Right */}
             <div className="mt-8 grid gap-6 lg:grid-cols-12 xl:gap-8 items-start">
-              {/* Left Column: Interactive MapLibre Subcontinent Map & Transport */}
+              {/* Left Column: Interactive MapLibre Global World Map & Transport */}
               <div className="flex flex-col gap-6 lg:col-span-8 xl:col-span-9">
                 <SubcontinentMap />
 
@@ -66,14 +66,14 @@ export default function PreviewApp() {
                 </div>
               </div>
 
-              {/* Right Column: Navigation Sidebar (Variables, Regions, Summary, Captions) */}
+              {/* Right Column: Navigation Sidebar (Variables, Continents, Summary, Captions) */}
               <div className="flex flex-col gap-6 lg:col-span-4 xl:col-span-3">
                 {/* 01 Environmental Variable Selector */}
                 <div className="border border-ivory/10 bg-coal/40 p-4 md:p-5">
                   <VariableSelector />
                 </div>
 
-                {/* 02 Subcontinent Region Navigation */}
+                {/* 02 Global Continents Navigation */}
                 <div className="min-h-[380px]">
                   <ScopePanel />
                 </div>

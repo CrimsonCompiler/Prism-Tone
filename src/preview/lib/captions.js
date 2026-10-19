@@ -24,7 +24,7 @@ export function describeStep({ variable, step, seriesMap, scopeName, scopeKind }
 
   const label = keyToLabel(step.key)
   const scopeText = scopeKind === 'national'
-    ? 'Bangladesh (derived national mean of 8 division samples)'
+    ? 'World (planetary mean of 7 continents)'
     : scopeName
 
   if (step.value === null) {
@@ -98,7 +98,7 @@ export function describeStep({ variable, step, seriesMap, scopeName, scopeKind }
 export function idleCaption({ variable, scopeName, scopeKind, hasData, ready }) {
   if (!ready) return 'Retrieving NASA POWER data — captions will follow the data.'
   if (!hasData) return 'No valid observations for this selection — nothing can be sonified.'
-  const scopeText = scopeKind === 'national' ? 'Bangladesh (derived national mean)' : scopeName
+  const scopeText = scopeKind === 'national' ? 'World (planetary mean)' : scopeName
   const mapping = {
     T2M: 'Each month becomes one note: warmer months sound higher.',
     PRECTOTCORR: 'Each month becomes one bar: heavier rain plays more notes.',

@@ -15,9 +15,9 @@ import { deriveNational, monthsInSelection, scopeSeries, monthlyArray, extent, m
 import { describeStep, idleCaption, endCaption } from '../lib/captions'
 import { engine } from '../lib/sonify'
 import { LIVE_VARIABLES, VARIABLE_BY_ID, YEAR_MIN, YEAR_MAX } from '../data/datasets'
-import { REGION_BY_ID, DIVISION_BY_ID, GEOJSON_URL, REGIONAL } from '../data/subcontinent'
-import baselineData from '../data/subcontinentPowerBaseline.json'
-import subcontinentGeoJson from '../data/subcontinent-regions.json'
+import { REGION_BY_ID, DIVISION_BY_ID, GEOJSON_URL, REGIONAL, GLOBAL } from '../data/world'
+import baselineData from '../data/worldPowerBaseline.json'
+import worldGeoJson from '../data/world-regions.json'
 
 const PreviewContext = createContext(null)
 
@@ -35,7 +35,7 @@ const initialNational = deriveNational(baselineData.series, LIVE_VARIABLES.map((
 
 const initialCaptionText = idleCaption({
   variable: VARIABLE_BY_ID['T2M'],
-  scopeName: 'South Asia',
+  scopeName: 'Global (World)',
   scopeKind: 'national',
   hasData: true,
   ready: true,
@@ -62,7 +62,7 @@ const initialState = {
     meta: baselineData.meta,
     retryCount: 0,
   },
-  geo: { status: 'ready', json: subcontinentGeoJson },
+  geo: { status: 'ready', json: worldGeoJson },
 
   playState: 'idle', // idle | playing | paused
   position: 0,
@@ -198,7 +198,7 @@ function captionArgs(state, variable) {
   const hasData = seriesMap && Object.values(seriesMap).some((v) => v !== null)
   return {
     variable,
-    scopeName: (state.scope.type === 'division' || state.scope.type === 'region') ? divisionName(state.scope.id) : 'South Asia',
+    scopeName: (state.scope.type === 'division' || state.scope.type === 'region') ? divisionName(state.scope.id) : 'Global (World)',
     scopeKind: state.scope.type,
     hasData,
     ready: state.data.status === 'ready',

@@ -11,7 +11,7 @@ const GUIDE_KEY = 'pt-preview-guide-dismissed'
 
 const STEPS = [
   ['Choose a variable', 'Six categories are listed. Temperature, rainfall and wind are live NASA POWER datasets — the other three are honestly marked unavailable rather than faked.'],
-  ['Explore the map', 'The GPU-accelerated MapLibre choropleth displays the selected variable across the South Asian Subcontinent (Bangladesh, India, Pakistan, Nepal, Bhutan, Sri Lanka, Maldives). Activate any region — on the map or in the navigation list — to fly into it.'],
+  ['Explore the map', 'The GPU-accelerated MapLibre choropleth displays the selected variable across the globe and all 7 continents (Asia, Africa, Europe, North America, South America, Oceania, Antarctica). Activate any continent — on the map or in the navigation list — to fly into it.'],
   ['Select a time', 'Pick a year, a single month, or a custom range. The record runs 1981–2025; yearly playback walks all twelve months.'],
   ['Play the audio', 'One month becomes one sound event. Play, pause, resume and stop from the control bar; progress shows exactly which month is sounding.'],
   ['Read the captions', 'The caption panel narrates each step: the value, how it compares to the 1991–2020 normal, and what the sound is doing. It keeps working when audio is off.'],

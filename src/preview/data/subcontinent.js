@@ -8,20 +8,20 @@
  */
 
 export const REGIONAL = {
-  id: 'regional',
-  name: 'South Asia',
-  kind: 'regional',
-  note: 'Derived — mean of the 7 subcontinent region samples',
+    id: 'regional',
+    name: 'South Asia',
+    kind: 'regional',
+    note: 'Derived — mean of the 7 subcontinent region samples',
 }
 
 export const REGIONS = [
-  { id: 'bangladesh', name: 'Bangladesh', code: 'BGD', lat: 23.6850, lon: 90.3563, capital: 'Dhaka' },
-  { id: 'india', name: 'India', code: 'IND', lat: 20.5937, lon: 78.9629, capital: 'New Delhi' },
-  { id: 'pakistan', name: 'Pakistan', code: 'PAK', lat: 30.3753, lon: 69.3451, capital: 'Islamabad' },
-  { id: 'nepal', name: 'Nepal', code: 'NPL', lat: 28.3949, lon: 84.1240, capital: 'Kathmandu' },
-  { id: 'bhutan', name: 'Bhutan', code: 'BTN', lat: 27.5142, lon: 90.4336, capital: 'Thimphu' },
-  { id: 'sri_lanka', name: 'Sri Lanka', code: 'LKA', lat: 7.8731, lon: 80.7718, capital: 'Colombo' },
-  { id: 'maldives', name: 'Maldives', code: 'MDV', lat: 3.2028, lon: 73.2207, capital: 'Malé' },
+    { id: 'bangladesh', name: 'Bangladesh', code: 'BGD', lat: 23.6850, lon: 90.3563, capital: 'Dhaka' },
+    { id: 'india', name: 'India', code: 'IND', lat: 20.5937, lon: 78.9629, capital: 'New Delhi' },
+    { id: 'pakistan', name: 'Pakistan', code: 'PAK', lat: 30.3753, lon: 69.3451, capital: 'Islamabad' },
+    { id: 'nepal', name: 'Nepal', code: 'NPL', lat: 28.3949, lon: 84.1240, capital: 'Kathmandu' },
+    { id: 'bhutan', name: 'Bhutan', code: 'BTN', lat: 27.5142, lon: 90.4336, capital: 'Thimphu' },
+    { id: 'sri_lanka', name: 'Sri Lanka', code: 'LKA', lat: 7.8731, lon: 80.7718, capital: 'Colombo' },
+    { id: 'maldives', name: 'Maldives', code: 'MDV', lat: 3.2028, lon: 73.2207, capital: 'Malé' },
 ]
 
 export const REGION_BY_ID = Object.fromEntries(REGIONS.map((r) => [r.id, r]))

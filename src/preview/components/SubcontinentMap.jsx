@@ -1,10 +1,10 @@
 /**
- * Interactive South Asian Subcontinent Map powered by MapLibre GL JS & MapTiler Cloud.
+ * Interactive Global World Continents Map powered by MapLibre GL JS & MapTiler Cloud.
  *
- * Utilizes MapTiler Cloud Dataviz Dark vector tiles with GPU acceleration.
- * Overlays genuine NASA POWER monthly choropleth observations, custom interactive
- * capital markers, fluid camera navigation, and real-time audio sync.
- * Features instant style.load rendering, marker persistence, and offline fallback.
+ * Renders full-world continental climatology across all 7 continents:
+ * (Asia, Africa, Europe, North America, South America, Oceania, Antarctica)
+ * with genuine NASA POWER monthly observations, dynamic choropleth scaling,
+ * interactive continent badges, and fluid camera navigation.
  */
 
 import { useEffect, useRef, useState, useMemo } from 'react'
@@ -14,9 +14,9 @@ import workerUrl from 'maplibre-gl/dist/maplibre-gl-worker.mjs?worker&url'
 import { usePreview } from '../state/PreviewContext'
 import { displayKey, divisionDisplayValues } from '../lib/selectors'
 import { keyToLabel } from '../lib/processing'
-import { REGIONS, REGION_BY_ID } from '../data/subcontinent'
+import { CONTINENTS, CONTINENT_BY_ID, WORLD_BOUNDS } from '../data/world'
 import { fmtValue } from '../lib/format'
-import subcontinentGeoJson from '../data/subcontinent-regions.json'
+import worldGeoJson from '../data/world-regions.json'
 
 // Register worker bundle explicitly for Vite bundler compatibility
 if (typeof maplibregl.setWorkerUrl === 'function') {
@@ -56,13 +56,7 @@ const FALLBACK_STYLE = {
   ],
 }
 
-/* Subcontinent geographic bounding box [ [west, south], [east, north] ] */
-const SUBCONTINENT_BOUNDS = [
-  [61.0, 4.5],
-  [97.5, 36.0],
-]
-
-/** Color interpolation: low (#1c2121) -> mid (#6e6550) -> high ember (#c99e57) */
+/** Color interpolation: low (#1a2020) -> mid (#6e6550) -> high ember (#d4a55b) */
 function getChoroplethColor(t) {
   if (t === null || isNaN(t)) return '#252929'
   const stops = [
@@ -100,7 +94,7 @@ export default function SubcontinentMap() {
     return min === max ? [min, min + 1] : [min, max]
   }, [values])
 
-  /* Initialize MapLibre GL instance with MapTiler Cloud */
+  /* Initialize MapLibre GL instance with full-world planetary view */
   useEffect(() => {
     if (!mapContainer.current || mapRef.current) return
 
@@ -110,14 +104,10 @@ export default function SubcontinentMap() {
       map = new maplibregl.Map({
         container: mapContainer.current,
         style: MAPTILER_STYLE,
-        center: [81.0, 22.0],
-        zoom: 3.9,
-        minZoom: 2.5,
+        center: [15.0, 20.0],
+        zoom: 1.6,
+        minZoom: 1.0,
         maxZoom: 9.5,
-        maxBounds: [
-          [52.0, -2.0],
-          [106.0, 40.0],
-        ],
         attributionControl: false,
       })
     } catch (e) {
@@ -125,29 +115,29 @@ export default function SubcontinentMap() {
       map = new maplibregl.Map({
         container: mapContainer.current,
         style: FALLBACK_STYLE,
-        center: [81.0, 22.0],
-        zoom: 3.9,
-        minZoom: 2.5,
+        center: [15.0, 20.0],
+        zoom: 1.6,
+        minZoom: 1.0,
         maxZoom: 9.5,
         attributionControl: false,
       })
     }
 
-    /* Add Subcontinent GeoJSON and Choropleth Layers when style is ready */
-    const initSubcontinentLayers = () => {
+    /* Add World Continents GeoJSON and Choropleth Layers when style is ready */
+    const initWorldLayers = () => {
       if (!map.isStyleLoaded()) return
 
       try {
-        if (!map.getSource('subcontinent-geojson')) {
-          map.addSource('subcontinent-geojson', {
+        if (!map.getSource('world-geojson')) {
+          map.addSource('world-geojson', {
             type: 'geojson',
-            data: subcontinentGeoJson,
+            data: worldGeoJson,
           })
 
           map.addLayer({
-            id: 'subcontinent-fill',
+            id: 'world-fill',
             type: 'fill',
-            source: 'subcontinent-geojson',
+            source: 'world-geojson',
             paint: {
               'fill-color': '#2a3030',
               'fill-opacity': 0.72,
@@ -155,29 +145,29 @@ export default function SubcontinentMap() {
           })
 
           map.addLayer({
-            id: 'subcontinent-borders',
+            id: 'world-borders',
             type: 'line',
-            source: 'subcontinent-geojson',
+            source: 'world-geojson',
             paint: {
               'line-color': '#f2ede3',
               'line-width': 1.6,
-              'line-opacity': 0.8,
+              'line-opacity': 0.85,
             },
           })
 
           map.addLayer({
-            id: 'subcontinent-selected-border',
+            id: 'world-selected-border',
             type: 'line',
-            source: 'subcontinent-geojson',
+            source: 'world-geojson',
             paint: {
               'line-color': '#c19a5b',
-              'line-width': 3.4,
+              'line-width': 3.5,
               'line-opacity': 1,
             },
             filter: ['==', ['get', 'id'], ''],
           })
 
-          map.on('click', 'subcontinent-fill', (e) => {
+          map.on('click', 'world-fill', (e) => {
             if (!e.features || !e.features.length) return
             const featId = e.features[0].properties?.id || e.features[0].id
             if (featId) {
@@ -185,28 +175,28 @@ export default function SubcontinentMap() {
             }
           })
 
-          map.on('mousemove', 'subcontinent-fill', () => {
+          map.on('mousemove', 'world-fill', () => {
             map.getCanvas().style.cursor = 'pointer'
           })
 
-          map.on('mouseleave', 'subcontinent-fill', () => {
+          map.on('mouseleave', 'world-fill', () => {
             map.getCanvas().style.cursor = ''
           })
         }
         setMapLoaded(true)
       } catch (err) {
-        console.warn('Error adding subcontinent layers:', err)
+        console.warn('Error adding world layers:', err)
       }
 
       map.resize()
     }
 
     // MapLibre style lifecycle listeners
-    map.on('styledata', initSubcontinentLayers)
-    map.on('load', initSubcontinentLayers)
+    map.on('styledata', initWorldLayers)
+    map.on('load', initWorldLayers)
 
     if (map.isStyleLoaded()) {
-      initSubcontinentLayers()
+      initWorldLayers()
     }
 
     // Fallback if MapTiler throws fatal error
@@ -258,14 +248,14 @@ export default function SubcontinentMap() {
     if (!map) return
 
     const applyColors = () => {
-      if (!map.getLayer('subcontinent-fill')) return
+      if (!map.getLayer('world-fill')) return
 
       const [lo, hi] = extent
       const span = hi - lo || 1
 
-      /* Build match expression for fill colors */
+      /* Build match expression for continent fill colors */
       const colorMatch = ['match', ['get', 'id']]
-      for (const r of REGIONS) {
+      for (const r of CONTINENTS) {
         const entry = values[r.id]
         const v = entry ? entry.value : null
         const norm = v !== null ? (v - lo) / span : null
@@ -274,17 +264,17 @@ export default function SubcontinentMap() {
       }
       colorMatch.push('#252929') // fallback
 
-      map.setPaintProperty('subcontinent-fill', 'fill-color', colorMatch)
+      map.setPaintProperty('world-fill', 'fill-color', colorMatch)
 
-      /* Update selected country filter */
+      /* Update selected continent filter */
       const selectedId = state.scope.type === 'division' ? state.scope.id : ''
-      if (map.getLayer('subcontinent-selected-border')) {
-        map.setFilter('subcontinent-selected-border', ['==', ['get', 'id'], selectedId])
+      if (map.getLayer('world-selected-border')) {
+        map.setFilter('world-selected-border', ['==', ['get', 'id'], selectedId])
       }
 
       /* Set active fill opacity */
       const opacityMatch = ['case', ['==', ['get', 'id'], selectedId], 0.92, 0.75]
-      map.setPaintProperty('subcontinent-fill', 'fill-opacity', opacityMatch)
+      map.setPaintProperty('world-fill', 'fill-opacity', opacityMatch)
     }
 
     if (map.isStyleLoaded()) {
@@ -299,25 +289,26 @@ export default function SubcontinentMap() {
     const map = mapRef.current || mapInstance
     if (!map) return
 
-    if (state.scope.type === 'division' && REGION_BY_ID[state.scope.id]) {
-      const r = REGION_BY_ID[state.scope.id]
+    if (state.scope.type === 'division' && CONTINENT_BY_ID[state.scope.id]) {
+      const c = CONTINENT_BY_ID[state.scope.id]
       map.flyTo({
-        center: [r.lon, r.lat],
-        zoom: r.id === 'india' ? 4.3 : r.id === 'pakistan' ? 4.9 : 5.8,
+        center: [c.lon, c.lat],
+        zoom: c.zoom || 2.8,
         speed: 1.1,
         curve: 1.2,
         essential: true,
       })
     } else {
-      map.fitBounds(SUBCONTINENT_BOUNDS, {
-        padding: { top: 40, bottom: 40, left: 40, right: 40 },
+      map.flyTo({
+        center: [15.0, 20.0],
+        zoom: 1.6,
         speed: 1.2,
         essential: true,
       })
     }
   }, [state.scope, mapLoaded, mapInstance])
 
-  /* Sync interactive Map Markers for capitals / centroids */
+  /* Sync interactive Map Markers for all 7 Continents */
   useEffect(() => {
     const map = mapRef.current || mapInstance
     if (!map) return
@@ -326,7 +317,7 @@ export default function SubcontinentMap() {
     markersRef.current.forEach((m) => m.remove())
     markersRef.current = []
 
-    REGIONS.forEach((r) => {
+    CONTINENTS.forEach((r) => {
       const entry = values[r.id]
       const valStr = entry && entry.value !== null ? fmtValue(entry.value, variable) : '—'
       const isSelected = state.scope.type === 'division' && state.scope.id === r.id
@@ -385,12 +376,13 @@ export default function SubcontinentMap() {
     })
   }, [values, variable, state.scope, mapInstance, dispatch])
 
-  /* Reset map camera to Subcontinent overview */
+  /* Reset map camera to Global overview */
   const handleResetCamera = () => {
     if (!mapRef.current) return
     dispatch({ type: 'SET_SCOPE', scope: { type: 'national' } })
-    mapRef.current.fitBounds(SUBCONTINENT_BOUNDS, {
-      padding: { top: 40, bottom: 40, left: 40, right: 40 },
+    mapRef.current.flyTo({
+      center: [15.0, 20.0],
+      zoom: 1.6,
       speed: 1.2,
       essential: true,
     })
@@ -404,7 +396,7 @@ export default function SubcontinentMap() {
       <div className="z-10 flex flex-wrap items-center justify-between gap-3 border-b border-ivory/10 bg-coal/75 px-4 py-3 backdrop-blur-md md:px-5">
         <div className="flex items-center gap-2.5">
           <span className="font-stencil text-[11.5px] uppercase tracking-[0.26em] text-beige">
-            South Asian Subcontinent
+            Global Planetary Overview
           </span>
           <span className="h-3 w-px bg-ivory/20" aria-hidden="true" />
           <span className="font-data text-[10.5px] uppercase tracking-[0.18em] text-parchment">
@@ -445,7 +437,7 @@ export default function SubcontinentMap() {
           <button
             type="button"
             onClick={handleResetCamera}
-            title="Reset to Subcontinent View"
+            title="Reset to Global World View"
             className="flex h-9 w-9 items-center justify-center border border-ivory/25 bg-black/85 font-stencil text-[10px] uppercase tracking-wider text-parchment backdrop-blur-md transition-colors hover:border-ivory/60 hover:text-ivory cursor-pointer"
           >
             Fit
@@ -456,7 +448,7 @@ export default function SubcontinentMap() {
         <div className="absolute bottom-4 left-4 z-10 border border-ivory/20 bg-black/90 px-3.5 py-2.5 backdrop-blur-md shadow-xl">
           <div className="flex items-baseline justify-between gap-5 font-stencil text-[9px] uppercase tracking-[0.18em] text-parchment">
             <span>{variable.name} ({variable.unit})</span>
-            <span>{values ? Object.values(values).filter((v) => v.value !== null).length : 0}/7 Regions</span>
+            <span>{values ? Object.values(values).filter((v) => v.value !== null).length : 0}/7 Continents</span>
           </div>
           <div className="mt-2 flex items-center gap-2.5">
             <span className="font-data text-[10px] text-cream/70">
@@ -476,18 +468,18 @@ export default function SubcontinentMap() {
           </div>
         </div>
 
-        {/* Selected Region Pill (Bottom Right) */}
-        {state.scope.type === 'division' && REGION_BY_ID[state.scope.id] && (
+        {/* Selected Continent Pill (Bottom Right) */}
+        {state.scope.type === 'division' && CONTINENT_BY_ID[state.scope.id] && (
           <div className="absolute bottom-4 right-4 z-10 flex items-center gap-2 border border-ember/50 bg-black/95 px-3.5 py-2 backdrop-blur-md shadow-xl">
             <span className="h-2 w-2 rounded-full bg-ember animate-pulse" aria-hidden="true" />
             <span className="font-stencil text-[10px] uppercase tracking-[0.2em] text-ember font-medium">
-              {REGION_BY_ID[state.scope.id].name}
+              {CONTINENT_BY_ID[state.scope.id].name}
             </span>
             <button
               type="button"
               onClick={handleResetCamera}
               className="ml-1 text-[11px] text-parchment hover:text-ivory cursor-pointer"
-              title="Return to Regional View"
+              title="Return to Global View"
             >
               ✕
             </button>

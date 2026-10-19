@@ -47,7 +47,7 @@ export function SummaryPanel() {
     return (
       <div className="flex h-full flex-col border border-ivory/10 bg-coal/40 p-4 md:p-5" role="status">
         <p className="font-stencil text-[11px] uppercase tracking-[0.26em] text-beige">06 · Data summary</p>
-        <p className="mt-4 font-ui text-[13px] text-cream/70">Retrieving the NASA POWER record for Bangladesh…</p>
+        <p className="mt-4 font-ui text-[13px] text-cream/70">Retrieving the NASA POWER global climate record…</p>
       </div>
     )
   }
@@ -68,8 +68,8 @@ export function SummaryPanel() {
 
   const kindLabel =
     s.scopeKind === 'national'
-      ? 'derived — national mean of 8 division samples'
-      : 'measured point sample (division centroid)'
+      ? 'derived — planetary mean of all 7 continents'
+      : 'measured continental sample (continental centroid)'
 
   return (
     <div className="flex h-full flex-col border border-ivory/10 bg-coal/40">

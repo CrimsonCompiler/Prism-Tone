@@ -7,7 +7,7 @@
 import { usePreview } from '../state/PreviewContext'
 import { displayKey, divisionDisplayValues } from '../lib/selectors'
 import { keyToLabel } from '../lib/processing'
-import { REGIONS, REGIONAL } from '../data/subcontinent'
+import { CONTINENTS, GLOBAL } from '../data/world'
 import { fmtValue } from '../lib/format'
 
 const STATUS_NOTE = {
@@ -28,7 +28,7 @@ export default function ScopePanel() {
   return (
     <div className="flex h-full flex-col border border-ivory/10 bg-coal/40">
       <div className="flex items-baseline justify-between border-b border-ivory/10 px-4 py-3 md:px-5">
-        <p className="font-stencil text-[11px] md:text-[12px] uppercase tracking-[0.28em] text-beige">Subcontinent Region</p>
+        <p className="font-stencil text-[11px] md:text-[12px] uppercase tracking-[0.28em] text-beige">Global Continents</p>
         <span className="font-data text-[10px] md:text-[11px] uppercase tracking-[0.16em] text-parchment">
           {key ? keyToLabel(key) : `mean · ${state.range.startYear}–${state.range.endYear}`}
         </span>
@@ -46,9 +46,9 @@ export default function ScopePanel() {
                 }`}
             >
               <span>
-                <span className="block font-ui text-[13px] font-medium tracking-[0.06em] text-ivory">South Asia (Subcontinent)</span>
+                <span className="block font-ui text-[13px] font-medium tracking-[0.06em] text-ivory">World (Global Earth)</span>
                 <span className="block font-stencil text-[9px] uppercase tracking-[0.18em] text-parchment">
-                  derived — mean of 7 subcontinent regions
+                  Planetary Mean · 7 Continents
                 </span>
               </span>
               <span className="font-data text-[11px] uppercase tracking-[0.1em] text-beige">
@@ -57,7 +57,7 @@ export default function ScopePanel() {
             </button>
           </li>
 
-          {REGIONS.map((d) => {
+          {CONTINENTS.map((d) => {
             const v = values[d.id]
             const selected = state.scope.type === 'division' && state.scope.id === d.id
             const shown = v.value !== null
