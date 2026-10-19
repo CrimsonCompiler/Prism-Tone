@@ -60,7 +60,7 @@ export default function PreviewApp() {
               {/* Right Column: Navigation Sidebar (Variables, Summary, Captions) */}
               <div className="flex flex-col gap-6 lg:col-span-4 xl:col-span-3">
                 {/* 01 Environmental Variable Selector */}
-                <div className="border border-ivory/10 bg-coal/40 p-4 md:p-5">
+                <div className="relative z-30 border border-ivory/10 bg-coal/40 p-4 md:p-5">
                   <VariableSelector />
                 </div>
 

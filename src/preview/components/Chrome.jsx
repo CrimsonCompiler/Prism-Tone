@@ -22,10 +22,9 @@ export function PreviewHero() {
           id="global-continents-hero-btn"
           type="button"
           onClick={() => dispatch({ type: 'CONTINENT_MODAL', open: true })}
-          className="group flex items-center gap-2.5 rounded border border-ivory/25 bg-coal/70 px-4 py-2 backdrop-blur-md transition-all hover:border-ivory/60 hover:bg-ivory/10 hover:shadow-lg hover:shadow-black/50 cursor-pointer"
+          className="group flex items-center justify-center rounded border border-ivory/25 bg-coal/70 px-4 py-2 backdrop-blur-md transition-all hover:border-ivory/60 hover:bg-ivory/10 hover:shadow-lg hover:shadow-black/50 cursor-pointer"
           title="Open Continent Selection Popup"
         >
-          <span className="h-2 w-2 rounded-full bg-ember animate-pulse" aria-hidden="true" />
           <span className="font-stencil text-[11px] uppercase tracking-[0.24em] text-ivory group-hover:text-white font-medium">
             Select Continent ▾
           </span>
