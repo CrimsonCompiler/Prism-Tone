@@ -171,7 +171,7 @@ export default function SubcontinentMap() {
             source: 'world-geojson',
             paint: {
               'fill-color': initialColorMatch,
-              'fill-opacity': 0.70,
+              'fill-opacity': 0.95,
             },
           }, labelBeforeId)
 
@@ -375,9 +375,8 @@ export default function SubcontinentMap() {
         }
       }
 
-      /* Set active fill opacity: highlight selected continent while keeping others softly visible */
-      const opacityMatch = ['case', ['==', ['get', 'id'], selectedId], 0.95, 0.78]
-      map.setPaintProperty('world-fill', 'fill-opacity', opacityMatch)
+      /* Keep all continents consistently bright across all selection states */
+      map.setPaintProperty('world-fill', 'fill-opacity', 0.95)
     }
 
     if (map.isStyleLoaded()) {

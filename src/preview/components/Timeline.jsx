@@ -23,14 +23,14 @@ for (let y = YEAR_MIN; y <= YEAR_MAX; y++) YEARS.push(y)
 function YearSelect({ value, onChange, label }) {
   return (
     <label className="flex items-center gap-2.5">
-      <span className="font-stencil text-[12px] uppercase tracking-[0.2em] text-zinc-300 font-medium">{label}</span>
+      <span className="font-stencil text-[12px] uppercase tracking-[0.2em] text-beige font-normal">{label}</span>
       <select
         value={value}
         onChange={(e) => onChange(Number(e.target.value))}
-        className="border border-white/25 bg-[#252830] px-3.5 py-1.5 font-data text-[14px] tracking-[0.06em] text-white font-medium focus-visible:outline focus-visible:outline-1 focus-visible:outline-white/80 cursor-pointer rounded-sm"
+        className="border border-white/20 bg-[#252830] px-3.5 py-1.5 font-data text-[14px] tracking-[0.06em] text-ivory font-medium focus-visible:outline focus-visible:outline-1 focus-visible:outline-ivory/70 cursor-pointer rounded-sm"
       >
         {YEARS.map((y) => (
-          <option key={y} value={y} className="bg-[#252830] text-white">
+          <option key={y} value={y} className="bg-[#252830] text-ivory">
             {y}
           </option>
         ))}
@@ -65,9 +65,9 @@ export default function Timeline() {
                 role="tab"
                 aria-selected={timeMode === id}
                 onClick={() => dispatch({ type: 'SET_TIME_MODE', mode: id })}
-                className={`border px-4 py-1.5 font-stencil text-[12.5px] md:text-[13px] uppercase tracking-[0.22em] transition-colors duration-200 focus-visible:outline focus-visible:outline-1 focus-visible:outline-white/80 cursor-pointer rounded-sm ${timeMode === id
-                  ? 'border-white bg-white/20 text-white font-semibold shadow-sm'
-                  : 'border-white/20 bg-white/[0.04] text-zinc-300 hover:border-white/45 hover:text-white hover:bg-white/[0.08] font-medium'
+                className={`border px-4 py-1.5 font-stencil text-[12.5px] md:text-[13px] uppercase tracking-[0.22em] transition-colors duration-200 focus-visible:outline focus-visible:outline-1 focus-visible:outline-ivory/70 cursor-pointer rounded-sm ${timeMode === id
+                  ? 'border-[#e2d9c6] bg-[#e2d9c6]/20 text-ivory font-semibold shadow-[0_0_12px_rgba(226,217,198,0.14)]'
+                  : 'border-white/20 bg-white/[0.04] text-cream/80 hover:border-ivory/40 hover:text-ivory hover:bg-white/[0.08] font-medium'
                   }`}
               >
                 {label}
@@ -101,7 +101,7 @@ export default function Timeline() {
                     dispatch({ type: 'SET_RANGE', range: { ...range, endYear: Math.max(y, range.startYear) } })
                   }
                 />
-                <span className="font-data text-[13px] uppercase tracking-[0.14em] text-zinc-200 font-medium">
+                <span className="font-data text-[13px] uppercase tracking-[0.14em] text-cream/90 font-medium">
                   {steps.length} months selected
                 </span>
               </>
@@ -110,7 +110,7 @@ export default function Timeline() {
         </div>
 
         {/* monthly record badge placed inside the box on the right */}
-        <span className="font-data text-[12px] md:text-[12.5px] uppercase tracking-[0.2em] text-zinc-300 font-medium">
+        <span className="font-data text-[12px] md:text-[12.5px] uppercase tracking-[0.2em] text-beige font-medium">
           monthly record · {YEAR_MIN}–{YEAR_MAX}
         </span>
       </div>
@@ -132,11 +132,11 @@ export default function Timeline() {
                   if (!playing) dispatch({ type: 'SET_MONTH', month: i + 1 })
                   else if (idx >= 0) actions.seek(idx)
                 }}
-                className={`border px-2 py-2 font-data text-[13px] md:text-[13.5px] uppercase tracking-[0.14em] transition-colors duration-150 focus-visible:outline focus-visible:outline-1 focus-visible:outline-white/80 cursor-pointer rounded-sm ${active
+                className={`border px-2 py-2 font-data text-[13px] md:text-[13.5px] uppercase tracking-[0.14em] transition-colors duration-150 focus-visible:outline focus-visible:outline-1 focus-visible:outline-ivory/70 cursor-pointer rounded-sm ${active
                   ? isCurrent
-                    ? 'border-white bg-white/30 text-white font-semibold shadow-sm'
-                    : 'border-white bg-white/25 text-white font-semibold shadow-sm'
-                  : 'border-white/15 bg-white/[0.05] text-zinc-200 hover:border-white/40 hover:bg-white/[0.12] hover:text-white font-medium'
+                    ? 'border-[#e2d9c6] bg-[#e2d9c6]/30 text-ivory font-semibold shadow-[0_0_14px_rgba(226,217,198,0.22)]'
+                    : 'border-[#e2d9c6] bg-[#e2d9c6]/20 text-ivory font-semibold shadow-[0_0_10px_rgba(226,217,198,0.14)]'
+                  : 'border-white/15 bg-white/[0.05] text-cream/80 hover:border-ivory/40 hover:bg-white/[0.12] hover:text-ivory font-medium'
                   }`}
               >
                 {m}
