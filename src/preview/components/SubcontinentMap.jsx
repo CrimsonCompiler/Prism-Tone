@@ -19,6 +19,7 @@ import { fmtValue } from '../lib/format'
 import worldGeoJson from '../data/world-regions.json'
 import worldCountriesGeoJson from '../data/world-countries.json'
 import Timeline from './Timeline'
+import MapAudioControls from './MapAudioControls'
 
 // Register worker bundle explicitly for Vite bundler compatibility
 if (typeof maplibregl.setWorkerUrl === 'function') {
@@ -576,6 +577,9 @@ export default function SubcontinentMap() {
             </button>
           </div>
         )}
+
+        {/* Floating Compact Audio Transport Controls (Bottom Left of Map Screen) */}
+        <MapAudioControls />
 
         {/* Timeline Controls Docked to the Bottom of Map Screen */}
         <div className="absolute bottom-0 left-0 right-0 z-20">
