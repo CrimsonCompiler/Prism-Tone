@@ -22,15 +22,15 @@ for (let y = YEAR_MIN; y <= YEAR_MAX; y++) YEARS.push(y)
 
 function YearSelect({ value, onChange, label }) {
   return (
-    <label className="flex items-center gap-2">
-      <span className="font-stencil text-[11px] uppercase tracking-[0.2em] text-parchment">{label}</span>
+    <label className="flex items-center gap-2.5">
+      <span className="font-stencil text-[12px] uppercase tracking-[0.2em] text-zinc-300 font-medium">{label}</span>
       <select
         value={value}
         onChange={(e) => onChange(Number(e.target.value))}
-        className="border border-ivory/15 bg-ink px-3 py-1.5 font-data text-[13px] tracking-[0.06em] text-ivory focus-visible:outline focus-visible:outline-1 focus-visible:outline-ivory/70 cursor-pointer"
+        className="border border-white/25 bg-[#252830] px-3.5 py-1.5 font-data text-[14px] tracking-[0.06em] text-white font-medium focus-visible:outline focus-visible:outline-1 focus-visible:outline-white/80 cursor-pointer rounded-sm"
       >
         {YEARS.map((y) => (
-          <option key={y} value={y} className="bg-ink text-ivory">
+          <option key={y} value={y} className="bg-[#252830] text-white">
             {y}
           </option>
         ))}
@@ -49,7 +49,7 @@ export default function Timeline() {
 
   return (
     <div
-      className="border-t border-ivory/20 bg-[#101721]/94 backdrop-blur-xl p-3 md:p-4 shadow-[0_-6px_25px_rgba(0,0,0,0.5)]"
+      className="border-t border-white/20 bg-[#1e2126]/95 backdrop-blur-xl p-3.5 md:p-4 shadow-[0_-10px_35px_rgba(0,0,0,0.5)]"
       onClick={(e) => e.stopPropagation()}
       onMouseDown={(e) => e.stopPropagation()}
     >
@@ -57,7 +57,7 @@ export default function Timeline() {
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div className="flex flex-wrap items-center gap-3">
           {/* mode tabs */}
-          <div className="flex gap-1.5" role="tablist" aria-label="Time selection mode">
+          <div className="flex gap-2" role="tablist" aria-label="Time selection mode">
             {MODES.map(([id, label]) => (
               <button
                 key={id}
@@ -65,9 +65,9 @@ export default function Timeline() {
                 role="tab"
                 aria-selected={timeMode === id}
                 onClick={() => dispatch({ type: 'SET_TIME_MODE', mode: id })}
-                className={`border px-4 py-1.5 font-stencil text-[11.5px] md:text-[12px] uppercase tracking-[0.22em] transition-colors duration-200 focus-visible:outline focus-visible:outline-1 focus-visible:outline-ivory/70 cursor-pointer ${timeMode === id
-                  ? 'border-ivory/50 bg-ivory/10 text-ivory font-medium'
-                  : 'border-ivory/12 text-parchment hover:border-ivory/30 hover:text-cream'
+                className={`border px-4 py-1.5 font-stencil text-[12.5px] md:text-[13px] uppercase tracking-[0.22em] transition-colors duration-200 focus-visible:outline focus-visible:outline-1 focus-visible:outline-white/80 cursor-pointer rounded-sm ${timeMode === id
+                  ? 'border-white bg-white/20 text-white font-semibold shadow-sm'
+                  : 'border-white/20 bg-white/[0.04] text-zinc-300 hover:border-white/45 hover:text-white hover:bg-white/[0.08] font-medium'
                   }`}
               >
                 {label}
@@ -76,7 +76,7 @@ export default function Timeline() {
           </div>
 
           {/* controls per mode: positioned right next to Range button */}
-          <div className="flex flex-wrap items-center gap-x-3.5 gap-y-2">
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
             {timeMode !== 'range' && (
               <YearSelect
                 label="Year"
@@ -101,7 +101,7 @@ export default function Timeline() {
                     dispatch({ type: 'SET_RANGE', range: { ...range, endYear: Math.max(y, range.startYear) } })
                   }
                 />
-                <span className="font-data text-[12px] uppercase tracking-[0.14em] text-parchment">
+                <span className="font-data text-[13px] uppercase tracking-[0.14em] text-zinc-200 font-medium">
                   {steps.length} months selected
                 </span>
               </>
@@ -110,7 +110,7 @@ export default function Timeline() {
         </div>
 
         {/* monthly record badge placed inside the box on the right */}
-        <span className="font-data text-[11px] md:text-[11.5px] uppercase tracking-[0.18em] text-parchment/80">
+        <span className="font-data text-[12px] md:text-[12.5px] uppercase tracking-[0.2em] text-zinc-300 font-medium">
           monthly record · {YEAR_MIN}–{YEAR_MAX}
         </span>
       </div>
@@ -132,11 +132,11 @@ export default function Timeline() {
                   if (!playing) dispatch({ type: 'SET_MONTH', month: i + 1 })
                   else if (idx >= 0) actions.seek(idx)
                 }}
-                className={`border px-1.5 py-2 font-data text-[11.5px] md:text-[12.5px] uppercase tracking-[0.12em] transition-colors duration-150 focus-visible:outline focus-visible:outline-1 focus-visible:outline-ivory/70 cursor-pointer ${active
+                className={`border px-2 py-2 font-data text-[13px] md:text-[13.5px] uppercase tracking-[0.14em] transition-colors duration-150 focus-visible:outline focus-visible:outline-1 focus-visible:outline-white/80 cursor-pointer rounded-sm ${active
                   ? isCurrent
-                    ? 'border-ember/70 bg-ember/20 text-ivory'
-                    : 'border-ivory/50 bg-ivory/10 text-ivory'
-                  : 'border-ivory/10 text-parchment hover:border-ivory/30 hover:text-cream'
+                    ? 'border-white bg-white/30 text-white font-semibold shadow-sm'
+                    : 'border-white bg-white/25 text-white font-semibold shadow-sm'
+                  : 'border-white/15 bg-white/[0.05] text-zinc-200 hover:border-white/40 hover:bg-white/[0.12] hover:text-white font-medium'
                   }`}
               >
                 {m}
