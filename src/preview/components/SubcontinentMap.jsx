@@ -471,7 +471,7 @@ export default function SubcontinentMap() {
       countryMarkerRef.current = null
     }
 
-    const countryName = state.focusedCountry ? state.focusedCountry.name : ''
+    const countryName = state.focusedCountry ? (state.focusedCountry.geoName || state.focusedCountry.name) : ''
 
     if (map.getLayer('country-focused-border')) {
       map.setFilter('country-focused-border', ['==', ['get', 'name'], countryName])
