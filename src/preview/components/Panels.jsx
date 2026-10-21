@@ -77,11 +77,9 @@ export function SummaryPanel() {
       <div className="flex items-center justify-between border-b border-white/10 px-4 py-3 md:px-5">
         <div className="flex items-center gap-2">
           <p className="font-stencil text-[12px] md:text-[13px] uppercase tracking-[0.24em] text-ivory font-medium">Data summary</p>
-          <button
-            type="button"
-            onClick={() => dispatch({ type: 'CONTINENT_MODAL', open: true })}
-            className="flex items-center gap-1.5 rounded border border-white/15 bg-white/[0.04] px-2.5 py-0.5 font-stencil text-[10px] uppercase tracking-wider text-cream hover:border-white/40 hover:bg-white/[0.10] cursor-pointer transition-all"
-            title="Change continent scope"
+          <div
+            className="flex items-center gap-1.5 rounded border border-white/15 bg-white/[0.04] px-2.5 py-0.5 font-stencil text-[10px] uppercase tracking-wider text-cream select-none"
+            title="Active Scope"
           >
             <span
               className="h-1.5 w-1.5 rounded-full"
@@ -97,8 +95,7 @@ export function SummaryPanel() {
                 ? CONTINENT_BY_ID[state.scope.id].name
                 : 'World'}
             </span>
-            <span className="text-beige font-normal">▾</span>
-          </button>
+          </div>
         </div>
         <span className="font-data text-[11px] uppercase tracking-[0.14em] text-beige font-normal">{s.selectionLabel}</span>
       </div>

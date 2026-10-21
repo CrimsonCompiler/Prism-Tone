@@ -82,6 +82,7 @@ export default function SubcontinentMap() {
   const [mapInstance, setMapInstance] = useState(null)
   const mapRef = useRef(null)
   const markersRef = useRef([])
+  const countryMarkerRef = useRef(null)
   const [mapLoaded, setMapLoaded] = useState(false)
 
   const key = displayKey(state, steps, state.position, state.playState)
@@ -225,6 +226,30 @@ export default function SubcontinentMap() {
             filter: ['==', ['get', 'id'], ''],
           }, labelBeforeId)
 
+          // 4b. Focused country highlight layers (from search)
+          map.addLayer({
+            id: 'country-focused-fill',
+            type: 'fill',
+            source: 'countries-geojson',
+            paint: {
+              'fill-color': '#ffffff',
+              'fill-opacity': 0.28,
+            },
+            filter: ['==', ['get', 'name'], ''],
+          }, labelBeforeId)
+
+          map.addLayer({
+            id: 'country-focused-border',
+            type: 'line',
+            source: 'countries-geojson',
+            paint: {
+              'line-color': '#ffffff',
+              'line-width': 3.4,
+              'line-opacity': 1,
+            },
+            filter: ['==', ['get', 'name'], ''],
+          }, labelBeforeId)
+
           // 5. If map has no built-in vector labels (e.g. fallback raster), add fallback country names
           if (!map.getLayer('Country labels')) {
             map.addLayer({
@@ -343,6 +368,10 @@ export default function SubcontinentMap() {
       clearTimeout(t1)
       clearTimeout(t2)
       if (ro) ro.disconnect()
+      if (countryMarkerRef.current) {
+        countryMarkerRef.current.remove()
+        countryMarkerRef.current = null
+      }
       map.remove()
       mapRef.current = null
       setMapInstance(null)
@@ -387,10 +416,31 @@ export default function SubcontinentMap() {
     }
   }, [values, extent, state.scope, mapLoaded, mapInstance])
 
-  /* Camera movement when scope changes */
+  /* Camera movement when focused country or scope changes */
   useEffect(() => {
     const map = mapRef.current || mapInstance
     if (!map) return
+
+    if (state.focusedCountry) {
+      const { bounds, center } = state.focusedCountry
+      if (bounds) {
+        map.fitBounds(bounds, {
+          padding: { top: 90, bottom: 180, left: 90, right: 90 },
+          maxZoom: 5.5,
+          speed: 1.2,
+          curve: 1.2,
+          essential: true,
+        })
+      } else if (center) {
+        map.flyTo({
+          center,
+          zoom: 4.8,
+          speed: 1.2,
+          essential: true,
+        })
+      }
+      return
+    }
 
     if (state.scope.type === 'division' && CONTINENT_BY_ID[state.scope.id]) {
       const c = CONTINENT_BY_ID[state.scope.id]
@@ -409,7 +459,70 @@ export default function SubcontinentMap() {
         essential: true,
       })
     }
-  }, [state.scope, mapLoaded, mapInstance])
+  }, [state.focusedCountry, state.scope, mapLoaded, mapInstance])
+
+  /* Sync country highlight border and pin marker */
+  useEffect(() => {
+    const map = mapRef.current || mapInstance
+    if (!map) return
+
+    if (countryMarkerRef.current) {
+      countryMarkerRef.current.remove()
+      countryMarkerRef.current = null
+    }
+
+    const countryName = state.focusedCountry ? state.focusedCountry.name : ''
+
+    if (map.getLayer('country-focused-border')) {
+      map.setFilter('country-focused-border', ['==', ['get', 'name'], countryName])
+    }
+    if (map.getLayer('country-focused-fill')) {
+      map.setFilter('country-focused-fill', ['==', ['get', 'name'], countryName])
+    }
+
+    if (state.focusedCountry && state.focusedCountry.center) {
+      const el = document.createElement('div')
+      el.className = 'country-pin-marker'
+      el.style.cursor = 'default'
+      el.style.userSelect = 'none'
+      el.style.pointerEvents = 'auto'
+      el.innerHTML = `
+        <div style="
+          display: flex;
+          align-items: center;
+          gap: 7px;
+          padding: 5px 12px;
+          border-radius: 6px;
+          border: 1.5px solid #ffffff;
+          background: rgba(12, 14, 15, 0.95);
+          box-shadow: 0 0 18px rgba(255, 255, 255, 0.45), 0 4px 18px rgba(0, 0, 0, 0.9);
+          backdrop-filter: blur(8px);
+          transform: translateY(-8px);
+        ">
+          <span style="font-size: 13px;">📍</span>
+          <span style="
+            font-family: 'Titillium Web', sans-serif;
+            font-size: 12.5px;
+            font-weight: 700;
+            color: #ffffff;
+            letter-spacing: 0.04em;
+          ">${state.focusedCountry.name}</span>
+          <span style="
+            font-family: 'Oxanium', monospace;
+            font-size: 10px;
+            color: #d4a55b;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+          ">${state.focusedCountry.continent}</span>
+        </div>
+      `
+      const marker = new maplibregl.Marker({ element: el })
+        .setLngLat(state.focusedCountry.center)
+        .addTo(map)
+
+      countryMarkerRef.current = marker
+    }
+  }, [state.focusedCountry, mapLoaded, mapInstance])
 
   /* Sync interactive Map Markers for all 7 Continents */
   useEffect(() => {
@@ -485,6 +598,7 @@ export default function SubcontinentMap() {
   /* Reset map camera to Global overview */
   const handleResetCamera = () => {
     if (!mapRef.current) return
+    dispatch({ type: 'CLEAR_FOCUSED_COUNTRY' })
     dispatch({ type: 'SET_SCOPE', scope: { type: 'national' } })
     mapRef.current.flyTo({
       center: [15.0, 20.0],
@@ -547,25 +661,29 @@ export default function SubcontinentMap() {
         </div>
 
 
-        {/* Selected Continent Pill (Bottom Right) */}
-        {state.scope.type === 'division' && CONTINENT_BY_ID[state.scope.id] && (
+        {/* Selected Continent or Country Pill (Bottom Right) */}
+        {(state.focusedCountry || (state.scope.type === 'division' && CONTINENT_BY_ID[state.scope.id])) && (
           <div
             className="absolute bottom-[114px] right-4 z-20 flex items-center gap-2 border bg-black/95 px-3.5 py-2 backdrop-blur-md shadow-xl"
-            style={{ borderColor: CONTINENT_BY_ID[state.scope.id].border }}
+            style={{
+              borderColor: state.focusedCountry ? '#ffffff' : CONTINENT_BY_ID[state.scope.id]?.border,
+            }}
           >
             <span
               className="h-2.5 w-2.5 rounded-full animate-pulse"
               style={{
-                backgroundColor: CONTINENT_BY_ID[state.scope.id].color,
-                boxShadow: `0 0 10px ${CONTINENT_BY_ID[state.scope.id].color}`,
+                backgroundColor: state.focusedCountry ? '#d4a55b' : CONTINENT_BY_ID[state.scope.id]?.color,
+                boxShadow: state.focusedCountry ? '0 0 10px #d4a55b' : `0 0 10px ${CONTINENT_BY_ID[state.scope.id]?.color}`,
               }}
               aria-hidden="true"
             />
             <span
               className="font-stencil text-[10px] uppercase tracking-[0.2em] font-medium"
-              style={{ color: CONTINENT_BY_ID[state.scope.id].border }}
+              style={{ color: state.focusedCountry ? '#ffffff' : CONTINENT_BY_ID[state.scope.id]?.border }}
             >
-              {CONTINENT_BY_ID[state.scope.id].name}
+              {state.focusedCountry
+                ? `${state.focusedCountry.name} (${state.focusedCountry.continent})`
+                : CONTINENT_BY_ID[state.scope.id]?.name}
             </span>
             <button
               type="button"
