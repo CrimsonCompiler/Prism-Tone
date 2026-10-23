@@ -46,7 +46,7 @@ function getBBoxAndCenter(feature) {
 }
 
 // Micro-states and island nations not present in low-res 1:110m Natural Earth polygons
-const MICRO_STATES = [
+export const MICRO_STATES = [
   { name: 'Andorra', formal: 'Principality of Andorra', continent: 'Europe', continentId: 'europe', center: [1.522, 42.506], bounds: [[1.4, 42.4], [1.7, 42.6]], iso2: 'AD', iso3: 'AND' },
   { name: 'Antigua and Barbuda', formal: 'Antigua and Barbuda', continent: 'North America', continentId: 'north_america', center: [-61.796, 17.061], bounds: [[-61.9, 16.9], [-61.6, 17.2]], iso2: 'AG', iso3: 'ATG' },
   { name: 'Bahrain', formal: 'Kingdom of Bahrain', continent: 'Asia', continentId: 'asia', center: [50.558, 26.067], bounds: [[50.4, 25.8], [50.7, 26.3]], iso2: 'BH', iso3: 'BHR' },

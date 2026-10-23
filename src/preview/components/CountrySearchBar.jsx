@@ -171,14 +171,14 @@ export default function CountrySearchBar() {
   }
 
   return (
-    <div ref={containerRef} className="relative z-30 flex items-center">
+    <div ref={containerRef} className="relative z-50 flex items-center">
       {/* Search Input Box */}
       <div
-        className={`group flex items-center rounded border bg-coal/70 px-3 py-1.5 backdrop-blur-md transition-all duration-200 shadow-md ${isListening
-            ? 'border-ember shadow-[0_0_12px_rgba(212,165,91,0.35)] ring-1 ring-ember/60'
-            : isOpen
-              ? 'border-ivory/60 shadow-lg'
-              : 'border-ivory/25 hover:border-ivory/50'
+        className={`group flex items-center rounded border bg-[#141617] px-3 py-1.5 transition-all duration-200 shadow-md ${isListening
+          ? 'border-ember shadow-[0_0_12px_rgba(212,165,91,0.35)] ring-1 ring-ember/60'
+          : isOpen
+            ? 'border-ivory/60 shadow-lg'
+            : 'border-ivory/25 hover:border-ivory/50'
           }`}
       >
         {/* Search Icon */}
@@ -234,8 +234,8 @@ export default function CountrySearchBar() {
           type="button"
           onClick={toggleVoiceSearch}
           className={`flex items-center justify-center rounded p-1 transition-all duration-200 cursor-pointer shrink-0 ${isListening
-              ? 'bg-ember text-black shadow-[0_0_8px_#d4a55b] animate-pulse'
-              : 'text-ivory/70 hover:text-white hover:bg-white/10'
+            ? 'bg-ember text-black shadow-[0_0_8px_#d4a55b] animate-pulse'
+            : 'text-ivory/70 hover:text-white hover:bg-white/10'
             }`}
           title={isListening ? 'Listening... click to stop' : 'Search by Voice (Click and speak country name)'}
           aria-label={isListening ? 'Stop voice search' : 'Start voice search'}
@@ -274,7 +274,7 @@ export default function CountrySearchBar() {
       {isOpen && suggestions.length > 0 && (
         <ul
           role="listbox"
-          className="absolute top-full left-0 right-0 mt-1.5 max-h-64 overflow-y-auto rounded border border-ivory/30 bg-[#121516]/95 backdrop-blur-xl shadow-2xl z-50 divide-y divide-white/5 py-1"
+          className="absolute top-full left-0 right-0 mt-1.5 max-h-64 overflow-y-auto rounded border border-ivory/30 bg-[#141617] shadow-[0_12px_36px_rgba(0,0,0,0.98)] z-50 divide-y divide-white/5 py-1"
         >
           {suggestions.map((country, idx) => {
             const isSelected = idx === selectedIndex

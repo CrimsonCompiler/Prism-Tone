@@ -18,6 +18,7 @@ import { CONTINENTS, CONTINENT_BY_ID, WORLD_BOUNDS } from '../data/world'
 import { fmtValue } from '../lib/format'
 import worldGeoJson from '../data/world-regions.json'
 import worldCountriesGeoJson from '../data/world-countries.json'
+import { findCountry, MICRO_STATES } from '../lib/countries'
 import Timeline from './Timeline'
 import MapAudioControls from './MapAudioControls'
 
@@ -28,6 +29,87 @@ if (typeof maplibregl.setWorkerUrl === 'function') {
 
 const MAPTILER_KEY = 'jQcfDpbcpnU83qU17Ihi'
 const MAPTILER_STYLE = `https://api.maptiler.com/maps/basic-v2-dark/style.json?key=${MAPTILER_KEY}`
+
+/* Water ocean colors: deep midnight oceanic navy for global world, dark stealth slate for isolated country view */
+const WATER_COLOR_WORLD = '#152232'
+const WATER_COLOR_ISOLATED = '#111822'
+
+function makeIslandCircle(lon, lat, r, steps = 8) {
+  const coords = []
+  for (let i = 0; i <= steps; i++) {
+    const angle = (i * 2 * Math.PI) / steps
+    coords.push([+(lon + r * Math.cos(angle)).toFixed(3), +(lat + r * Math.sin(angle)).toFixed(3)])
+  }
+  return coords
+}
+
+// Micro-state features: realistic island shapes instead of harsh bounding rectangles
+const microStateFeatures = []
+MICRO_STATES.forEach((m) => {
+  if (m.name === 'Maldives') {
+    // Generate natural atoll archipelago chain for Maldives
+    const maldivesAtolls = [
+      [73.0, 6.7, 0.16],
+      [73.35, 5.3, 0.18],
+      [73.5, 4.18, 0.22], // Male atoll
+      [72.9, 3.6, 0.18],  // Ari atoll
+      [73.4, 2.2, 0.16],
+      [73.45, 0.5, 0.18], // Huvadhu
+      [73.15, -0.6, 0.16], // Addu atoll
+    ]
+    maldivesAtolls.forEach((atoll) => {
+      microStateFeatures.push({
+        type: 'Feature',
+        properties: {
+          name: 'Maldives',
+          formal_en: 'Republic of Maldives',
+          continent: 'Asia',
+          continentId: 'asia',
+          iso_a2: 'MV',
+          iso_a3: 'MDV',
+          isMicro: true,
+        },
+        geometry: {
+          type: 'Polygon',
+          coordinates: [makeIslandCircle(atoll[0], atoll[1], atoll[2])],
+        },
+      })
+    })
+    return
+  }
+
+  // Small natural circular island radius based on geographic extent
+  const radius = m.name === 'Kiribati' || m.name === 'Micronesia' || m.name === 'Marshall Islands'
+    ? 0.30
+    : m.name === 'Cabo Verde' || m.name === 'Seychelles' || m.name === 'Mauritius'
+      ? 0.25
+      : 0.18
+
+  microStateFeatures.push({
+    type: 'Feature',
+    properties: {
+      name: m.name,
+      formal_en: m.formal,
+      continent: m.continent,
+      continentId: m.continentId,
+      iso_a2: m.iso2,
+      iso_a3: m.iso3,
+      isMicro: true,
+    },
+    geometry: {
+      type: 'Polygon',
+      coordinates: [makeIslandCircle(m.center[0], m.center[1], radius)],
+    },
+  })
+})
+
+const enhancedCountriesGeoJson = {
+  type: 'FeatureCollection',
+  features: [
+    ...worldCountriesGeoJson.features,
+    ...microStateFeatures,
+  ],
+}
 
 /* Fallback self-contained dark style with Carto raster tiles */
 const FALLBACK_STYLE = {
@@ -84,6 +166,8 @@ export default function SubcontinentMap() {
   const markersRef = useRef([])
   const countryMarkerRef = useRef(null)
   const [mapLoaded, setMapLoaded] = useState(false)
+  const stateRef = useRef(state)
+  stateRef.current = state
 
   const key = displayKey(state, steps, state.position, state.playState)
   const values = divisionDisplayValues({ state, variable, displayKey: key })
@@ -144,7 +228,7 @@ export default function SubcontinentMap() {
 
           map.addSource('countries-geojson', {
             type: 'geojson',
-            data: worldCountriesGeoJson,
+            data: enhancedCountriesGeoJson,
           })
 
           /* Match expression for immediate continent pastel fill (no delay on hard reload) */
@@ -153,6 +237,20 @@ export default function SubcontinentMap() {
             initialColorMatch.push(r.id, r.color)
           }
           initialColorMatch.push('#252929')
+
+          /* Match expression for countries & micro-states by continent name */
+          const countryContinentMatch = [
+            'match',
+            ['get', 'continent'],
+            'Asia', CONTINENT_BY_ID.asia?.color || '#c97a8e',
+            'Africa', CONTINENT_BY_ID.africa?.color || '#d4a259',
+            'Europe', CONTINENT_BY_ID.europe?.color || '#7b8ec8',
+            'North America', CONTINENT_BY_ID.north_america?.color || '#6aa382',
+            'South America', CONTINENT_BY_ID.south_america?.color || '#d67c65',
+            'Oceania', CONTINENT_BY_ID.oceania?.color || '#4fa89e',
+            'Antarctica', CONTINENT_BY_ID.antarctica?.color || '#7baecc',
+            '#252929',
+          ]
 
           /* Match expression for each continent's distinct pastel border */
           const borderMatch = ['match', ['get', 'id']]
@@ -177,6 +275,33 @@ export default function SubcontinentMap() {
             },
           }, labelBeforeId)
 
+          // 1b. Fill all individual countries and island nations (Maldives, Caribbean, Pacific, etc.) with continent colors
+          map.addLayer({
+            id: 'countries-fill',
+            type: 'fill',
+            source: 'countries-geojson',
+            paint: {
+              'fill-color': countryContinentMatch,
+              'fill-opacity': 0.95,
+            },
+          }, labelBeforeId)
+
+          // Ensure MapTiler base background and water match world pastel blue
+          if (map.getLayer('Water')) {
+            map.setPaintProperty(
+              'Water',
+              'fill-color',
+              stateRef.current?.isolatedCountry ? WATER_COLOR_ISOLATED : WATER_COLOR_WORLD
+            )
+          }
+          if (map.getLayer('Background')) {
+            map.setPaintProperty(
+              'Background',
+              'background-color',
+              stateRef.current?.isolatedCountry ? '#101212' : WATER_COLOR_WORLD
+            )
+          }
+
           // 2. Clear national country borders (all 177 countries) - placed strictly BELOW text
           map.addLayer({
             id: 'country-borders-black',
@@ -199,6 +324,7 @@ export default function SubcontinentMap() {
                 6, 0.95
               ],
             },
+            filter: ['!=', ['get', 'isMicro'], true],
           }, labelBeforeId)
 
           // 3. Continent outer accent boundary lines - placed strictly BELOW text
@@ -250,6 +376,53 @@ export default function SubcontinentMap() {
             filter: ['==', ['get', 'name'], ''],
           }, labelBeforeId)
 
+          // 4c. Isolated Country Mode layers (active when country is clicked/isolated)
+          map.addLayer({
+            id: 'country-isolated-glow',
+            type: 'line',
+            source: 'countries-geojson',
+            paint: {
+              'line-color': '#38bdf8',
+              'line-width': 16,
+              'line-blur': 14,
+              'line-opacity': 0.92,
+            },
+            filter: ['==', ['get', 'name'], ''],
+          }, labelBeforeId)
+
+          map.addLayer({
+            id: 'country-isolated-fill',
+            type: 'fill',
+            source: 'countries-geojson',
+            paint: {
+              'fill-color': '#16575d',
+              'fill-opacity': 0.95,
+            },
+            filter: ['==', ['get', 'name'], ''],
+          }, labelBeforeId)
+
+          map.addLayer({
+            id: 'country-isolated-border',
+            type: 'line',
+            source: 'countries-geojson',
+            paint: {
+              'line-color': '#fde047',
+              'line-width': 2.8,
+              'line-opacity': 1,
+            },
+            filter: ['==', ['get', 'name'], ''],
+          }, labelBeforeId)
+
+          // 4d. Interactive click surface across all countries
+          map.addLayer({
+            id: 'countries-interactive-click',
+            type: 'fill',
+            source: 'countries-geojson',
+            paint: {
+              'fill-opacity': 0,
+            },
+          }, labelBeforeId)
+
           // 5. If map has no built-in vector labels (e.g. fallback raster), add fallback country names
           if (!map.getLayer('Country labels')) {
             map.addLayer({
@@ -297,6 +470,24 @@ export default function SubcontinentMap() {
                 } catch (_) { }
               }
             }
+          })
+
+          // Click on country to isolate it directly
+          map.on('click', 'countries-interactive-click', (e) => {
+            if (!e.features || !e.features.length) return
+            const featName = e.features[0].properties?.name
+            const country = findCountry(featName)
+            if (country) {
+              dispatch({ type: 'ISOLATE_COUNTRY', country })
+            }
+          })
+
+          map.on('mousemove', 'countries-interactive-click', () => {
+            map.getCanvas().style.cursor = 'pointer'
+          })
+
+          map.on('mouseleave', 'countries-interactive-click', () => {
+            map.getCanvas().style.cursor = ''
           })
 
           map.on('click', 'world-fill', (e) => {
@@ -405,6 +596,25 @@ export default function SubcontinentMap() {
         }
       }
 
+      /* Set pastel sky blue for water on world map, dark sea-green when isolated */
+      if (map.getLayer('Water')) {
+        map.setPaintProperty(
+          'Water',
+          'fill-color',
+          state.isolatedCountry ? WATER_COLOR_ISOLATED : WATER_COLOR_WORLD
+        )
+      }
+      if (map.getLayer('Background')) {
+        map.setPaintProperty(
+          'Background',
+          'background-color',
+          state.isolatedCountry ? '#101212' : WATER_COLOR_WORLD
+        )
+      }
+      if (map.getLayer('countries-fill')) {
+        map.setPaintProperty('countries-fill', 'fill-opacity', state.isolatedCountry ? 0 : 0.95)
+      }
+
       /* Keep all continents consistently bright across all selection states */
       map.setPaintProperty('world-fill', 'fill-opacity', 0.95)
     }
@@ -414,12 +624,133 @@ export default function SubcontinentMap() {
     } else {
       map.once('styledata', applyColors)
     }
-  }, [values, extent, state.scope, mapLoaded, mapInstance])
+  }, [values, extent, state.scope, state.isolatedCountry, mapLoaded, mapInstance])
 
-  /* Camera movement when focused country or scope changes */
+  /* Camera movement & Layer visibility when country or scope changes */
   useEffect(() => {
     const map = mapRef.current || mapInstance
     if (!map) return
+
+    // 1. ISOLATED COUNTRY MODE
+    if (state.isolatedCountry) {
+      const country = state.isolatedCountry
+      const countryName = country.geoName || country.name
+
+      // Restore original sea-green water color for isolated mode
+      if (map.getLayer('Water')) {
+        map.setPaintProperty('Water', 'fill-color', WATER_COLOR_ISOLATED)
+      }
+      if (map.getLayer('River')) {
+        map.setPaintProperty('River', 'line-color', WATER_COLOR_ISOLATED)
+      }
+      if (map.getLayer('Background')) {
+        map.setPaintProperty('Background', 'background-color', '#101212')
+      }
+
+      // Dim/hide all other continents & country borders so ONLY the country is shown
+      if (map.getLayer('world-fill')) map.setPaintProperty('world-fill', 'fill-opacity', 0)
+      if (map.getLayer('countries-fill')) map.setPaintProperty('countries-fill', 'fill-opacity', 0)
+      if (map.getLayer('world-borders')) map.setPaintProperty('world-borders', 'line-opacity', 0)
+      if (map.getLayer('country-borders-black')) map.setPaintProperty('country-borders-black', 'line-opacity', 0)
+      if (map.getLayer('world-selected-border')) map.setFilter('world-selected-border', ['==', ['get', 'id'], ''])
+
+      // Hide continent floating markers
+      markersRef.current.forEach((m) => {
+        const el = m.getElement()
+        if (el) el.style.display = 'none'
+      })
+
+      // Hide all style symbol layers during isolated mode so surrounding text does not clutter the void
+      try {
+        const styleLayers = map.getStyle().layers || []
+        styleLayers.forEach((layer) => {
+          if (layer.type === 'symbol') {
+            map.setLayoutProperty(layer.id, 'visibility', 'none')
+          }
+        })
+      } catch (_) { }
+
+      // Turn on isolated country layers
+      if (map.getLayer('country-isolated-glow')) {
+        map.setFilter('country-isolated-glow', ['==', ['get', 'name'], countryName])
+      }
+      if (map.getLayer('country-isolated-fill')) {
+        map.setFilter('country-isolated-fill', ['==', ['get', 'name'], countryName])
+      }
+      if (map.getLayer('country-isolated-border')) {
+        map.setFilter('country-isolated-border', ['==', ['get', 'name'], countryName])
+      }
+
+      // Hide general focus borders
+      if (map.getLayer('country-focused-border')) map.setFilter('country-focused-border', ['==', ['get', 'name'], ''])
+      if (map.getLayer('country-focused-fill')) map.setFilter('country-focused-fill', ['==', ['get', 'name'], ''])
+
+      // Camera zooms in tightly to the isolated country
+      if (country.bounds) {
+        map.fitBounds(country.bounds, {
+          padding: { top: 90, bottom: 160, left: 100, right: 100 },
+          maxZoom: 7.2,
+          speed: 1.4,
+          curve: 1.2,
+          essential: true,
+        })
+      } else if (country.center) {
+        map.flyTo({
+          center: country.center,
+          zoom: 6.2,
+          speed: 1.4,
+          essential: true,
+        })
+      }
+      return
+    }
+
+    // 2. NORMAL / WORLD MODE
+    // Set pastel sky blue water color for global world map
+    if (map.getLayer('Water')) {
+      map.setPaintProperty('Water', 'fill-color', WATER_COLOR_WORLD)
+    }
+    if (map.getLayer('River')) {
+      map.setPaintProperty('River', 'line-color', WATER_COLOR_WORLD)
+    }
+    if (map.getLayer('Background')) {
+      map.setPaintProperty('Background', 'background-color', WATER_COLOR_WORLD)
+    }
+
+    // Reset isolated country layers
+    if (map.getLayer('country-isolated-glow')) map.setFilter('country-isolated-glow', ['==', ['get', 'name'], ''])
+    if (map.getLayer('country-isolated-fill')) map.setFilter('country-isolated-fill', ['==', ['get', 'name'], ''])
+    if (map.getLayer('country-isolated-border')) map.setFilter('country-isolated-border', ['==', ['get', 'name'], ''])
+
+    // Restore standard continent fills and borders
+    if (map.getLayer('world-fill')) map.setPaintProperty('world-fill', 'fill-opacity', 0.95)
+    if (map.getLayer('countries-fill')) map.setPaintProperty('countries-fill', 'fill-opacity', 0.95)
+    if (map.getLayer('world-borders')) map.setPaintProperty('world-borders', 'line-opacity', 0.95)
+    if (map.getLayer('country-borders-black')) {
+      map.setPaintProperty('country-borders-black', 'line-opacity', [
+        'interpolate', ['linear'], ['zoom'],
+        1, 0.70,
+        3, 0.85,
+        6, 0.95
+      ])
+    }
+
+    // Restore text symbol labels
+    try {
+      const styleLayers = map.getStyle().layers || []
+      styleLayers.forEach((layer) => {
+        if (layer.type === 'symbol') {
+          if (layer.id.toLowerCase().includes('continent')) return
+          map.setLayoutProperty(layer.id, 'visibility', 'visible')
+        }
+      })
+    } catch (_) { }
+
+    // Restore continent markers
+    markersRef.current.forEach((m) => {
+      const el = m.getElement()
+      if (el) el.style.display = ''
+    })
 
     if (state.focusedCountry) {
       const { bounds, center } = state.focusedCountry
@@ -459,7 +790,7 @@ export default function SubcontinentMap() {
         essential: true,
       })
     }
-  }, [state.focusedCountry, state.scope, mapLoaded, mapInstance])
+  }, [state.isolatedCountry, state.focusedCountry, state.scope, mapLoaded, mapInstance])
 
   /* Sync country highlight border and pin marker */
   useEffect(() => {
@@ -471,21 +802,52 @@ export default function SubcontinentMap() {
       countryMarkerRef.current = null
     }
 
-    const countryName = state.focusedCountry ? (state.focusedCountry.geoName || state.focusedCountry.name) : ''
+    const targetCountry = state.isolatedCountry || state.focusedCountry
+    if (!targetCountry || !targetCountry.center) return
 
-    if (map.getLayer('country-focused-border')) {
-      map.setFilter('country-focused-border', ['==', ['get', 'name'], countryName])
-    }
-    if (map.getLayer('country-focused-fill')) {
-      map.setFilter('country-focused-fill', ['==', ['get', 'name'], countryName])
+    const countryName = targetCountry.geoName || targetCountry.name
+    const isIsolated = Boolean(state.isolatedCountry)
+
+    if (!isIsolated) {
+      if (map.getLayer('country-focused-border')) {
+        map.setFilter('country-focused-border', ['==', ['get', 'name'], countryName])
+      }
+      if (map.getLayer('country-focused-fill')) {
+        map.setFilter('country-focused-fill', ['==', ['get', 'name'], countryName])
+      }
     }
 
-    if (state.focusedCountry && state.focusedCountry.center) {
-      const el = document.createElement('div')
-      el.className = 'country-pin-marker'
-      el.style.cursor = 'default'
-      el.style.userSelect = 'none'
-      el.style.pointerEvents = 'auto'
+    const el = document.createElement('div')
+    el.className = 'country-pin-marker'
+    el.style.cursor = isIsolated ? 'default' : 'pointer'
+    el.style.userSelect = 'none'
+    el.style.pointerEvents = 'auto'
+
+    if (isIsolated) {
+      el.innerHTML = `
+        <div style="
+          display: flex;
+          align-items: center;
+          gap: 7px;
+          padding: 6px 14px;
+          border-radius: 9999px;
+          border: 1.5px solid #38bdf8;
+          background: rgba(12, 16, 20, 0.95);
+          box-shadow: 0 0 20px rgba(56, 189, 248, 0.55), 0 4px 18px rgba(0, 0, 0, 0.95);
+          backdrop-filter: blur(8px);
+          transform: translateY(-8px);
+        ">
+          <span style="font-size: 14px;">📍</span>
+          <span style="
+            font-family: 'Titillium Web', sans-serif;
+            font-size: 13px;
+            font-weight: 700;
+            color: #ffffff;
+            letter-spacing: 0.04em;
+          ">${targetCountry.name}</span>
+        </div>
+      `
+    } else {
       el.innerHTML = `
         <div style="
           display: flex;
@@ -498,6 +860,7 @@ export default function SubcontinentMap() {
           box-shadow: 0 0 18px rgba(255, 255, 255, 0.45), 0 4px 18px rgba(0, 0, 0, 0.9);
           backdrop-filter: blur(8px);
           transform: translateY(-8px);
+          transition: transform 0.2s ease, box-shadow 0.2s ease;
         ">
           <span style="font-size: 13px;">📍</span>
           <span style="
@@ -506,23 +869,42 @@ export default function SubcontinentMap() {
             font-weight: 700;
             color: #ffffff;
             letter-spacing: 0.04em;
-          ">${state.focusedCountry.name}</span>
+          ">${targetCountry.name}</span>
           <span style="
             font-family: 'Oxanium', monospace;
             font-size: 10px;
             color: #d4a55b;
             text-transform: uppercase;
             letter-spacing: 0.1em;
-          ">${state.focusedCountry.continent}</span>
+          ">${targetCountry.continent}</span>
+          <span style="
+            font-family: 'Titillium Web', sans-serif;
+            font-size: 10.5px;
+            font-weight: 600;
+            color: #38bdf8;
+            background: rgba(56, 189, 248, 0.16);
+            border: 1px solid rgba(56, 189, 248, 0.4);
+            padding: 1.5px 6px;
+            border-radius: 3px;
+            margin-left: 2px;
+          ">
+            Click to Isolate ↗
+          </span>
         </div>
       `
-      const marker = new maplibregl.Marker({ element: el })
-        .setLngLat(state.focusedCountry.center)
-        .addTo(map)
 
-      countryMarkerRef.current = marker
+      el.addEventListener('click', (e) => {
+        e.stopPropagation()
+        dispatch({ type: 'ISOLATE_COUNTRY', country: targetCountry })
+      })
     }
-  }, [state.focusedCountry, mapLoaded, mapInstance])
+
+    const marker = new maplibregl.Marker({ element: el })
+      .setLngLat(targetCountry.center)
+      .addTo(map)
+
+    countryMarkerRef.current = marker
+  }, [state.isolatedCountry, state.focusedCountry, mapLoaded, mapInstance, dispatch])
 
   /* Sync interactive Map Markers for all 7 Continents */
   useEffect(() => {
@@ -598,6 +980,7 @@ export default function SubcontinentMap() {
   /* Reset map camera to Global overview */
   const handleResetCamera = () => {
     if (!mapRef.current) return
+    dispatch({ type: 'CLEAR_ISOLATED_COUNTRY' })
     dispatch({ type: 'CLEAR_FOCUSED_COUNTRY' })
     dispatch({ type: 'SET_SCOPE', scope: { type: 'national' } })
     mapRef.current.flyTo({
@@ -616,7 +999,11 @@ export default function SubcontinentMap() {
       <div className="z-10 flex flex-wrap items-center justify-between gap-3 border-b border-ivory/10 bg-coal/75 px-4 py-3 backdrop-blur-md md:px-5">
         <div className="flex flex-wrap items-center gap-2.5">
           <span className="font-stencil text-[11.5px] uppercase tracking-[0.26em] text-beige">
-            Global Planetary Overview
+            {state.isolatedCountry
+              ? `Isolated Country View · ${state.isolatedCountry.name}`
+              : state.focusedCountry
+                ? `Country Focus · ${state.focusedCountry.name}`
+                : 'Global Planetary Overview'}
           </span>
         </div>
 
@@ -631,6 +1018,20 @@ export default function SubcontinentMap() {
       {/* Map Canvas Container with Explicit Large Dimensions */}
       <div className="relative w-full h-[620px] sm:h-[680px] md:h-[740px] lg:h-[780px] xl:h-[840px] overflow-hidden bg-[#101212]">
         <div ref={mapContainer} className="absolute inset-0 h-full w-full" />
+
+        {/* Top-Left Back Button (Styled like the '+' zoom button on the top-right) */}
+        {(state.isolatedCountry || state.focusedCountry || state.scope.type === 'division') && (
+          <div className="absolute left-4 top-4 z-20">
+            <button
+              type="button"
+              onClick={handleResetCamera}
+              title="Return to World Map"
+              className="flex h-9 w-9 items-center justify-center border border-ivory/25 bg-black/85 font-data text-lg font-light text-ivory backdrop-blur-md transition-colors hover:border-ivory/60 hover:bg-black cursor-pointer shadow-lg"
+            >
+              ←
+            </button>
+          </div>
+        )}
 
         {/* Floating Controls Overlay (Top Right) */}
         <div className="absolute right-4 top-4 z-10 flex flex-col gap-1.5">
@@ -660,31 +1061,52 @@ export default function SubcontinentMap() {
           </button>
         </div>
 
-
         {/* Selected Continent or Country Pill (Bottom Right) */}
-        {(state.focusedCountry || (state.scope.type === 'division' && CONTINENT_BY_ID[state.scope.id])) && (
+        {(state.focusedCountry || state.isolatedCountry || (state.scope.type === 'division' && CONTINENT_BY_ID[state.scope.id])) && (
           <div
             className="absolute bottom-[114px] right-4 z-20 flex items-center gap-2 border bg-black/95 px-3.5 py-2 backdrop-blur-md shadow-xl"
             style={{
-              borderColor: state.focusedCountry ? '#ffffff' : CONTINENT_BY_ID[state.scope.id]?.border,
+              borderColor: state.isolatedCountry ? '#fde047' : state.focusedCountry ? '#ffffff' : CONTINENT_BY_ID[state.scope.id]?.border,
             }}
           >
             <span
               className="h-2.5 w-2.5 rounded-full animate-pulse"
               style={{
-                backgroundColor: state.focusedCountry ? '#d4a55b' : CONTINENT_BY_ID[state.scope.id]?.color,
-                boxShadow: state.focusedCountry ? '0 0 10px #d4a55b' : `0 0 10px ${CONTINENT_BY_ID[state.scope.id]?.color}`,
+                backgroundColor: state.isolatedCountry ? '#fde047' : state.focusedCountry ? '#d4a55b' : CONTINENT_BY_ID[state.scope.id]?.color,
+                boxShadow: state.isolatedCountry ? '0 0 10px #fde047' : state.focusedCountry ? '0 0 10px #d4a55b' : `0 0 10px ${CONTINENT_BY_ID[state.scope.id]?.color}`,
               }}
               aria-hidden="true"
             />
-            <span
-              className="font-stencil text-[10px] uppercase tracking-[0.2em] font-medium"
-              style={{ color: state.focusedCountry ? '#ffffff' : CONTINENT_BY_ID[state.scope.id]?.border }}
-            >
-              {state.focusedCountry
-                ? `${state.focusedCountry.name} (${state.focusedCountry.continent})`
-                : CONTINENT_BY_ID[state.scope.id]?.name}
-            </span>
+            {state.focusedCountry || state.isolatedCountry ? (
+              <button
+                type="button"
+                onClick={() => {
+                  const c = state.isolatedCountry || state.focusedCountry
+                  if (c) dispatch({ type: 'ISOLATE_COUNTRY', country: c })
+                }}
+                className="font-stencil text-[10px] uppercase tracking-[0.2em] font-medium text-white hover:text-sky-300 transition-colors cursor-pointer text-left"
+                title={state.isolatedCountry ? 'Isolated Country Mode' : 'Click to Isolate Country Map'}
+              >
+                {(state.isolatedCountry || state.focusedCountry).name} ({(state.isolatedCountry || state.focusedCountry).continent})
+              </button>
+            ) : (
+              <span
+                className="font-stencil text-[10px] uppercase tracking-[0.2em] font-medium"
+                style={{ color: CONTINENT_BY_ID[state.scope.id]?.border }}
+              >
+                {CONTINENT_BY_ID[state.scope.id]?.name}
+              </span>
+            )}
+            {state.focusedCountry && !state.isolatedCountry && (
+              <button
+                type="button"
+                onClick={() => dispatch({ type: 'ISOLATE_COUNTRY', country: state.focusedCountry })}
+                className="ml-1.5 flex items-center gap-1 rounded bg-sky-500/20 border border-sky-400/50 px-2 py-0.5 font-data text-[10px] text-sky-300 hover:bg-sky-500/30 cursor-pointer"
+                title="Isolate Country Map"
+              >
+                Isolate ↗
+              </button>
+            )}
             <button
               type="button"
               onClick={handleResetCamera}
