@@ -71,6 +71,8 @@ const initialState = {
   guideOpen: false,
   continentModalOpen: false,
   unavailableNoticeId: null,
+  focusedCountry: null,
+  isolatedCountry: null,
 }
 
 function reducer(state, action) {
@@ -144,6 +146,30 @@ function reducer(state, action) {
       return { ...state, unavailableNoticeId: action.id }
     case 'SET_SCOPE':
       return { ...state, scope: action.scope }
+    case 'FOCUS_COUNTRY':
+      return {
+        ...state,
+        focusedCountry: action.country,
+        isolatedCountry: null,
+        scope: action.country?.continentId
+          ? { type: 'division', id: action.country.continentId }
+          : state.scope,
+      }
+    case 'ISOLATE_COUNTRY': {
+      const country = action.country || state.focusedCountry
+      return {
+        ...state,
+        focusedCountry: country,
+        isolatedCountry: country,
+        scope: country?.continentId
+          ? { type: 'division', id: country.continentId }
+          : state.scope,
+      }
+    }
+    case 'CLEAR_ISOLATED_COUNTRY':
+      return { ...state, isolatedCountry: null }
+    case 'CLEAR_FOCUSED_COUNTRY':
+      return { ...state, focusedCountry: null, isolatedCountry: null }
     case 'SET_TIME_MODE':
       return { ...state, timeMode: action.mode }
     case 'SET_YEAR':

@@ -21,22 +21,24 @@ const CLS_LABEL = {
 
 export function CaptionsPanel() {
   const { state } = usePreview()
+  const isAudioAvailable = state.volume > 0
+
   return (
     <section aria-label="Live captions">
       <div className="flex items-baseline justify-between">
-        <p className="font-stencil text-[11px] md:text-[12px] uppercase tracking-[0.28em] text-beige">Live captions</p>
-        <span className={`font-stencil text-[9px] uppercase tracking-[0.2em] text-parchment/80`}>
-          {CLS_LABEL[state.caption.cls] || 'note'}
-        </span>
+        <p className="font-stencil text-[12px] uppercase tracking-[0.22em] text-ivory font-medium">Live captions</p>
       </div>
-      <div className="mt-3 min-h-24 border border-ivory/10 bg-coal/40 px-4 py-3.5 md:px-5">
-        <p aria-live="polite" aria-atomic="true" className="font-elegant text-[15px] leading-relaxed text-cream/95">
-          {state.caption.text}
-        </p>
+      <div className="mt-3 min-h-24 border border-white/10 bg-coal/60 px-4 py-3.5 md:px-5 flex items-center">
+        {isAudioAvailable ? (
+          <p aria-live="polite" aria-atomic="true" className="font-ui text-[15px] leading-relaxed text-ivory font-normal">
+            {state.caption.text}
+          </p>
+        ) : (
+          <p className="font-ui text-[15px] leading-relaxed text-ivory/60 italic font-normal">
+            No audio available — captions cannot be generated without audio. Enable sound to follow live captions.
+          </p>
+        )}
       </div>
-      <p className="mt-2 font-stencil text-[8.5px] uppercase tracking-[0.18em] text-parchment/70">
-        captions work without audio — every statement is labelled measured, derived, or guide note
-      </p>
     </section>
   )
 }
@@ -46,18 +48,18 @@ export function SummaryPanel() {
 
   if (state.data.status === 'loading' || state.data.status === 'idle') {
     return (
-      <div className="flex h-full flex-col border border-ivory/10 bg-coal/40 p-4 md:p-5" role="status">
-        <p className="font-stencil text-[11px] uppercase tracking-[0.26em] text-beige">Data summary</p>
-        <p className="mt-4 font-ui text-[13px] text-cream/70">Retrieving the NASA POWER global climate record…</p>
+      <div className="flex h-full flex-col border border-white/15 bg-coal/60 p-4 md:p-5" role="status">
+        <p className="font-stencil text-[12px] uppercase tracking-[0.22em] text-ivory font-medium">Data summary</p>
+        <p className="mt-4 font-ui text-[15px] text-ivory font-normal">Retrieving the NASA POWER global climate record…</p>
       </div>
     )
   }
 
   if (state.data.status === 'error') {
     return (
-      <div className="flex h-full flex-col border border-ivory/10 bg-coal/40 p-4 md:p-5" role="alert">
-        <p className="font-stencil text-[11px] uppercase tracking-[0.26em] text-beige">Data summary</p>
-        <p className="mt-4 font-ui text-[13px] leading-relaxed text-cream/75">
+      <div className="flex h-full flex-col border border-white/15 bg-coal/60 p-4 md:p-5" role="alert">
+        <p className="font-stencil text-[12px] uppercase tracking-[0.22em] text-ivory font-medium">Data summary</p>
+        <p className="mt-4 font-ui text-[15px] leading-relaxed text-ivory font-normal">
           No summary can be shown — the NASA POWER data could not be retrieved. The controls above stay
           available; retry from the status banner once your connection is back.
         </p>
@@ -73,15 +75,13 @@ export function SummaryPanel() {
       : 'measured continental sample (continental centroid)'
 
   return (
-    <div className="flex h-full flex-col border border-ivory/10 bg-coal/40">
-      <div className="flex items-center justify-between border-b border-ivory/10 px-4 py-3 md:px-5">
+    <div className="flex h-full flex-col border border-white/15 bg-coal/60">
+      <div className="flex items-center justify-between border-b border-white/10 px-4 py-3 md:px-5">
         <div className="flex items-center gap-2">
-          <p className="font-stencil text-[11px] md:text-[12px] uppercase tracking-[0.28em] text-beige">Data summary</p>
-          <button
-            type="button"
-            onClick={() => dispatch({ type: 'CONTINENT_MODAL', open: true })}
-            className="flex items-center gap-1.5 rounded border border-ivory/20 bg-ivory/5 px-2 py-0.5 font-stencil text-[9px] uppercase tracking-wider text-ivory hover:border-ivory/50 hover:bg-ivory/15 cursor-pointer transition-all"
-            title="Change continent scope"
+          <p className="font-stencil text-[12px] uppercase tracking-[0.22em] text-ivory font-medium">Data summary</p>
+          <div
+            className="flex items-center gap-1.5 rounded border border-white/15 bg-white/[0.04] px-2.5 py-0.5 font-ui text-[11px] uppercase tracking-wider text-ivory select-none"
+            title="Active Scope"
           >
             <span
               className="h-1.5 w-1.5 rounded-full"
@@ -92,26 +92,25 @@ export function SummaryPanel() {
                     : '#d4a55b',
               }}
             />
-            <span>
+            <span className="font-medium text-ivory">
               {state.scope.type === 'division' && CONTINENT_BY_ID[state.scope.id]
                 ? CONTINENT_BY_ID[state.scope.id].name
                 : 'World'}
             </span>
-            <span className="text-parchment/60">▾</span>
-          </button>
+          </div>
         </div>
-        <span className="font-data text-[10px] uppercase tracking-[0.14em] text-parchment">{s.selectionLabel}</span>
+        <span className="font-ui text-[12px] uppercase tracking-wider text-ivory/70 font-medium">{s.selectionLabel}</span>
       </div>
 
       <div className="flex-1 p-4 md:p-5">
         <dl>
-          <div className="flex items-baseline justify-between gap-4 border-b border-ivory/8 pb-2.5">
-            <dt className="font-stencil text-[9.5px] uppercase tracking-[0.18em] text-parchment">
-              {s.current.label || 'current'}
+          <div className="flex items-baseline justify-between gap-4 border-b border-white/10 pb-3">
+            <dt className="font-ui text-[15px] capitalize text-ivory font-medium">
+              {s.current.label || 'Current'}
             </dt>
-            <dd className="font-data text-[22px] leading-none tracking-[0.02em] text-ivory">
+            <dd className="font-data text-[28px] leading-none tracking-tight text-ivory font-semibold">
               {s.current.value !== null ? fmtValue(s.current.value, variable.decimals) : '—'}
-              <span className="ml-1.5 text-[12px] text-parchment">{variable.unit}</span>
+              <span className="ml-1.5 text-[15px] text-ivory/70 font-normal">{variable.unit}</span>
             </dd>
           </div>
 
@@ -119,41 +118,41 @@ export function SummaryPanel() {
           <Row label="maximum" value={s.selMax} decimals={variable.decimals} unit={variable.unit} />
           <Row label="mean" value={s.selMean} decimals={variable.decimals} unit={variable.unit} />
 
-          <div className="flex items-baseline justify-between gap-4 border-b border-ivory/8 py-2.5">
-            <dt className="font-stencil text-[9.5px] uppercase tracking-[0.18em] text-parchment">
+          <div className="flex items-baseline justify-between gap-4 border-b border-white/10 py-3">
+            <dt className="font-ui text-[15px] text-ivory font-medium">
               vs {BASELINE.start}–{BASELINE.end} normal
             </dt>
-            <dd className="font-data text-[13px] text-cream/90">
+            <dd className="font-data text-[17px] text-ivory font-medium">
               {s.normal !== null && s.delta !== null ? (
                 <>
                   {fmtDelta(s.delta, variable.decimals, variable.unit)}{' '}
-                  <span className="text-parchment/80">({fmtPct((s.delta / s.normal) * 100)})</span>
+                  <span className="text-[14px] text-ivory/70 font-normal">({fmtPct((s.delta / s.normal) * 100)})</span>
                 </>
               ) : (
-                <span className="text-parchment/70">unavailable</span>
+                <span className="text-ivory/40 font-normal">unavailable</span>
               )}
             </dd>
           </div>
 
-          <div className="flex items-baseline justify-between gap-4 py-2.5">
-            <dt className="font-stencil text-[9.5px] uppercase tracking-[0.18em] text-parchment">coverage</dt>
-            <dd className="font-data text-[12.5px] text-cream/90">
+          <div className="flex items-baseline justify-between gap-4 py-3">
+            <dt className="font-ui text-[15px] capitalize text-ivory font-medium">Coverage</dt>
+            <dd className="font-data text-[16.5px] text-ivory font-medium">
               {s.validCount}/{s.totalCount} periods valid
               {s.coverage < 1 && s.totalCount > 0 && (
-                <span className="ml-1.5 text-ember/90">
-                  ({Math.round(s.coverage * 100)}% — statistics above use valid values only)
+                <span className="ml-1.5 text-[13.5px] text-ivory/70 font-normal">
+                  ({Math.round(s.coverage * 100)}% — valid values only)
                 </span>
               )}
             </dd>
           </div>
         </dl>
 
-        <p className="mt-3 font-stencil text-[8.5px] uppercase leading-relaxed tracking-[0.16em] text-parchment/75">
-          {variable.name} · {kindLabel} · {SOURCE.name} {SOURCE.dataset} · record {YEAR_MIN}–{YEAR_MAX}
+        <p className="mt-3.5 border-t border-white/8 pt-3 font-ui text-[15px] leading-relaxed text-ivory font-normal">
+          {variable.name} · {kindLabel} · {SOURCE.name} {SOURCE.dataset} · Record {YEAR_MIN}–{YEAR_MAX}
         </p>
 
         {s.normal === null && (
-          <p className="mt-2 font-ui text-[12px] leading-relaxed text-cream/60">
+          <p className="mt-2.5 font-ui text-[14px] leading-relaxed text-ivory/70 font-normal">
             The {BASELINE.start}–{BASELINE.end} comparison needs at least 75% baseline coverage at this scope, so it is
             not shown rather than guessed.
           </p>
@@ -165,9 +164,9 @@ export function SummaryPanel() {
 
 function Row({ label, value, decimals, unit }) {
   return (
-    <div className="flex items-baseline justify-between gap-4 border-b border-ivory/8 py-2.5">
-      <dt className="font-stencil text-[9.5px] uppercase tracking-[0.18em] text-parchment">{label}</dt>
-      <dd className="font-data text-[13px] text-cream/90">
+    <div className="flex items-baseline justify-between gap-4 border-b border-white/10 py-3">
+      <dt className="font-ui text-[15px] capitalize text-ivory font-medium">{label}</dt>
+      <dd className="font-data text-[17px] text-ivory font-medium">
         {value !== null ? `${fmtValue(value, decimals)} ${unit}` : '—'}
       </dd>
     </div>

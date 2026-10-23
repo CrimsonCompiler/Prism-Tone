@@ -5,30 +5,34 @@
 import { usePreview } from '../state/PreviewContext'
 import { SOURCE } from '../data/datasets'
 import { fmtTime } from '../lib/format'
+import CountrySearchBar from './CountrySearchBar'
 
 export function PreviewHero() {
   const { dispatch } = usePreview()
 
   return (
-    <header className="border-b border-ivory/10 pt-4 sm:pt-6 md:pt-7 pb-5 md:pb-6">
-      <div className="flex items-center justify-between gap-4">
+    <header className="relative z-40 border-b border-ivory/10 pt-4 sm:pt-6 md:pt-7 pb-5 md:pb-6">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <h1
-          className="font-meno font-light leading-[1.05] tracking-[-0.015em] text-ivory text-[clamp(1.75rem,3vw,2.75rem)] pl-0.5 sm:pl-1"
+          className="font-meno font-light leading-[1.05] tracking-[-0.015em] text-ivory text-[clamp(1.75rem,3vw,2.75rem)] pl-0.5 sm:pl-1 shrink-0"
           style={{ fontFamily: '"Meno Banner", Georgia, serif' }}
         >
           Listen to the World.
         </h1>
-        <button
-          id="global-continents-hero-btn"
-          type="button"
-          onClick={() => dispatch({ type: 'CONTINENT_MODAL', open: true })}
-          className="group flex items-center justify-center rounded border border-ivory/25 bg-coal/70 px-4 py-2 backdrop-blur-md transition-all hover:border-ivory/60 hover:bg-ivory/10 hover:shadow-lg hover:shadow-black/50 cursor-pointer"
-          title="Open Continent Selection Popup"
-        >
-          <span className="font-stencil text-[11px] uppercase tracking-[0.24em] text-ivory group-hover:text-white font-medium">
-            Select Continent ▾
-          </span>
-        </button>
+        <div className="flex flex-wrap items-center gap-3">
+          <CountrySearchBar />
+          <button
+            id="global-continents-hero-btn"
+            type="button"
+            onClick={() => dispatch({ type: 'CONTINENT_MODAL', open: true })}
+            className="group flex items-center justify-center rounded border border-ivory/25 bg-[#141617] px-4 py-2 transition-all hover:border-ivory/60 hover:bg-ivory/10 hover:shadow-lg hover:shadow-black/50 cursor-pointer shrink-0"
+            title="Open Continent Selection Popup"
+          >
+            <span className="font-stencil text-[11px] uppercase tracking-[0.24em] text-ivory group-hover:text-white font-medium">
+              Select Continent ▾
+            </span>
+          </button>
+        </div>
       </div>
     </header>
   )

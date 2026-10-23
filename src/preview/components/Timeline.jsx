@@ -4,18 +4,16 @@
  *   year  → pick a year; playback walks Jan→Dec; the strip of 12 months
  *           doubles as a position readout while playing and is clickable
  *           when paused to inspect a single month.
- *   month → pick one year + month; a single step plays.
  *   range → pick a start and end year; playback walks every month in
  *           between, and the map shows the derived range mean while idle.
  */
 
 import { usePreview } from '../state/PreviewContext'
 import { YEAR_MIN, YEAR_MAX } from '../data/datasets'
-import { MONTHS_SHORT, keyToLabel } from '../lib/processing'
+import { MONTHS_SHORT } from '../lib/processing'
 
 const MODES = [
   ['year', 'Year'],
-  ['month', 'Month'],
   ['range', 'Range'],
 ]
 
@@ -24,15 +22,15 @@ for (let y = YEAR_MIN; y <= YEAR_MAX; y++) YEARS.push(y)
 
 function YearSelect({ value, onChange, label }) {
   return (
-    <label className="flex items-center gap-2">
-      <span className="font-stencil text-[9.5px] uppercase tracking-[0.2em] text-parchment">{label}</span>
+    <label className="flex items-center gap-2.5">
+      <span className="font-stencil text-[12px] uppercase tracking-[0.2em] text-ivory font-medium">{label}</span>
       <select
         value={value}
         onChange={(e) => onChange(Number(e.target.value))}
-        className="border border-ivory/15 bg-ink px-2 py-1.5 font-data text-[12px] tracking-[0.06em] text-ivory focus-visible:outline focus-visible:outline-1 focus-visible:outline-ivory/70"
+        className="border border-white/20 bg-[#252830] px-3.5 py-1.5 font-data text-[14px] tracking-[0.06em] text-ivory font-medium focus-visible:outline focus-visible:outline-1 focus-visible:outline-ivory/70 cursor-pointer rounded-sm"
       >
         {YEARS.map((y) => (
-          <option key={y} value={y}>
+          <option key={y} value={y} className="bg-[#252830] text-ivory">
             {y}
           </option>
         ))}
@@ -46,132 +44,107 @@ export default function Timeline() {
   const { timeMode, year, month, range, playState, position } = state
 
   const playing = playState === 'playing' || playState === 'paused'
-  const currentStep = playing ? steps[position] : null
 
   const stepIndexFor = (y, m) => steps.findIndex((s) => s.key === `${y}${String(m).padStart(2, '0')}`)
 
   return (
-    <div>
-      <div className="flex flex-wrap items-baseline justify-between gap-2">
-        <p className="font-stencil text-[11px] md:text-[12px] uppercase tracking-[0.28em] text-beige">
-          03 · Time selection
-        </p>
-        <span className="font-data text-[10px] uppercase tracking-[0.16em] text-parchment">
+    <div
+      className="border-t border-white/20 bg-[#1e2126]/95 backdrop-blur-xl p-3.5 md:p-4 shadow-[0_-10px_35px_rgba(0,0,0,0.5)]"
+      onClick={(e) => e.stopPropagation()}
+      onMouseDown={(e) => e.stopPropagation()}
+    >
+      {/* Top bar: Mode tabs + Controls + Monthly record badge */}
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <div className="flex flex-wrap items-center gap-3">
+          {/* mode tabs */}
+          <div className="flex gap-2" role="tablist" aria-label="Time selection mode">
+            {MODES.map(([id, label]) => (
+              <button
+                key={id}
+                type="button"
+                role="tab"
+                aria-selected={timeMode === id}
+                onClick={() => dispatch({ type: 'SET_TIME_MODE', mode: id })}
+                className={`border px-4 py-1.5 font-stencil text-[12.5px] md:text-[13px] uppercase tracking-[0.22em] transition-colors duration-200 focus-visible:outline focus-visible:outline-1 focus-visible:outline-ivory/70 cursor-pointer rounded-sm ${timeMode === id
+                  ? 'border-[#e2d9c6] bg-[#e2d9c6]/20 text-ivory font-semibold shadow-[0_0_12px_rgba(226,217,198,0.14)]'
+                  : 'border-white/20 bg-white/[0.04] text-ivory/80 hover:border-ivory/40 hover:text-ivory hover:bg-white/[0.08] font-medium'
+                  }`}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
+
+          {/* controls per mode: positioned right next to Range button */}
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
+            {timeMode !== 'range' && (
+              <YearSelect
+                label="Year"
+                value={year}
+                onChange={(y) => dispatch({ type: 'SET_YEAR', year: y })}
+              />
+            )}
+
+            {timeMode === 'range' && (
+              <>
+                <YearSelect
+                  label="From"
+                  value={range.startYear}
+                  onChange={(y) =>
+                    dispatch({ type: 'SET_RANGE', range: { ...range, startYear: Math.min(y, range.endYear) } })
+                  }
+                />
+                <YearSelect
+                  label="To"
+                  value={range.endYear}
+                  onChange={(y) =>
+                    dispatch({ type: 'SET_RANGE', range: { ...range, endYear: Math.max(y, range.startYear) } })
+                  }
+                />
+                <span className="font-data text-[13px] uppercase tracking-[0.14em] text-ivory font-medium">
+                  {steps.length} months selected
+                </span>
+              </>
+            )}
+          </div>
+        </div>
+
+        {/* monthly record badge placed inside the box on the right */}
+        <span className="font-ui text-[12px] md:text-[12.5px] uppercase tracking-[0.16em] text-ivory/70 font-medium">
           monthly record · {YEAR_MIN}–{YEAR_MAX}
         </span>
       </div>
 
-      <div className="mt-4 border border-ivory/10 bg-coal/40 p-3 md:p-4">
-        {/* mode tabs */}
-        <div className="flex gap-1.5" role="tablist" aria-label="Time selection mode">
-          {MODES.map(([id, label]) => (
-            <button
-              key={id}
-              type="button"
-              role="tab"
-              aria-selected={timeMode === id}
-              onClick={() => dispatch({ type: 'SET_TIME_MODE', mode: id })}
-              className={`border px-3.5 py-1.5 font-stencil text-[10px] uppercase tracking-[0.22em] transition-colors duration-200 focus-visible:outline focus-visible:outline-1 focus-visible:outline-ivory/70 ${
-                timeMode === id ? 'border-ivory/50 bg-ivory/10 text-ivory' : 'border-ivory/12 text-parchment hover:border-ivory/30 hover:text-cream'
-              }`}
-            >
-              {label}
-            </button>
-          ))}
-        </div>
-
-        {/* controls per mode */}
-        <div className="mt-3.5 flex flex-wrap items-center gap-x-5 gap-y-3">
-          {timeMode !== 'range' && (
-            <YearSelect
-              label="Year"
-              value={year}
-              onChange={(y) => dispatch({ type: 'SET_YEAR', year: y })}
-            />
-          )}
-
-          {timeMode === 'month' && (
-            <label className="flex items-center gap-2">
-              <span className="font-stencil text-[9.5px] uppercase tracking-[0.2em] text-parchment">Month</span>
-              <select
-                value={month}
-                onChange={(e) => dispatch({ type: 'SET_MONTH', month: Number(e.target.value) })}
-                className="border border-ivory/15 bg-ink px-2 py-1.5 font-data text-[12px] tracking-[0.06em] text-ivory focus-visible:outline focus-visible:outline-1 focus-visible:outline-ivory/70"
-              >
-                {MONTHS_SHORT.map((m, i) => (
-                  <option key={m} value={i + 1}>
-                    {m}
-                  </option>
-                ))}
-              </select>
-            </label>
-          )}
-
-          {timeMode === 'range' && (
-            <>
-              <YearSelect
-                label="From"
-                value={range.startYear}
-                onChange={(y) =>
-                  dispatch({ type: 'SET_RANGE', range: { ...range, startYear: Math.min(y, range.endYear) } })
-                }
-              />
-              <YearSelect
-                label="To"
-                value={range.endYear}
-                onChange={(y) =>
-                  dispatch({ type: 'SET_RANGE', range: { ...range, endYear: Math.max(y, range.startYear) } })
-                }
-              />
-              <span className="font-data text-[11px] uppercase tracking-[0.12em] text-parchment">
-                {steps.length} months selected
-              </span>
-            </>
-          )}
-        </div>
-
-        {/* month strip for year mode */}
-        {timeMode === 'year' && (
-          <div className="mt-4 grid grid-cols-6 gap-1 sm:grid-cols-12" role="group" aria-label="Months of the selected year">
-            {MONTHS_SHORT.map((m, i) => {
-              const idx = stepIndexFor(year, i + 1)
-              const active = playing ? position === idx : month === i + 1
-              const isCurrent = playing && position === idx
-              return (
-                <button
-                  key={m}
-                  type="button"
-                  aria-pressed={active}
-                  aria-label={`${m} ${year}${isCurrent ? ' — currently playing' : ''}`}
-                  onClick={() => {
-                    if (!playing) dispatch({ type: 'SET_MONTH', month: i + 1 })
-                    else if (idx >= 0) actions.seek(idx)
-                  }}
-                  className={`border px-1 py-1.5 font-data text-[10.5px] uppercase tracking-[0.1em] transition-colors duration-150 focus-visible:outline focus-visible:outline-1 focus-visible:outline-ivory/70 ${
-                    active
-                      ? isCurrent
-                        ? 'border-ember/70 bg-ember/20 text-ivory'
-                        : 'border-ivory/50 bg-ivory/10 text-ivory'
-                      : 'border-ivory/10 text-parchment hover:border-ivory/30 hover:text-cream'
+      {/* month strip for year mode */}
+      {timeMode === 'year' && (
+        <div className="mt-3.5 grid grid-cols-6 gap-1.5 sm:grid-cols-12" role="group" aria-label="Months of the selected year">
+          {MONTHS_SHORT.map((m, i) => {
+            const idx = stepIndexFor(year, i + 1)
+            const active = playing ? position === idx : month === i + 1
+            const isCurrent = playing && position === idx
+            return (
+              <button
+                key={m}
+                type="button"
+                aria-pressed={active}
+                aria-label={`${m} ${year}${isCurrent ? ' — currently playing' : ''}`}
+                onClick={() => {
+                  if (!playing) dispatch({ type: 'SET_MONTH', month: i + 1 })
+                  else if (idx >= 0) actions.seek(idx)
+                }}
+                className={`border px-2 py-2 font-data text-[13px] md:text-[13.5px] uppercase tracking-[0.14em] transition-colors duration-150 focus-visible:outline focus-visible:outline-1 focus-visible:outline-ivory/70 cursor-pointer rounded-sm ${active
+                  ? isCurrent
+                    ? 'border-[#e2d9c6] bg-[#e2d9c6]/30 text-ivory font-semibold shadow-[0_0_14px_rgba(226,217,198,0.22)]'
+                    : 'border-[#e2d9c6] bg-[#e2d9c6]/20 text-ivory font-semibold shadow-[0_0_10px_rgba(226,217,198,0.14)]'
+                  : 'border-white/15 bg-white/[0.05] text-ivory/80 hover:border-ivory/40 hover:bg-white/[0.12] hover:text-ivory font-medium'
                   }`}
-                >
-                  {m}
-                </button>
-              )
-            })}
-          </div>
-        )}
-
-        <p className="mt-3.5 border-t border-ivory/8 pt-2.5 font-data text-[10.5px] uppercase tracking-[0.14em] text-parchment/85">
-          {playing && currentStep
-            ? `Playing ${keyToLabel(currentStep.key)} — step ${Math.min(position + 1, steps.length)} of ${steps.length}`
-            : timeMode === 'year'
-              ? `Inspecting ${MONTHS_SHORT[month - 1]} ${year} · playback walks all 12 months`
-              : timeMode === 'month'
-                ? `Inspecting ${MONTHS_SHORT[month - 1]} ${year}`
-                : `Range ${range.startYear}–${range.endYear} · playback walks ${steps.length} months`}
-        </p>
-      </div>
+              >
+                {m}
+              </button>
+            )
+          })}
+        </div>
+      )}
     </div>
   )
 }

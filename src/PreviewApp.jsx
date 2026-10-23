@@ -6,8 +6,6 @@ import { PreviewProvider } from './preview/state/PreviewContext'
 import { PreviewHero, StatusBanner, SourceBar } from './preview/components/Chrome'
 import VariableSelector from './preview/components/VariableSelector'
 import SubcontinentMap from './preview/components/SubcontinentMap'
-import Timeline from './preview/components/Timeline'
-import PlayerBar from './preview/components/PlayerBar'
 import { CaptionsPanel, SummaryPanel, MappingPanel } from './preview/components/Panels'
 import GraphPanel from './preview/components/GraphPanel'
 import GuideModal from './preview/components/GuideModal'
@@ -42,22 +40,12 @@ export default function PreviewApp() {
 
             {/* Main Interactive Studio Grid: Map on the Left, Navigation on the Right */}
             <div className="mt-8 grid gap-6 lg:grid-cols-12 xl:gap-8 items-start">
-              {/* Left Column: Interactive MapLibre Global World Map & Transport */}
+              {/* Left Column: Interactive MapLibre Global World Map */}
               <div className="flex flex-col gap-6 lg:col-span-8 xl:col-span-9">
                 <SubcontinentMap />
-
-                {/* Timeline directly under Map */}
-                <div className="w-full">
-                  <Timeline />
-                </div>
-
-                {/* Audio Transport Player */}
-                <div className="w-full">
-                  <PlayerBar />
-                </div>
               </div>
 
-              {/* Right Column: Navigation Sidebar (Variables, Summary, Captions) */}
+              {/* Right Column: Navigation Sidebar (Variables, Audio Player, Summary, Captions) */}
               <div className="flex flex-col gap-6 lg:col-span-4 xl:col-span-3">
                 {/* 01 Environmental Variable Selector */}
                 <div className="relative z-30 border border-ivory/10 bg-coal/40 p-4 md:p-5">
