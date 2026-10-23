@@ -86,38 +86,34 @@ export default function MapAudioControls() {
     >
       <AnimatePresence mode="wait">
         {!isOpen ? (
-          /* Collapsed State: ONLY Sound Icon Button */
+          /* Collapsed State: Play / Pause Icon Button */
           <motion.button
-            key="collapsed-sound-btn"
+            key="collapsed-play-btn"
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.9 }}
             transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
             type="button"
-            onClick={handleImmediateOpen}
-            aria-label="Open audio playback controls"
-            title="Audio Controls (Hover to reveal)"
-            className="flex h-9 w-9 items-center justify-center rounded-lg border border-white/40 bg-black/85 backdrop-blur-md text-white transition-colors duration-200 hover:border-white cursor-pointer shadow-xl shadow-black/90"
+            onClick={(e) => {
+              e.stopPropagation()
+              if (idle) actions.play()
+              else if (paused) actions.resume()
+              else actions.pause()
+            }}
+            aria-label={playing ? 'Pause' : 'Play'}
+            title={playing ? 'Pause' : 'Play (Hover for audio controls)'}
+            className="flex h-9 w-9 items-center justify-center rounded-lg border border-white/40 bg-black/85 backdrop-blur-md text-ivory transition-all duration-200 hover:border-white hover:scale-105 active:scale-95 cursor-pointer shadow-xl shadow-black/90"
           >
-            {volume === 0 ? (
-              /* Muted Speaker Icon */
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" fill="currentColor" />
-                <line x1="23" y1="9" x2="17" y2="15" />
-                <line x1="17" y1="9" x2="23" y2="15" />
-              </svg>
-            ) : volume < 0.5 ? (
-              /* Low Volume Icon */
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" fill="currentColor" />
-                <path d="M15.54 8.46a5 5 0 0 1 0 7.07" />
+            {playing ? (
+              /* Pause Icon */
+              <svg width="12" height="13" viewBox="0 0 10 12" aria-hidden="true">
+                <rect x="1" y="1" width="3" height="10" rx="0.5" fill="currentColor" />
+                <rect x="6" y="1" width="3" height="10" rx="0.5" fill="currentColor" />
               </svg>
             ) : (
-              /* High Volume Icon */
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" fill="currentColor" />
-                <path d="M15.54 8.46a5 5 0 0 1 0 7.07" />
-                <path d="M19.07 4.93a10 10 0 0 1 0 14.14" />
+              /* Play Icon */
+              <svg width="13" height="14" viewBox="0 0 10 12" aria-hidden="true" className="translate-x-[0.5px]">
+                <path d="M1 1 L9 6 L1 11 Z" fill="currentColor" />
               </svg>
             )}
           </motion.button>

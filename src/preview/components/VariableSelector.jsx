@@ -94,12 +94,12 @@ export default function VariableSelector() {
                 onClick={() => isLive && dispatch({ type: 'SET_VARIABLE', id })}
                 className={`flex items-center gap-2 rounded px-3 py-1.5 text-left text-xs transition-all cursor-pointer border ${isPrimary
                   ? 'border-[#e2d9c6] bg-[#e2d9c6]/18 text-ivory font-medium shadow-[0_0_12px_rgba(226,217,198,0.18)]'
-                  : 'border-white/[0.12] bg-white/[0.03] text-cream/90 hover:border-ivory/40 hover:bg-ivory/5 hover:text-ivory font-normal'
+                  : 'border-white/[0.12] bg-white/[0.03] text-ivory/85 hover:border-ivory/40 hover:bg-ivory/5 hover:text-ivory font-normal'
                   }`}
                 title={isLive ? `Focus ${v.name} on map` : 'Planned variable'}
               >
-                <span className="font-ui font-medium text-[13.5px] text-ivory">{v.name}</span>
-                <span className="font-stencil text-[10px] uppercase tracking-wider text-beige font-normal">
+                <span className="font-ui font-medium text-[14px] text-ivory">{v.name}</span>
+                <span className="font-ui text-[12px] uppercase text-ivory/70 font-normal">
                   {v.unit}
                 </span>
               </button>
@@ -108,7 +108,7 @@ export default function VariableSelector() {
         </div>
 
         {/* Instruction line with clean, legible text color */}
-        <p className="mt-3 text-[13.5px] sm:text-[14px] text-cream/80 font-ui font-normal leading-normal">
+        <p className="mt-3 text-[14px] text-ivory/70 font-ui font-normal leading-normal">
           Hover or click above to open multi-select variables popup.
         </p>
       </div>
@@ -129,7 +129,7 @@ export default function VariableSelector() {
               <p className="font-stencil text-[11px] sm:text-[12px] uppercase tracking-[0.24em] text-ivory font-medium">
                 Variable Selection
               </p>
-              <p className="mt-0.5 font-ui text-[13.5px] sm:text-[14.5px] text-cream/80 font-normal">
+              <p className="mt-0.5 font-ui text-[14px] text-ivory/70 font-normal">
                 Choose one or more variables ({selectedIds.length}/6)
               </p>
             </div>
@@ -139,7 +139,7 @@ export default function VariableSelector() {
                 setIsPinned(false)
                 setIsHovered(false)
               }}
-              className="flex h-7 w-7 items-center justify-center rounded-full border border-white/20 text-cream/80 hover:border-white/60 hover:text-ivory hover:bg-white/10 transition-colors text-sm cursor-pointer ml-3"
+              className="flex h-7 w-7 items-center justify-center rounded-full border border-white/20 text-ivory/70 hover:border-white/60 hover:text-ivory hover:bg-white/10 transition-colors text-sm cursor-pointer ml-3"
               title="Close options"
             >
               ✕
@@ -190,12 +190,12 @@ export default function VariableSelector() {
 
                     {/* Name */}
                     <div className="flex items-center gap-2 min-w-0">
-                      <p className={`font-ui text-[14.5px] sm:text-[15.5px] truncate ${isChecked ? 'text-ivory font-medium' : 'text-cream/80 font-normal'
+                      <p className={`font-ui text-[15px] truncate ${isChecked ? 'text-ivory font-medium' : 'text-ivory font-normal'
                         }`}>
                         {v.name}
                       </p>
                       {isPrimary && (
-                        <span className="rounded border border-ivory/35 bg-ivory/15 px-1.5 py-0.5 text-[9px] font-stencil uppercase tracking-wider text-cream font-normal shrink-0">
+                        <span className="rounded border border-ivory/40 bg-ivory/15 px-1.5 py-0.5 text-[9.5px] font-stencil uppercase tracking-wider text-ivory font-normal shrink-0">
                           Focus
                         </span>
                       )}
@@ -204,7 +204,7 @@ export default function VariableSelector() {
 
                   {/* Right Side: Unit / Cadence text */}
                   <div className="shrink-0 text-right">
-                    <span className="font-stencil text-[10.5px] sm:text-[11.5px] uppercase tracking-wider text-beige font-normal">
+                    <span className="font-ui text-[12px] uppercase tracking-wider text-ivory/70 font-normal">
                       {isLive ? `${v.unit} · ${v.cadence}` : 'Planned'}
                     </span>
                   </div>

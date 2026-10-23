@@ -23,7 +23,7 @@ for (let y = YEAR_MIN; y <= YEAR_MAX; y++) YEARS.push(y)
 function YearSelect({ value, onChange, label }) {
   return (
     <label className="flex items-center gap-2.5">
-      <span className="font-stencil text-[12px] uppercase tracking-[0.2em] text-beige font-normal">{label}</span>
+      <span className="font-stencil text-[12px] uppercase tracking-[0.2em] text-ivory font-medium">{label}</span>
       <select
         value={value}
         onChange={(e) => onChange(Number(e.target.value))}
@@ -67,7 +67,7 @@ export default function Timeline() {
                 onClick={() => dispatch({ type: 'SET_TIME_MODE', mode: id })}
                 className={`border px-4 py-1.5 font-stencil text-[12.5px] md:text-[13px] uppercase tracking-[0.22em] transition-colors duration-200 focus-visible:outline focus-visible:outline-1 focus-visible:outline-ivory/70 cursor-pointer rounded-sm ${timeMode === id
                   ? 'border-[#e2d9c6] bg-[#e2d9c6]/20 text-ivory font-semibold shadow-[0_0_12px_rgba(226,217,198,0.14)]'
-                  : 'border-white/20 bg-white/[0.04] text-cream/80 hover:border-ivory/40 hover:text-ivory hover:bg-white/[0.08] font-medium'
+                  : 'border-white/20 bg-white/[0.04] text-ivory/80 hover:border-ivory/40 hover:text-ivory hover:bg-white/[0.08] font-medium'
                   }`}
               >
                 {label}
@@ -101,7 +101,7 @@ export default function Timeline() {
                     dispatch({ type: 'SET_RANGE', range: { ...range, endYear: Math.max(y, range.startYear) } })
                   }
                 />
-                <span className="font-data text-[13px] uppercase tracking-[0.14em] text-cream/90 font-medium">
+                <span className="font-data text-[13px] uppercase tracking-[0.14em] text-ivory font-medium">
                   {steps.length} months selected
                 </span>
               </>
@@ -110,7 +110,7 @@ export default function Timeline() {
         </div>
 
         {/* monthly record badge placed inside the box on the right */}
-        <span className="font-data text-[12px] md:text-[12.5px] uppercase tracking-[0.2em] text-beige font-medium">
+        <span className="font-ui text-[12px] md:text-[12.5px] uppercase tracking-[0.16em] text-ivory/70 font-medium">
           monthly record · {YEAR_MIN}–{YEAR_MAX}
         </span>
       </div>
@@ -136,7 +136,7 @@ export default function Timeline() {
                   ? isCurrent
                     ? 'border-[#e2d9c6] bg-[#e2d9c6]/30 text-ivory font-semibold shadow-[0_0_14px_rgba(226,217,198,0.22)]'
                     : 'border-[#e2d9c6] bg-[#e2d9c6]/20 text-ivory font-semibold shadow-[0_0_10px_rgba(226,217,198,0.14)]'
-                  : 'border-white/15 bg-white/[0.05] text-cream/80 hover:border-ivory/40 hover:bg-white/[0.12] hover:text-ivory font-medium'
+                  : 'border-white/15 bg-white/[0.05] text-ivory/80 hover:border-ivory/40 hover:bg-white/[0.12] hover:text-ivory font-medium'
                   }`}
               >
                 {m}
