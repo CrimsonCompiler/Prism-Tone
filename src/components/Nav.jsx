@@ -43,10 +43,10 @@ export default function Nav({ page = 'index' }) {
             : 'border-b border-transparent bg-transparent'
         }`}
     >
-      <nav className="flex h-18 sm:h-20 md:h-22 lg:h-24 items-center justify-between px-3 sm:px-6 md:px-8 lg:px-12 xl:px-16 w-full">
+      <nav className="flex h-18 flex-col items-center justify-center gap-1.5 px-3 min-[390px]:flex-row min-[390px]:justify-between min-[390px]:gap-0 sm:h-20 sm:px-6 md:h-22 md:px-8 lg:h-24 lg:px-12 xl:px-16 w-full">
         <a
           href={page === 'index' ? '#top' : 'index.html#top'}
-          className="group flex flex-col justify-center gap-1 focus:outline-none shrink-0 mr-2 sm:mr-4"
+          className="group flex flex-col justify-center gap-1 focus:outline-none shrink-0 mr-0 min-[390px]:mr-2 sm:mr-4"
           aria-label="Prism Tone — back to top"
         >
           <img

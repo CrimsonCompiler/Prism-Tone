@@ -29,7 +29,7 @@ export const ConceptObservation = memo(function ConceptObservation() {
     <section className="relative w-full pb-24 md:pb-32 lg:pb-40">
       {/* Top Header Bar: OBSERVATION & Chapter Meta */}
       <Fade delay={0.1}>
-        <div className="flex items-center justify-between pb-8 md:pb-12 text-[#cad7ce]">
+        <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-1 pb-8 md:pb-12 text-[#cad7ce]">
           <span className="font-stencil text-[10px] md:text-[11.5px] tracking-[0.34em]">
             OBSERVATION
           </span>
@@ -119,7 +119,7 @@ export const ConceptProblem = memo(function ConceptProblem() {
     <section className="relative w-full py-20 md:py-28 lg:py-36 border-t border-white/10">
       {/* Top Header Bar: THE CRISIS OF PERCEPTION & Chapter Meta */}
       <Fade delay={0.1}>
-        <div className="flex items-center justify-between pb-8 md:pb-12 text-[#cad7ce]">
+        <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-1 pb-8 md:pb-12 text-[#cad7ce]">
           <span className="font-stencil text-[10px] md:text-[11.5px] tracking-[0.34em] uppercase">
             THE CRISIS OF PERCEPTION
           </span>
@@ -212,7 +212,7 @@ export const ConceptIdea = memo(function ConceptIdea() {
     <section className="relative w-full py-20 md:py-28 lg:py-36 border-t border-white/10">
       {/* Top Header Bar: A NEW TRANSPORT FOR DATA & Chapter Meta */}
       <Fade delay={0.1}>
-        <div className="flex items-center justify-between pb-8 md:pb-12 text-[#cad7ce]">
+        <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-1 pb-8 md:pb-12 text-[#cad7ce]">
           <span className="font-stencil text-[10px] md:text-[11.5px] tracking-[0.34em] uppercase">
             A NEW TRANSPORT FOR DATA
           </span>
@@ -360,7 +360,7 @@ export const ConceptPalette = memo(function ConceptPalette() {
     <section className="relative w-full py-20 md:py-28 lg:py-36 border-t border-white/10">
       {/* Top Header Bar: HOW EARTH'S SIGNALS SHAPE THE SOUND & Chapter Meta */}
       <Fade delay={0.1}>
-        <div className="flex items-center justify-between pb-8 md:pb-12 text-[#cad7ce]">
+        <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-1 pb-8 md:pb-12 text-[#cad7ce]">
           <span className="font-stencil text-[10px] md:text-[11.5px] tracking-[0.34em] uppercase">
             HOW EARTH'S SIGNALS SHAPE THE SOUND
           </span>

@@ -146,7 +146,7 @@ export default function ExperiencePreview() {
       <Fade delay={0.25}>
         <div className="mt-16 grid border border-ivory/10 md:mt-20 lg:mt-24 lg:grid-cols-12">
           {/* left — orbital sweep */}
-          <div className="flex flex-col border-b border-ivory/10 p-8 lg:col-span-3 lg:border-b-0 lg:border-r">
+          <div className="flex flex-col border-b border-ivory/10 p-8 max-[359px]:p-5 lg:col-span-3 lg:border-b-0 lg:border-r">
             <div className="flex items-baseline justify-between">
               <p className="font-stencil text-[12px] md:text-[13px] uppercase tracking-[0.28em] text-beige font-medium">
                 Orbital sweep
@@ -166,7 +166,7 @@ export default function ExperiencePreview() {
           </div>
 
           {/* center — live telemetry */}
-          <div className="border-b border-ivory/10 p-8 lg:col-span-5 lg:border-b-0 lg:border-r">
+          <div className="border-b border-ivory/10 p-8 max-[359px]:p-5 lg:col-span-5 lg:border-b-0 lg:border-r">
             <div className="flex items-baseline justify-between">
               <p className="font-stencil text-[12px] md:text-[13px] uppercase tracking-[0.28em] text-beige font-medium">
                 Live telemetry
@@ -190,7 +190,7 @@ export default function ExperiencePreview() {
           </div>
 
           {/* right — signal out */}
-          <div className="flex flex-col p-8 lg:col-span-4">
+          <div className="flex flex-col p-8 max-[359px]:p-5 lg:col-span-4">
             <div className="flex items-baseline justify-between">
               <p className="font-stencil text-[12px] md:text-[13px] uppercase tracking-[0.28em] text-beige font-medium">
                 Signal out
@@ -204,7 +204,7 @@ export default function ExperiencePreview() {
               <Waveform className="h-28 w-full" />
             </div>
 
-            <div className="flex items-center justify-between border-t border-ivory/10 pt-6">
+            <div className="flex flex-wrap items-center justify-between gap-y-3 border-t border-ivory/10 pt-6 lg:flex-nowrap">
               <a
                 href="preview.html"
                 className="group flex items-center gap-3 border border-ivory/25 px-5 py-2.5 font-stencil text-[10.5px] md:text-[11.5px] uppercase tracking-[0.34em] text-ivory transition-colors duration-300 hover:bg-ivory hover:text-ink cursor-pointer"

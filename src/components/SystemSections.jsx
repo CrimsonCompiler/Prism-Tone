@@ -262,20 +262,20 @@ export const Pipeline = memo(function Pipeline() {
           <div className="mt-10 flex flex-col gap-4 md:mt-12 lg:flex-row lg:items-stretch lg:gap-0">
             {STAGES.map(([n, name, sub], i) => (
               <Fragment key={n}>
-                <Fade delay={0.06 * i} className="lg:flex-1">
-                  <div className="h-full border border-white/10 bg-white/[0.03] p-5 md:p-6">
+                <Fade delay={0.06 * i} className="lg:flex-1 max-[1439px]:min-w-0">
+                  <div className="h-full border border-white/10 bg-white/[0.03] p-5 md:p-6 lg:max-xl:p-4">
                     <p className="font-data text-[11px] md:text-[12px] tracking-[0.3em] text-[#86ab8e]">{n}</p>
-                    <p className="mt-4 font-display font-light uppercase leading-none text-[#f7f4ed] text-[1.25rem] md:text-[1.35rem] xl:text-[1.5rem] whitespace-nowrap">
+                    <p className="mt-4 font-display font-light uppercase leading-none text-[#f7f4ed] text-[1.25rem] md:text-[1.35rem] xl:text-[1.5rem] whitespace-nowrap max-[1439px]:whitespace-normal lg:max-xl:text-[1.15rem]">
                       {name}
                     </p>
-                    <p className="mt-4 font-data text-[11px] md:text-[12px] uppercase tracking-[0.18em] text-[#cad7ce] whitespace-nowrap">
+                    <p className="mt-4 font-data text-[11px] md:text-[12px] uppercase tracking-[0.18em] text-[#cad7ce] whitespace-nowrap max-[1439px]:whitespace-normal">
                       {sub}
                     </p>
                   </div>
                 </Fade>
 
                 {i < STAGES.length - 1 && (
-                  <div className="hidden items-center px-3 lg:flex text-white/40" aria-hidden="true">
+                  <div className="hidden items-center px-3 min-[1440px]:flex text-white/40" aria-hidden="true">
                     <svg width="46" height="12" viewBox="0 0 46 12">
                       <line x1="0" y1="6" x2="40" y2="6" stroke="currentColor" strokeWidth="1" />
                       <path d="M36 2 L44 6 L36 10" fill="none" stroke="currentColor" strokeWidth="1" />
@@ -851,11 +851,11 @@ export const SonificationFormulas = memo(function SonificationFormulas() {
                 <div className="group relative flex h-full flex-col justify-between border border-ivory/15 bg-[#0d1416]/90 p-5 sm:p-6 transition-all duration-300 hover:border-ivory/30 hover:bg-[#0d1416]">
                   {/* 1. Top Bar: Formula & Sensor Source */}
                   <div>
-                    <div className="flex items-center justify-between gap-2 border-b border-ivory/10 pb-3">
-                      <span className="font-data text-[10.5px] sm:text-[11.5px] uppercase tracking-[0.18em] text-[#8ea792] whitespace-nowrap">
+                    <div className="flex flex-wrap items-center justify-between gap-x-2 gap-y-1 border-b border-ivory/10 pb-3">
+                      <span className="font-data text-[10.5px] sm:text-[11.5px] uppercase tracking-[0.18em] text-[#8ea792] whitespace-normal sm:whitespace-nowrap">
                         {card.formula}
                       </span>
-                      <span className="font-data text-[10px] sm:text-[10.5px] uppercase tracking-[0.14em] text-ivory/70 whitespace-nowrap">
+                      <span className="font-data text-[10px] sm:text-[10.5px] uppercase tracking-[0.14em] text-ivory/70 whitespace-normal sm:whitespace-nowrap">
                         {card.sensor}
                       </span>
                     </div>
@@ -884,11 +884,11 @@ export const SonificationFormulas = memo(function SonificationFormulas() {
                     </p>
 
                     {/* 4. Dark Waveform Display Window */}
-                    <div className="relative mt-3.5 mb-3.5 border border-ivory/12 bg-black/85 p-3 flex flex-col justify-between h-32 w-full overflow-hidden">
+                    <div className="relative mt-3.5 mb-3.5 border border-ivory/12 bg-black/85 p-3 flex flex-col justify-between min-h-32 w-full overflow-hidden">
                       {/* Top inside metrics */}
-                      <div className="flex items-center justify-between text-[11px] sm:text-[11.5px] font-data uppercase tracking-[0.14em]">
-                        <span className="text-ivory/90">{card.calcMetricLeft(val)}</span>
-                        <span className="text-ember font-medium">{card.calcMetricRight(val)}</span>
+                      <div className="flex flex-wrap items-start justify-between gap-y-0.5 text-[11px] sm:text-[11.5px] font-data uppercase tracking-[0.14em]">
+                        <span className="whitespace-nowrap text-ivory/90">{card.calcMetricLeft(val)}</span>
+                        <span className="whitespace-nowrap text-ember font-medium">{card.calcMetricRight(val)}</span>
                       </div>
 
                       {/* Waveform graphic */}
@@ -902,9 +902,9 @@ export const SonificationFormulas = memo(function SonificationFormulas() {
                       </div>
 
                       {/* Bottom inside labels */}
-                      <div className="flex items-center justify-between text-[9px] sm:text-[9.5px] font-data uppercase tracking-[0.14em] text-ivory/50">
-                        <span>{card.minLabel}</span>
-                        <span>{card.maxLabel}</span>
+                      <div className="flex flex-wrap items-start justify-between gap-y-0.5 text-[9px] sm:text-[9.5px] font-data uppercase tracking-[0.14em] text-ivory/50">
+                        <span className="whitespace-nowrap">{card.minLabel}</span>
+                        <span className="whitespace-nowrap">{card.maxLabel}</span>
                       </div>
                     </div>
 

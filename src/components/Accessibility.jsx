@@ -204,7 +204,7 @@ export default function Accessibility() {
         {/* Right Column: Cartoon / Vector Illustration */}
         <div className="flex items-center justify-center lg:col-span-5">
           <Fade delay={0.25}>
-            <div className="w-[420px] md:w-[480px] lg:w-[520px] aspect-[200/280]">
+            <div className="w-full max-w-[420px] md:w-[480px] md:max-w-none lg:w-[520px] lg:max-w-[calc(100vw-552px)] aspect-[200/280]">
               <ListenerIllustration />
             </div>
           </Fade>

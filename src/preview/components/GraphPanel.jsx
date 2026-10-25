@@ -319,20 +319,20 @@ function SeriesGraph({ variable, seriesMap }) {
       </div>
 
       {/* keyboard / touch inspection */}
-      <div className="mt-3 flex items-center gap-3">
+      <div className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-2 sm:flex-nowrap">
         <label htmlFor="pt-inspect" className="shrink-0 font-stencil text-[9px] uppercase tracking-[0.2em] text-parchment">
           inspect
         </label>
         <input
           id="pt-inspect"
           type="range"
-          className="pt-range flex-1"
+          className="pt-range min-w-0 flex-1"
           min={0}
           max={Math.max(points.length - 1, 0)}
           value={cursor ?? 0}
           onChange={(e) => setCursor(Number(e.target.value))}
         />
-        <span className="w-36 shrink-0 text-right font-data text-[10.5px] tracking-[0.06em] text-cream/85">
+        <span className="w-full shrink-0 text-left font-data text-[10.5px] tracking-[0.06em] text-cream/85 sm:w-36 sm:text-right">
           {cursorValid ? `${labelFor(cursor)} · ${valueFor(cursor) !== null ? fmtValue(valueFor(cursor), variable.decimals) : '—'}` : 'hover or focus graph'}
         </span>
       </div>

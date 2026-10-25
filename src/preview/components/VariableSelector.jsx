@@ -119,7 +119,7 @@ export default function VariableSelector() {
           role="listbox"
           aria-multiselectable="true"
           aria-label="Select multiple environmental variables"
-          className="absolute z-50 lg:right-full lg:top-0 lg:mr-3.5 right-0 top-full mt-2 w-84 sm:w-96 rounded-xl border border-white/20 bg-[#16171a]/98 backdrop-blur-xl shadow-2xl shadow-black/90 p-4 sm:p-5 transition-all"
+          className="absolute z-50 lg:right-full lg:top-0 lg:mr-3.5 right-0 top-full mt-2 w-84 max-w-[calc(100vw-2rem)] sm:w-96 rounded-xl border border-white/20 bg-[#16171a]/98 backdrop-blur-xl shadow-2xl shadow-black/90 p-4 sm:p-5 transition-all"
           onMouseEnter={handleMouseEnter}
           onMouseLeave={handleMouseLeave}
         >

@@ -54,7 +54,7 @@ export default function Hero() {
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1.2, delay: 1.35, ease: EASE }}
-          className="pb-[9vh] sm:pb-[10.5vh] md:pb-[11.5vh] lg:pb-[12.5vh] flex flex-col items-center gap-6 sm:gap-7 md:gap-7.5 pointer-events-auto"
+          className="pb-28 sm:pb-[10.5vh] md:pb-[11.5vh] lg:pb-[12.5vh] flex flex-col items-center gap-6 sm:gap-7 md:gap-7.5 pointer-events-auto"
         >
           <p className="font-elegant text-[12.5px] md:text-[13.5px] lg:text-[15px] uppercase tracking-[0.36em] md:tracking-[0.44em] text-cream/90">
             Making the Invisible - Audible

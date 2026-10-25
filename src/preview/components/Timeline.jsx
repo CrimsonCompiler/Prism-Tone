@@ -132,7 +132,7 @@ export default function Timeline() {
                   if (!playing) dispatch({ type: 'SET_MONTH', month: i + 1 })
                   else if (idx >= 0) actions.seek(idx)
                 }}
-                className={`border px-2 py-2 font-data text-[13px] md:text-[13.5px] uppercase tracking-[0.14em] transition-colors duration-150 focus-visible:outline focus-visible:outline-1 focus-visible:outline-ivory/70 cursor-pointer rounded-sm ${active
+                className={`border px-1 sm:px-2 py-2 font-data text-[13px] md:text-[13.5px] uppercase tracking-[0.1em] sm:tracking-[0.14em] transition-colors duration-150 focus-visible:outline focus-visible:outline-1 focus-visible:outline-ivory/70 cursor-pointer rounded-sm ${active
                   ? isCurrent
                     ? 'border-[#e2d9c6] bg-[#e2d9c6]/30 text-ivory font-semibold shadow-[0_0_14px_rgba(226,217,198,0.22)]'
                     : 'border-[#e2d9c6] bg-[#e2d9c6]/20 text-ivory font-semibold shadow-[0_0_10px_rgba(226,217,198,0.14)]'

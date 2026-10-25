@@ -1122,7 +1122,7 @@ export default function SubcontinentMap() {
         <MapAudioControls />
 
         {/* Timeline Controls Docked to the Bottom of Map Screen */}
-        <div className="absolute bottom-0 left-0 right-0 z-20">
+        <div data-preview-dock className="absolute bottom-0 left-0 right-0 z-20">
           <Timeline />
         </div>
       </div>

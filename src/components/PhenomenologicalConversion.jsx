@@ -269,7 +269,7 @@ export default function PhenomenologicalConversion() {
           >
             <span className="block whitespace-nowrap">WHAT IF</span>
             <span className="block whitespace-nowrap">EARTH DATA</span>
-            <span className="block whitespace-nowrap">
+            <span className="block whitespace-normal sm:whitespace-nowrap">
               COULD BE <em className="italic text-cream font-light">HEARD?</em>
             </span>
           </h2>
@@ -280,7 +280,7 @@ export default function PhenomenologicalConversion() {
             For decades, planetary observations have been trapped in visual charts: color
             ramps, isotherms & 2D graphs. We translate those measurements into sonic language.
           </p>
-          <div className="mt-8 flex items-center gap-4 border-t border-ivory/10 pt-4">
+          <div className="mt-8 flex flex-wrap items-center gap-x-4 gap-y-2 border-t border-ivory/10 pt-4 sm:flex-nowrap">
             <span className="font-data text-[11px] uppercase tracking-[0.2em] text-parchment md:text-[11.5px]">
               Resolution: 0.1° Lat / Lon
             </span>
@@ -317,10 +317,10 @@ export default function PhenomenologicalConversion() {
                 </div>
 
                 {/* Card Title & Stat */}
-                <h3 className="font-display text-[15.5px] sm:text-[16px] lg:text-[15.5px] xl:text-[17px] font-normal uppercase tracking-normal text-ivory whitespace-nowrap overflow-hidden text-ellipsis">
+                <h3 className="font-display text-[15.5px] sm:text-[16px] lg:text-[15.5px] xl:text-[17px] font-normal uppercase tracking-normal text-ivory whitespace-normal sm:whitespace-nowrap overflow-hidden text-ellipsis">
                   {s.title}
                 </h3>
-                <p className="mt-1.5 font-data text-[11px] sm:text-[11.5px] xl:text-[12px] uppercase tracking-[0.06em] text-ember whitespace-nowrap overflow-hidden text-ellipsis">
+                <p className="mt-1.5 font-data text-[11px] sm:text-[11.5px] xl:text-[12px] uppercase tracking-[0.06em] text-ember whitespace-normal sm:whitespace-nowrap overflow-hidden text-ellipsis">
                   {s.stat}
                 </p>
 

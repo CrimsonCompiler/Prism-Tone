@@ -168,12 +168,12 @@ export default function ContinentModal() {
             </span>
           </div>
 
-          <div className="flex items-center gap-3">
+          <div className="flex flex-wrap items-center gap-3">
             <button
               id="continent-modal-cancel-btn"
               type="button"
               onClick={() => dispatch({ type: 'CONTINENT_MODAL', open: false })}
-              className="rounded-md border border-ivory/20 px-5 py-2.5 font-stencil text-[10px] sm:text-[11px] uppercase tracking-[0.2em] text-parchment hover:border-ivory/50 hover:text-ivory transition-colors cursor-pointer"
+              className="rounded-md border border-ivory/20 px-4 py-2.5 font-stencil text-[10px] sm:px-5 sm:text-[11px] uppercase tracking-[0.2em] text-parchment hover:border-ivory/50 hover:text-ivory transition-colors cursor-pointer"
             >
               Cancel
             </button>
@@ -181,7 +181,7 @@ export default function ContinentModal() {
               id="continent-modal-confirm-btn"
               type="button"
               onClick={handleConfirm}
-              className="flex items-center gap-2 rounded-md border border-ember bg-ember/90 px-7 py-2.5 font-stencil text-[11px] sm:text-[12px] uppercase tracking-[0.22em] text-[#121414] font-bold hover:bg-ember hover:shadow-lg hover:shadow-ember/30 transition-all cursor-pointer"
+              className="flex items-center gap-2 rounded-md border border-ember bg-ember/90 px-5 py-2.5 font-stencil text-[11px] sm:px-7 sm:text-[12px] uppercase tracking-[0.22em] text-[#121414] font-bold hover:bg-ember hover:shadow-lg hover:shadow-ember/30 transition-all cursor-pointer"
             >
               <span>See Continent</span>
               <span aria-hidden="true">→</span>

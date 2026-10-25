@@ -344,7 +344,7 @@ const MemberSection = memo(function MemberSection({ member }) {
                   transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
                   src={member.photo}
                   alt={member.name}
-                  className={`max-h-[500px] sm:max-h-[560px] md:max-h-[640px] lg:max-h-[700px] xl:max-h-[740px] w-auto object-contain select-none drop-shadow-[0_16px_50px_rgba(0,0,0,0.75)] [mask-image:linear-gradient(to_bottom,black_95%,transparent)] origin-bottom ${member.photoScale || 'scale-105 lg:scale-110'
+                  className={`max-h-[500px] sm:max-h-[560px] md:max-h-[640px] lg:max-h-[700px] xl:max-h-[740px] max-w-full w-auto object-contain select-none drop-shadow-[0_16px_50px_rgba(0,0,0,0.75)] [mask-image:linear-gradient(to_bottom,black_95%,transparent)] origin-bottom ${member.photoScale || 'scale-105 lg:scale-110'
                     }`}
                   draggable="false"
                   loading="lazy"
@@ -365,7 +365,7 @@ const MemberSection = memo(function MemberSection({ member }) {
               initial={{ opacity: 0, y: 16 }}
               animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 16 }}
               transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-              className={`flex items-center gap-3 font-stencil text-[11px] md:text-[12px] uppercase tracking-[0.32em] text-ivory/60 mb-3 ${isLeftPlanet ? 'lg:justify-start' : 'lg:justify-end'
+              className={`flex flex-wrap items-center gap-x-3 gap-y-1 font-stencil text-[11px] md:text-[12px] uppercase tracking-[0.32em] text-ivory/60 mb-3 ${isLeftPlanet ? 'lg:justify-start' : 'lg:justify-end'
                 }`}
             >
               <span>{member.code}</span>
@@ -413,7 +413,7 @@ const MemberSection = memo(function MemberSection({ member }) {
               initial={{ opacity: 0 }}
               animate={isInView ? { opacity: 1 } : { opacity: 0 }}
               transition={{ duration: 1, delay: 0.4 }}
-              className={`mt-6 pt-5 border-t border-ivory/15 flex items-center gap-6 text-[10px] uppercase font-data tracking-[0.25em] text-ivory/50 ${isLeftPlanet ? 'lg:justify-start' : 'lg:justify-end'
+              className={`mt-6 pt-5 border-t border-ivory/15 flex flex-wrap items-center gap-x-6 gap-y-2 text-[10px] uppercase font-data tracking-[0.25em] text-ivory/50 ${isLeftPlanet ? 'lg:justify-start' : 'lg:justify-end'
                 }`}
             >
               <span>{member.stat}</span>
@@ -430,6 +430,20 @@ const MemberSection = memo(function MemberSection({ member }) {
 /* Master Planetary Sections Component */
 export default function TeamPlanetarySections() {
   const [activeMember, setActiveMember] = useState('01')
+  const subnavRef = useRef(null)
+
+  // Keep the active member visible in the horizontally scrollable sub-nav on
+  // narrow screens, where all five names cannot fit at once.
+  useEffect(() => {
+    const bar = subnavRef.current
+    if (!bar || bar.scrollWidth <= bar.clientWidth + 1) return
+    const item = bar.querySelector(`[data-member="${activeMember}"]`)
+    if (!item) return
+    const barLeft = bar.getBoundingClientRect().left
+    const itemLeft = item.getBoundingClientRect().left
+    const target = itemLeft - barLeft + bar.scrollLeft - (bar.clientWidth - item.offsetWidth) / 2
+    bar.scrollTo({ left: Math.max(0, target), behavior: 'smooth' })
+  }, [activeMember])
 
   useEffect(() => {
     let ticking = false
@@ -471,14 +485,16 @@ export default function TeamPlanetarySections() {
       {/* 2. Sticky Sub-Nav Header: Zero scrollbars, sits right below the main navbar with full names */}
       <div className="sticky top-18 sm:top-20 md:top-22 lg:top-24 z-40 w-full border-y border-ivory/15 bg-ink/90 backdrop-blur-md py-2.5 sm:py-3 px-4 sm:px-6 shadow-lg shadow-black/30">
         <div
+          ref={subnavRef}
           style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
-          className="mx-auto flex max-w-6xl items-center justify-center gap-5 sm:gap-7 md:gap-9 lg:gap-12 overflow-x-auto no-scrollbar scroll-smooth [&::-webkit-scrollbar]:hidden"
+          className="mx-auto flex max-w-6xl items-center justify-start gap-5 sm:gap-7 md:gap-9 lg:gap-12 overflow-x-auto no-scrollbar scroll-smooth xl:justify-center [&::-webkit-scrollbar]:hidden"
         >
           {MEMBERS.map((m) => {
             const isActive = activeMember === m.n
             return (
               <button
                 key={m.n}
+                data-member={m.n}
                 onClick={() => scrollToMember(m.n)}
                 className={`group relative flex items-center gap-2 whitespace-nowrap font-ui text-[10.5px] sm:text-[11.5px] md:text-[12px] uppercase tracking-[0.16em] sm:tracking-[0.2em] transition-all duration-300 py-1 ${isActive
                   ? 'text-ivory font-semibold'

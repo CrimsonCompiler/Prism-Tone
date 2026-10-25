@@ -138,6 +138,16 @@ body.team-page {
   z-index: 1;
 }
 
+/* Below the desktop breakpoint the stacked sections are taller than the
+   viewport; sticky pinning with a negative top would hide their lower
+   content, so they flow normally on mobile and tablet. */
+@media (max-width: 1023.98px) {
+  .stack-card {
+    position: relative;
+    top: auto;
+  }
+}
+
 /* cinematic film grain — static to eliminate full-screen GPU compositing cycles */
 .grain {
   position: fixed;

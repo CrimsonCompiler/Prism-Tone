@@ -24,6 +24,7 @@ export default function MapAudioControls() {
   const { playState, volume, rate } = state
 
   const [isOpen, setIsOpen] = useState(false)
+  const [dockOffset, setDockOffset] = useState(null)
   const openTimerRef = useRef(null)
   const closeTimerRef = useRef(null)
   const isDraggingRef = useRef(false)
@@ -31,6 +32,25 @@ export default function MapAudioControls() {
   const playing = playState === 'playing'
   const paused = playState === 'paused'
   const idle = playState === 'idle'
+
+  // On small screens the timeline dock grows taller when its controls wrap.
+  // Keep the floating transport just above it instead of using a fixed offset.
+  useEffect(() => {
+    const dock = document.querySelector('[data-preview-dock]')
+    if (!dock) return
+    const mq = window.matchMedia('(max-width: 767px)')
+    const measure = () => {
+      setDockOffset(mq.matches ? Math.round(dock.getBoundingClientRect().height) + 14 : null)
+    }
+    measure()
+    const ro = new ResizeObserver(measure)
+    ro.observe(dock)
+    mq.addEventListener('change', measure)
+    return () => {
+      ro.disconnect()
+      mq.removeEventListener('change', measure)
+    }
+  }, [])
 
   // Clean up timers on unmount
   useEffect(() => {
@@ -79,6 +99,7 @@ export default function MapAudioControls() {
   return (
     <div
       className="absolute bottom-[148px] left-4 md:left-5 z-20 select-none pointer-events-auto"
+      style={dockOffset !== null ? { bottom: dockOffset } : undefined}
       onClick={(e) => e.stopPropagation()}
       onMouseDown={(e) => e.stopPropagation()}
       onMouseEnter={handleMouseEnter}
