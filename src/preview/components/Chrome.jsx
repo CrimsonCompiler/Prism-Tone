@@ -57,14 +57,14 @@ export function StatusBanner() {
           : 'The NASA POWER service could not be reached. Retry, or check whether a network filter blocks power.larc.nasa.gov.'
     return (
       <div className="border border-ember/40 bg-ember/5 px-4 py-3 md:px-5" role="alert">
-        <p className="font-stencil text-[10px] uppercase tracking-[0.22em] text-ember">
+        <p className="font-stencil text-[12px] uppercase tracking-[0.2em] text-ember">
           Live data unavailable ({kind})
         </p>
-        <p className="mt-1 font-ui text-[12.5px] leading-relaxed text-cream/80">{hint}</p>
+        <p className="mt-1 font-ui text-[14px] leading-relaxed text-cream">{hint}</p>
         <button
           type="button"
           onClick={() => dispatch({ type: 'DATA_RETRY' })}
-          className="mt-2.5 border border-ivory/30 px-4 py-1.5 font-stencil text-[9.5px] uppercase tracking-[0.22em] text-ivory transition-colors duration-200 hover:bg-ivory/10 focus-visible:outline focus-visible:outline-1 focus-visible:outline-ivory/70"
+          className="mt-2.5 border border-ivory/30 px-4 py-2 font-ui text-[13px] text-ivory transition-colors duration-200 hover:bg-ivory/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-ivory"
         >
           Retry
         </button>
@@ -80,7 +80,7 @@ export function StatusBanner() {
     <>
       {failed.length > 0 && (
         <div className="border border-ember/30 bg-ember/5 px-4 py-2.5 md:px-5" role="status">
-          <p className="font-stencil text-[9.5px] uppercase tracking-[0.2em] text-ember/95">
+          <p className="font-ui text-[13px] leading-relaxed text-cream">
             Partial retrieval — {failed.join(', ')} failed; the national mean uses the remaining division
             samples and the affected region is marked on the map.
           </p>
@@ -88,7 +88,7 @@ export function StatusBanner() {
       )}
       {geo.status === 'error' && (
         <div className="border border-ivory/15 bg-coal/40 px-4 py-2.5 md:px-5" role="status">
-          <p className="font-stencil text-[9.5px] uppercase tracking-[0.2em] text-parchment">
+          <p className="font-ui text-[13px] leading-relaxed text-cream">
             Division boundaries failed to load — the region list below remains fully usable.
           </p>
         </div>
@@ -97,17 +97,31 @@ export function StatusBanner() {
   )
 }
 
+const RETRIEVAL_LABEL = {
+  backend: 'via project API',
+  mixed: 'via project API + direct NASA POWER',
+  direct: 'direct from NASA POWER',
+  session: 'from this session’s cache',
+}
+
+function retrievalLabel(meta) {
+  if (!meta || !meta.via) return 'bundled baseline'
+  return RETRIEVAL_LABEL[meta.via] || 'bundled baseline'
+}
+
 export function SourceBar() {
   const { state } = usePreview()
   const { meta } = state.data
   return (
     <footer className="border-t border-ivory/10 pt-5">
-      <div className="flex flex-wrap items-baseline justify-between gap-x-8 gap-y-2 font-stencil text-[9px] uppercase tracking-[0.18em] text-parchment/85">
+      <div className="flex flex-wrap items-baseline justify-between gap-x-8 gap-y-2 font-ui text-[13px] leading-relaxed text-beige">
         <span>
           {SOURCE.name} — {SOURCE.dataset}
           {meta && meta.apiVersion ? ` — API ${meta.apiVersion}` : ''}
         </span>
-        <span>retrieved {meta && meta.fetchedAt ? fmtTime(meta.fetchedAt) : '—'} · session cache</span>
+        <span>
+          retrieved {meta && meta.fetchedAt ? fmtTime(meta.fetchedAt) : '—'} · {retrievalLabel(meta)}
+        </span>
         <span>boundaries — Natural Earth 1:50m (naturalearthdata.com)</span>
         <span>no value on this page is simulated</span>
       </div>

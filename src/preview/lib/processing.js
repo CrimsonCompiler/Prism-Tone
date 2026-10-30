@@ -40,13 +40,32 @@ export function monthlyArray(seriesMap, yearMin, yearMax) {
   return out
 }
 
-/** Annual means from the source's own slot-13 values. */
+/**
+ * Annual values. The source's own year slot (`YYYY13`) is used when the API
+ * provides it; otherwise the mean of that year's monthly values is derived
+ * (and flagged) so the annual view never shows an empty record. A year with
+ * fewer than 10 valid months is left blank rather than averaged from a
+ * fragment.
+ */
 export function annualArray(seriesMap, yearMin, yearMax) {
   const out = []
   for (let y = yearMin; y <= yearMax; y++) {
     const key = `${y}13`
-    const value = seriesMap && Object.prototype.hasOwnProperty.call(seriesMap, key) ? seriesMap[key] : null
-    out.push({ year: y, key, value })
+    const slot = seriesMap && Object.prototype.hasOwnProperty.call(seriesMap, key) ? seriesMap[key] : null
+    if (typeof slot === 'number') {
+      out.push({ year: y, key, value: slot, derived: false })
+      continue
+    }
+    let sum = 0
+    let n = 0
+    for (let m = 1; m <= 12; m++) {
+      const v = seriesMap ? seriesMap[monthKey(y, m)] : null
+      if (typeof v === 'number') {
+        sum += v
+        n += 1
+      }
+    }
+    out.push({ year: y, key, value: n >= 10 ? sum / n : null, derived: true, months: n })
   }
   return out
 }

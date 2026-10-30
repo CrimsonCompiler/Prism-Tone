@@ -463,10 +463,13 @@ cd PrismTone
 ### Frontend
 
 ```bash
-cd frontend
 npm install
 npm run dev
 ```
+
+Open `http://localhost:5173/preview.html`. Vite proxies `/api` to the backend on
+port 8000; if the backend is not running, the preview uses its bundled NASA
+POWER baseline and can fall back to direct POWER requests.
 
 ### Backend
 
@@ -492,8 +495,25 @@ Then:
 
 ```bash
 pip install -r requirements.txt
-uvicorn main:app --reload
+uvicorn main:app --host 127.0.0.1 --port 8000 --reload
 ```
+
+The service validates and caches NASA POWER series under `backend/data/cache/`.
+To (re)warm the seven continental 1981–2025 series while online:
+
+```bash
+python scripts/warm_power_cache.py
+```
+
+Useful endpoints: `GET /api/health`, `GET /api/layers`, `GET /api/series`,
+`GET /api/preview/series`, `GET /api/power/series`, `GET /api/hotspots`,
+`GET /api/describe`. Copy `.env.example` to `.env` to configure CORS origins,
+optional live POWER/FIRMS retrieval, or the cache-clear switch.
+
+For a deployed build, set `VITE_PREVIEW_API` to the hosted API root (for
+example `https://api.example.org/api`) before `npm run build`. Without it the
+preview stays fully usable on static hosting through its bundled baseline and
+direct NASA POWER requests.
 
 ## Development Roadmap
 

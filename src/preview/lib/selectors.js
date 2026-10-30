@@ -3,7 +3,7 @@
  * show right now" from shared state. Pure functions; no synthetic values.
  */
 
-import { monthsInSelection, monthKey, keyToLabel, extent, meanOf, baselineNormal, getMonthly } from './processing'
+import { monthsInSelection, monthKey, keyToLabel, extent, meanOf, baselineNormal, getMonthly, monthlyArray } from './processing'
 import { YEAR_MIN, YEAR_MAX, BASELINE } from '../data/datasets'
 import { CONTINENTS as DIVISIONS } from '../data/world'
 
@@ -100,13 +100,16 @@ export function selectionSummary({ state, variable, seriesMap, steps, position, 
     current = { value: selMean, label: `mean over ${selectionLabel}`, kind: 'derived' }
   }
 
-  /* baseline comparison (same calendar months, same scope, same units) */
+  /* baseline comparison — the current value against the same calendar month.
+     Only the idle range view compares a period mean, because it has no single
+     sounding month. */
   let normal = null
   let delta = null
   if (seriesMap) {
     const normals = baselineNormal(seriesMap, BASELINE)
-    if (state.timeMode === 'month') {
-      normal = normals[state.month]
+    if (key) {
+      const month = Number(key.slice(4, 6))
+      normal = normals[month] === undefined ? null : normals[month]
       if (normal !== null && current.value !== null) delta = current.value - normal
     } else {
       const ns = []
@@ -136,4 +139,71 @@ export function selectionSummary({ state, variable, seriesMap, steps, position, 
     delta,
     scopeKind: state.scope.type,
   }
+}
+
+/* ---------- redesign helpers ---------- */
+
+/** Normal for one month key, from the same series the user is viewing. */
+export function normalForKey(seriesMap, key) {
+  if (!seriesMap || !key) return null
+  const month = Number(String(key).slice(4, 6))
+  if (!month) return null
+  const normals = baselineNormal(seriesMap, BASELINE)
+  return normals[month] === undefined ? null : normals[month]
+}
+
+/** Warm / cool / near-normal label from a delta, using the variable's step. */
+export function anomalyTone(variable, delta, normal) {
+  if (delta === null || delta === undefined) return 'none'
+  if (variable.id === 'PRECTOTCORR') {
+    if (normal === null || normal === undefined || normal <= 0.05) {
+      return delta > 0.05 ? 'warm' : delta < -0.05 ? 'cool' : 'near'
+    }
+    const relative = delta / normal
+    return relative > 0.55 ? 'warm' : relative < -0.55 ? 'cool' : 'near'
+  }
+  const step = variable.mapping && variable.mapping.noticeable ? variable.mapping.noticeable : 0.3
+  if (delta > step) return 'warm'
+  if (delta < -step) return 'cool'
+  return 'near'
+}
+
+export function anomalyWord(variable, delta, normal) {
+  const tone = anomalyTone(variable, delta, normal)
+  if (tone === 'none') return 'no baseline comparison'
+  if (variable.id === 'PRECTOTCORR') {
+    return tone === 'warm' ? 'wetter than normal' : tone === 'cool' ? 'drier than normal' : 'near normal rainfall'
+  }
+  return tone === 'warm' ? 'warmer than normal' : tone === 'cool' ? 'cooler than normal' : 'near the normal'
+}
+
+/**
+ * A short trailing window for the summary sparkline. Playback keeps the
+ * window ending at the sounding month; idle uses the current selection.
+ */
+export function sparklineWindow({ state, seriesMap, steps, position }) {
+  if (!seriesMap) return { points: [], current: -1 }
+  const all = monthlyArray(seriesMap, YEAR_MIN, YEAR_MAX)
+  let endKey = null
+  if (state.playState === 'playing' || state.playState === 'paused') {
+    const step = steps[position]
+    endKey = step ? step.key : null
+  } else if (state.timeMode !== 'range') {
+    endKey = monthKey(state.year, state.month)
+  }
+
+  if (endKey) {
+    const index = all.findIndex((p) => p.key === endKey)
+    if (index >= 0) {
+      const start = Math.max(0, index - 23)
+      return { points: all.slice(start, index + 1), current: index - start }
+    }
+  }
+
+  const keys = monthsInSelection(state.timeMode, state, YEAR_MIN, YEAR_MAX)
+  const byKey = new Map(all.map((p) => [p.key, p]))
+  const selected = keys.map((k) => byKey.get(k)).filter(Boolean)
+  const stride = Math.max(1, Math.ceil(selected.length / 36))
+  const points = selected.filter((_, i) => i % stride === 0)
+  return { points, current: points.length - 1 }
 }
