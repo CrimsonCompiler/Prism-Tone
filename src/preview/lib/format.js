@@ -7,14 +7,17 @@ export function fmtValue(v, decimals = 1) {
 
 export function fmtDelta(v, decimals = 1, unit = '') {
   if (v === null || v === undefined || Number.isNaN(v)) return '—'
-  const sign = v > 0 ? '+' : v < 0 ? '−' : ''
-  return `${sign}${Math.abs(v).toFixed(decimals)}${unit ? ' ' + unit : ''}`
+  const magnitude = Math.abs(v).toFixed(decimals)
+  /* A value that rounds to zero is shown without a sign — never “−0.0”. */
+  const sign = Number(magnitude) === 0 ? '' : v > 0 ? '+' : v < 0 ? '−' : ''
+  return `${sign}${magnitude}${unit ? ' ' + unit : ''}`
 }
 
 export function fmtPct(v) {
   if (v === null || v === undefined || Number.isNaN(v) || !Number.isFinite(v)) return '—'
-  const sign = v > 0 ? '+' : v < 0 ? '−' : ''
-  return `${sign}${Math.abs(v).toFixed(1)}%`
+  const magnitude = Math.abs(v).toFixed(1)
+  const sign = Number(magnitude) === 0 ? '' : v > 0 ? '+' : v < 0 ? '−' : ''
+  return `${sign}${magnitude}%`
 }
 
 export function fmtTime(iso) {

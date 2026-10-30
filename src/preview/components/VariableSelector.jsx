@@ -1,236 +1,189 @@
 /**
- * Variable Selector — Interactive Accordion with Multi-Select Side Popup.
+ * Data tracks — qoder V2-style dataset options for the preview.
  *
- * Allows users to inspect and toggle between all 6 environmental variables
- * (Temperature, Rainfall, Wind, Fire activity, Water storage, Vegetation).
- * Supports multi-selection via checkboxes, hover/click flyout popup,
- * and seamless switching between live NASA POWER datasets.
+ * The three live NASA POWER tracks are presented as selectable sound layers,
+ * each with its own accent dot, legend and rack. Two or three can sound at
+ * once: every selected track adds its voice to the mix, while the lead track
+ * supplies the tempo, map, graphs and captions. Fire, water and vegetation
+ * stay visibly planned and cannot join the mix, because no complete,
+ * attributable series exists in this build.
  */
 
-import { useState, useRef, useEffect } from 'react'
 import { VARIABLES, VARIABLE_BY_ID } from '../data/datasets'
 import { usePreview } from '../state/PreviewContext'
 
+const MAX_LAYERS = 3
+
 export default function VariableSelector() {
   const { state, dispatch } = usePreview()
-  const [isHovered, setIsHovered] = useState(false)
-  const [isPinned, setIsPinned] = useState(false)
-  const hoverTimeoutRef = useRef(null)
-  const containerRef = useRef(null)
-
-  const selectedIds = state.selectedVariableIds || [state.variableId]
-  const isOpen = isHovered || isPinned
-
-  const handleMouseEnter = () => {
-    if (hoverTimeoutRef.current) clearTimeout(hoverTimeoutRef.current)
-    setIsHovered(true)
-  }
-
-  const handleMouseLeave = () => {
-    hoverTimeoutRef.current = setTimeout(() => {
-      setIsHovered(false)
-    }, 220)
-  }
-
-  // Click outside to unpin
-  useEffect(() => {
-    const handleOutsideClick = (e) => {
-      if (containerRef.current && !containerRef.current.contains(e.target)) {
-        setIsPinned(false)
-        setIsHovered(false)
-      }
-    }
-    document.addEventListener('mousedown', handleOutsideClick)
-    return () => document.removeEventListener('mousedown', handleOutsideClick)
-  }, [])
-
-  const handleToggleOption = (vId) => {
-    dispatch({ type: 'TOGGLE_VARIABLE', id: vId })
-  }
+  const selectedIds = state.selectedVariableIds && state.selectedVariableIds.length
+    ? state.selectedVariableIds
+    : [state.variableId]
+  const selectedLive = selectedIds.filter((id) => VARIABLE_BY_ID[id]?.status === 'live')
+  const live = VARIABLES.filter((v) => v.status === 'live')
+  const planned = VARIABLES.filter((v) => v.status !== 'live')
 
   return (
-    <div
-      ref={containerRef}
-      className="relative w-full"
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
-    >
-      {/* Accordion Header Button (clean without 01 number and without badge) */}
-      <button
-        type="button"
-        id="environmental-variable-accordion-btn"
-        onClick={() => setIsPinned((prev) => !prev)}
-        aria-expanded={isOpen}
-        aria-haspopup="listbox"
-        className="w-full flex items-center justify-between text-left group cursor-pointer select-none py-1"
-      >
-        <div className="flex items-center gap-2.5">
-          {/* Animated chevron arrow */}
-          <span
-            className={`flex h-4 w-4 items-center justify-center font-bold text-sm transition-transform duration-200 ${isOpen ? 'rotate-90 text-ivory' : 'text-beige group-hover:text-ivory group-hover:translate-x-0.5'
-              }`}
-            aria-hidden="true"
-          >
-            ›
-          </span>
-          <p className="font-stencil text-[12px] md:text-[13px] uppercase tracking-[0.24em] text-ivory font-medium group-hover:text-cream transition-colors">
-            Environmental variable
-          </p>
-        </div>
-      </button>
-
-      {/* Accordion Body: Active Chips View (without + Options button) */}
-      <div className="mt-3">
-        <div className="flex flex-wrap gap-2">
-          {selectedIds.map((id) => {
-            const v = VARIABLE_BY_ID[id] || VARIABLES[0]
-            const isPrimary = state.variableId === id
-            const isLive = v.status === 'live'
-
-            return (
-              <button
-                key={id}
-                type="button"
-                onClick={() => isLive && dispatch({ type: 'SET_VARIABLE', id })}
-                className={`flex items-center gap-2 rounded px-3 py-1.5 text-left text-xs transition-all cursor-pointer border ${isPrimary
-                  ? 'border-[#e2d9c6] bg-[#e2d9c6]/18 text-ivory font-medium shadow-[0_0_12px_rgba(226,217,198,0.18)]'
-                  : 'border-white/[0.12] bg-white/[0.03] text-ivory/85 hover:border-ivory/40 hover:bg-ivory/5 hover:text-ivory font-normal'
-                  }`}
-                title={isLive ? `Focus ${v.name} on map` : 'Planned variable'}
-              >
-                <span className="font-ui font-medium text-[14px] text-ivory">{v.name}</span>
-                <span className="font-ui text-[12px] uppercase text-ivory/70 font-normal">
-                  {v.unit}
-                </span>
-              </button>
-            )
-          })}
-        </div>
-
-        {/* Instruction line with clean, legible text color */}
-        <p className="mt-3 text-[14px] text-ivory/70 font-ui font-normal leading-normal">
-          Hover or click above to open multi-select variables popup.
-        </p>
+    <section aria-labelledby="pt-tracks-title">
+      <div className="flex items-baseline justify-between gap-3">
+        <h2
+          id="pt-tracks-title"
+          className="font-stencil text-[12px] uppercase tracking-[0.24em] text-ivory"
+        >
+          Data tracks
+        </h2>
+        <span className="font-data text-[12px] text-cream">
+          {selectedLive.length} of {MAX_LAYERS} layers
+        </span>
       </div>
 
-      {/* Side Flyout / Popup Menu */}
-      {isOpen && (
-        <div
-          role="listbox"
-          aria-multiselectable="true"
-          aria-label="Select multiple environmental variables"
-          className="absolute z-50 lg:right-full lg:top-0 lg:mr-3.5 right-0 top-full mt-2 w-84 max-w-[calc(100vw-2rem)] sm:w-96 rounded-xl border border-white/20 bg-[#16171a]/98 backdrop-blur-xl shadow-2xl shadow-black/90 p-4 sm:p-5 transition-all"
-          onMouseEnter={handleMouseEnter}
-          onMouseLeave={handleMouseLeave}
-        >
-          {/* Popup Header */}
-          <div className="flex items-center justify-between border-b border-white/15 pb-3">
-            <div>
-              <p className="font-stencil text-[11px] sm:text-[12px] uppercase tracking-[0.24em] text-ivory font-medium">
-                Variable Selection
-              </p>
-              <p className="mt-0.5 font-ui text-[14px] text-ivory/70 font-normal">
-                Choose one or more variables ({selectedIds.length}/6)
-              </p>
-            </div>
-            <button
-              type="button"
-              onClick={() => {
-                setIsPinned(false)
-                setIsHovered(false)
+      <p className="mt-1.5 font-ui text-[13px] leading-relaxed text-cream">
+        Choose two or three datasets to layer them. Each keeps its own scale and voice; the lead
+        dataset sets the tempo and drives the map, graphs and captions.
+      </p>
+
+      <div role="group" aria-label="NASA data tracks" className="mt-3 flex flex-col gap-2">
+        {live.map((v) => {
+          const selected = selectedLive.includes(v.id)
+          const isLead = state.variableId === v.id
+          return (
+            <div
+              key={v.id}
+              className="border transition-colors duration-200"
+              style={{
+                borderColor: selected ? v.accent : 'rgba(245,242,235,0.15)',
+                background: selected ? v.accentSoft : 'transparent',
               }}
-              className="flex h-7 w-7 items-center justify-center rounded-full border border-white/20 text-ivory/70 hover:border-white/60 hover:text-ivory hover:bg-white/10 transition-colors text-sm cursor-pointer ml-3"
-              title="Close options"
             >
-              ✕
-            </button>
-          </div>
-
-          {/* 6 Selectable Items with Checkboxes — Clean Single-Row without 1, 2, 3... numbers */}
-          <div className="mt-3.5 flex flex-col gap-2 max-h-[380px] overflow-y-auto pr-0.5">
-            {VARIABLES.map((v) => {
-              const isChecked = selectedIds.includes(v.id)
-              const isLive = v.status === 'live'
-              const isPrimary = state.variableId === v.id
-
-              return (
-                <div
-                  key={v.id}
-                  onClick={() => handleToggleOption(v.id)}
-                  role="option"
-                  aria-selected={isChecked}
-                  className={`group flex items-center justify-between rounded-lg p-3 sm:p-3.5 transition-all cursor-pointer border select-none ${isChecked
-                    ? 'border-[#e2d9c6]/85 bg-[#e2d9c6]/14 shadow-[0_0_12px_rgba(226,217,198,0.14)]'
-                    : 'border-white/10 bg-coal/30 hover:border-ivory/30 hover:bg-white/5'
-                    }`}
+              <button
+                type="button"
+                aria-pressed={selected}
+                onClick={() => dispatch({ type: 'TOGGLE_VARIABLE', id: v.id })}
+                className="flex w-full items-start gap-3 p-3 text-left focus-visible:outline focus-visible:outline-2 focus-visible:outline-ivory"
+              >
+                <span
+                  className="mt-1.5 block h-2 w-2 shrink-0 rounded-full"
+                  style={{
+                    backgroundColor: v.accent,
+                    boxShadow: selected ? `0 0 0 3px ${v.accentSoft}` : 'none',
+                  }}
+                  aria-hidden="true"
+                />
+                <span className="min-w-0 flex-1">
+                  <span className="flex flex-wrap items-baseline justify-between gap-x-2 gap-y-0.5">
+                    <span className="font-ui text-[15px] font-medium text-ivory">{v.name}</span>
+                    <span className="font-data text-[12px] text-beige">
+                      {v.unit} · {v.cadence}
+                    </span>
+                  </span>
+                  <span className="mt-0.5 block font-ui text-[12.5px] leading-snug text-cream/80">
+                    {v.headline}
+                  </span>
+                </span>
+                <span
+                  className={`mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center rounded-full border ${
+                    selected ? 'border-ivory/70 bg-ivory text-[#121313]' : 'border-ivory/30 bg-black/20'
+                  }`}
+                  aria-hidden="true"
                 >
-                  {/* Left Side: Checkbox + Name (+ Focus badge) */}
-                  <div className="flex items-center gap-3 min-w-0 pr-3">
-                    {/* Custom Checkbox */}
-                    <div
-                      className={`flex h-5 w-5 shrink-0 items-center justify-center rounded border transition-colors ${isChecked
-                        ? 'border-[#e2d9c6] bg-[#e2d9c6] text-[#121313] font-bold'
-                        : 'border-white/30 bg-black/40 group-hover:border-ivory/60'
-                        }`}
-                    >
-                      {isChecked && (
-                        <svg
-                          className="h-3.5 w-3.5 stroke-current stroke-[2.8]"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            d="M5 13l4 4L19 7"
-                          />
-                        </svg>
-                      )}
-                    </div>
+                  {selected ? (
+                    <svg className="h-2.5 w-2.5 stroke-current stroke-[3]" fill="none" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                    </svg>
+                  ) : (
+                    <span className="h-1 w-1 rounded-full bg-ivory/40" />
+                  )}
+                </span>
+              </button>
 
-                    {/* Name */}
-                    <div className="flex items-center gap-2 min-w-0">
-                      <p className={`font-ui text-[15px] truncate ${isChecked ? 'text-ivory font-medium' : 'text-ivory font-normal'
-                        }`}>
-                        {v.name}
-                      </p>
-                      {isPrimary && (
-                        <span className="rounded border border-ivory/40 bg-ivory/15 px-1.5 py-0.5 text-[9.5px] font-stencil uppercase tracking-wider text-ivory font-normal shrink-0">
-                          Focus
-                        </span>
-                      )}
-                    </div>
+              {selected && (
+                <div className="px-3 pb-3 pl-8">
+                  <div
+                    className="h-[3px] w-full rounded-full"
+                    style={{ background: v.legend.gradient }}
+                    aria-hidden="true"
+                  />
+                  <div className="mt-1 flex justify-between font-ui text-[12px] text-beige">
+                    <span>{v.legend.low}</span>
+                    <span>{v.legend.high}</span>
                   </div>
-
-                  {/* Right Side: Unit / Cadence text */}
-                  <div className="shrink-0 text-right">
-                    <span className="font-ui text-[12px] uppercase tracking-wider text-ivory/70 font-normal">
-                      {isLive ? `${v.unit} · ${v.cadence}` : 'Planned'}
+                  <div className="mt-2 flex flex-wrap items-center justify-between gap-2">
+                    {isLead ? (
+                      <span className="inline-flex items-center gap-1.5 font-stencil text-[12px] uppercase tracking-[0.14em] text-ivory">
+                        <span
+                          className="h-1.5 w-1.5 rounded-full"
+                          style={{ backgroundColor: v.accent }}
+                          aria-hidden="true"
+                        />
+                        Lead · map, graphs, tempo
+                      </span>
+                    ) : (
+                      <button
+                        type="button"
+                        onClick={() => dispatch({ type: 'SET_VARIABLE', id: v.id })}
+                        aria-label={`Make ${v.name} the lead dataset`}
+                        className="border border-ivory/25 px-2.5 py-1 font-ui text-[12px] text-ivory transition-colors hover:border-ivory/60 hover:bg-white/5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-ivory"
+                      >
+                        Make lead
+                      </button>
+                    )}
+                    <span className="font-ui text-[12px] text-beige">
+                      {v.id === state.variableId ? 'describes the captions' : 'layered in the mix'}
                     </span>
                   </div>
                 </div>
-              )
-            })}
-          </div>
-        </div>
-      )}
+              )}
+            </div>
+          )
+        })}
+      </div>
 
-      {/* Unavailable details note if user clicked an unavailable variable */}
-      <UnavailableNote />
-    </div>
+      <div className="mt-4 border-t border-ivory/10 pt-3">
+        <p className="font-stencil text-[12px] uppercase tracking-[0.2em] text-beige">
+          Planned in this build
+        </p>
+        <div className="mt-2 flex flex-wrap gap-2">
+          {planned.map((v) => (
+            <button
+              key={v.id}
+              type="button"
+              onClick={() => dispatch({ type: 'SHOW_UNAVAILABLE', id: v.id })}
+              aria-label={`${v.name}: planned, not available in this build. Show the reason.`}
+              className="inline-flex items-center gap-2 rounded-full border border-ivory/15 bg-white/[0.02] px-3 py-1.5 font-ui text-[12.5px] text-cream/80 transition-colors hover:border-ivory/40 hover:text-ivory focus-visible:outline focus-visible:outline-2 focus-visible:outline-ivory"
+            >
+              <span
+                className="h-1.5 w-1.5 rounded-full"
+                style={{ backgroundColor: v.accent, opacity: 0.7 }}
+                aria-hidden="true"
+              />
+              {v.name}
+              <span className="font-stencil text-[12px] uppercase tracking-[0.12em] text-beige">
+                Planned
+              </span>
+            </button>
+          ))}
+        </div>
+        <UnavailableNote />
+      </div>
+
+      <p className="mt-3 font-ui text-[12.5px] leading-relaxed text-beige">
+        Only live NASA POWER tracks can join the mix; nothing is simulated. A missing month adds no
+        new note to any layer.
+      </p>
+    </section>
   )
 }
 
 function UnavailableNote() {
   const { state } = usePreview()
-  const shown = VARIABLES.find((v) => v.id === (state.unavailableNoticeId || state.variableId))
+  const shown = VARIABLES.find((v) => v.id === state.unavailableNoticeId)
   if (!shown || shown.status !== 'unavailable') return null
   return (
-    <div className="mt-2.5 border border-white/15 bg-coal/50 px-3.5 py-2.5 rounded text-left" role="note">
-      <p className="font-stencil text-[10px] uppercase tracking-[0.2em] text-beige font-medium">
-        {shown.name} · Planned Integration
+    <div className="mt-2.5 rounded border border-white/15 bg-coal/50 px-3.5 py-2.5 text-left" role="note">
+      <p className="font-stencil text-[12px] uppercase tracking-[0.2em] text-beige">
+        {shown.name} · planned integration
       </p>
-      <p className="mt-1 font-ui text-[12px] leading-relaxed text-cream/80 font-normal">
+      <p className="mt-1 font-ui text-[13px] leading-relaxed text-cream/80">
         {shown.unavailableReason}
       </p>
     </div>

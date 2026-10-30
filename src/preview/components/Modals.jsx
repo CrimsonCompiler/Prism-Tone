@@ -2,20 +2,17 @@ import { useState, useEffect, useRef } from 'react'
 import { createPortal } from 'react-dom'
 import { usePreview } from '../state/PreviewContext'
 import { CONTINENTS, CONTINENT_BY_ID } from '../data/world'
+import { markGuideSeen } from '../lib/settings'
+import { SHORTCUTS } from './Accessibility'
 import continentPaths from '../data/continentPaths.json'
 
-const GUIDE_KEY = 'pt-preview-guide-dismissed'
-
 const GUIDE_STEPS = [
-  ['Choose a variable', 'Six categories are listed. Temperature, rainfall and wind are live NASA POWER datasets — the other three are honestly marked unavailable rather than faked.'],
-  ['Explore the map', 'The GPU-accelerated MapLibre choropleth displays the selected variable across the globe and all 7 continents (Asia, Africa, Europe, North America, South America, Oceania, Antarctica). Activate any continent — on the map or in the navigation list — to fly into it.'],
-  ['Select a time', 'Pick a year, a single month, or a custom range. The record runs 1981–2025; yearly playback walks all twelve months.'],
-  ['Play the audio', 'One month becomes one sound event. Play, pause, resume and stop from the control bar; progress shows exactly which month is sounding.'],
-  ['Read the captions', 'The caption panel narrates each step in real time: the value, how it compares to the 1991–2020 normal, and what the sound is doing. Captions synchronize with active audio playback.'],
-  ['Read the summary', 'Current value, minimum, maximum, mean and the baseline comparison — every figure computed from the loaded record, with coverage stated.'],
-  ['Open the graphs', 'The series view shows the full 1981–2025 record with the selection shaded and a playhead following playback. Hover, or use the inspect slider, for exact values.'],
-  ['Understand the mapping', 'The mapping panel documents exactly how the selected variable is normalised and which audio parameter it drives.'],
-  ['Tune the sound', 'Volume, playback speed and the time-pulse layer are under your control. Changing variable, region or time stops playback so the audio never drifts out of sync.'],
+  ['Choose data tracks', 'Temperature, rainfall and wind are live NASA POWER datasets. Select up to three and they layer into one mix; the lead track sets the tempo and drives the map, captions and graphs. Fire, water and vegetation are honestly marked unavailable — never simulated.'],
+  ['Explore the map', 'Click a continent on the map or use “Select Continent” to fly in. Every fill is a real observation for the selected month; hover a country to focus it, or isolate it for a closer map.'],
+  ['Select a time', 'Pick a year, a single month, or a custom range. The record runs 1981–2025. As the months play, the map, summary, graph and captions move together.'],
+  ['Play and read', 'Press play: each month sounds for two beats, and two months make a bar. The caption bar states the value, how it compares with the 1991–2020 normal, and what the sound is doing. Captions stay readable at any volume, including mute.'],
+  ['Check the evidence', 'The summary, graphs and “How it becomes sound” diagram are computed from the loaded record. The series view can be inspected by hover, touch or arrow keys, and its values are also available as a table.'],
+  ['Make it yours', 'Open “Display & access” for caption size, high contrast, reduced motion, haptics and a description of the current view. The keyboard shortcuts below work anywhere on this page.'],
 ]
 
 /* =========================================================================
@@ -62,7 +59,10 @@ export function GuideModal() {
     }
 
     const onKey = (e) => {
-      if (e.key === 'Escape') dispatch({ type: 'GUIDE', open: false })
+      if (e.key === 'Escape') {
+        e.preventDefault()
+        close()
+      }
     }
     document.addEventListener('keydown', onKey)
     return () => {
@@ -80,29 +80,25 @@ export function GuideModal() {
     }
   }, [state.guideOpen, dispatch])
 
-  const close = (remember) => {
-    if (remember) {
-      try {
-        sessionStorage.setItem(GUIDE_KEY, '1')
-      } catch { /* storage unavailable — guide simply reopens next visit */ }
-    }
+  const close = () => {
+    markGuideSeen()
     dispatch({ type: 'GUIDE', open: false })
   }
 
   const modalContent = state.guideOpen ? (
     <div
-      className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/85 p-4 sm:p-6 md:p-8 backdrop-blur-md"
+      className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/88 p-4 sm:p-6 md:p-8"
       role="dialog"
       aria-modal="true"
       aria-labelledby="pt-guide-title"
       data-lenis-prevent
       onClick={(e) => {
-        if (e.target === e.currentTarget) close(false)
+        if (e.target === e.currentTarget) close()
       }}
     >
       <div
         ref={modalContainerRef}
-        className="relative max-h-[86vh] w-full max-w-3xl lg:max-w-[820px] overflow-y-auto rounded-xl border border-ivory/15 bg-[#141617]/98 p-6 sm:p-8 md:p-10 shadow-2xl shadow-black/95 backdrop-blur-2xl"
+        className="relative max-h-[86vh] w-full max-w-3xl lg:max-w-[820px] overflow-y-auto rounded-xl border border-ivory/15 bg-[#141617] p-6 sm:p-8 md:p-10 shadow-2xl shadow-black/95"
         data-lenis-prevent
       >
         {/* Header */}
@@ -113,11 +109,11 @@ export function GuideModal() {
             </h2>
           </div>
           <div className="flex items-center gap-4">
-            <span className="hidden sm:inline font-data text-[12px] uppercase tracking-[0.16em] text-ivory/50">9 steps · ~2 min</span>
+            <span className="hidden sm:inline font-data text-[12px] uppercase tracking-[0.16em] text-cream">6 steps · ~1 min</span>
             <button
               ref={closeRef}
               type="button"
-              onClick={() => close(false)}
+              onClick={() => close()}
               className="flex h-8.5 w-8.5 items-center justify-center rounded-full border border-ivory/25 text-ivory/70 hover:border-ivory/60 hover:text-ivory hover:bg-white/10 transition-colors text-base cursor-pointer"
               title="Close guide"
               aria-label="Close guide"
@@ -131,38 +127,59 @@ export function GuideModal() {
         <ol className="mt-5 flex flex-col divide-y divide-white/8">
           {GUIDE_STEPS.map(([title, body], i) => (
             <li key={title} className="flex items-start gap-4 sm:gap-5 py-4 sm:py-4.5 first:pt-2 last:pb-2">
-              <span className="font-data text-[16px] sm:text-[17px] font-semibold text-ivory/50 tracking-wider shrink-0 w-8 pt-0.5 select-none">
+              <span className="font-data text-[16px] sm:text-[17px] font-semibold text-beige tracking-wider shrink-0 w-8 pt-0.5 select-none">
                 {String(i + 1).padStart(2, '0')}
               </span>
               <div className="flex-1">
                 <h3 className="font-ui text-[18px] sm:text-[19px] font-semibold tracking-wide text-ivory">{title}</h3>
-                <p className="mt-1.5 font-ui text-[15.5px] sm:text-[16px] leading-relaxed text-ivory/80 font-normal">{body}</p>
+                <p className="mt-1.5 font-ui text-[15.5px] sm:text-[16px] leading-relaxed text-cream font-normal">{body}</p>
               </div>
             </li>
           ))}
         </ol>
 
+        {/* Keyboard shortcuts */}
+        <div className="mt-7 border-t border-ivory/10 pt-5">
+          <h3 className="font-stencil text-[12px] uppercase tracking-[0.2em] text-beige">Keyboard</h3>
+          <dl className="mt-2 grid gap-x-6 gap-y-1.5 sm:grid-cols-2">
+            {SHORTCUTS.map(([key, label]) => (
+              <div key={key} className="flex items-center justify-between gap-3 border-b border-ivory/10 py-1.5">
+                <dt>
+                  <kbd className="inline-block min-w-[40px] border border-ivory/25 bg-white/[0.04] px-2 py-0.5 text-center font-data text-[12.5px] text-ivory">
+                    {key}
+                  </kbd>
+                </dt>
+                <dd className="flex-1 text-right font-ui text-[14px] text-cream">{label}</dd>
+              </div>
+            ))}
+          </dl>
+        </div>
+
         {/* Footer note */}
-        <p className="mt-7 border-t border-ivory/10 pt-5 font-ui text-[15px] leading-relaxed text-ivory/70 font-normal">
+        <p className="mt-6 border-t border-ivory/10 pt-5 font-ui text-[15px] leading-relaxed text-cream font-normal">
           Everything on this page is computed from the NASA POWER record as it arrives from the API — gaps
-          stay silent, derived values are labelled, and nothing is invented to fill the interface.
+          stay silent, derived values are labelled, and nothing is invented to fill the interface. This guide
+          reopens any time with <kbd className="rounded border border-ivory/30 px-1.5 py-0.5 font-data text-[13px]">?</kbd>.
         </p>
 
         {/* Action buttons */}
-        <div className="mt-7 flex flex-wrap items-center gap-4">
+        <div className="mt-6 flex flex-wrap items-center gap-4">
           <button
             type="button"
-            onClick={() => close(false)}
+            onClick={() => close()}
             className="border border-ivory/40 bg-ivory/15 px-7 py-3 font-stencil text-[12px] uppercase tracking-[0.22em] text-ivory font-semibold hover:bg-ivory hover:text-[#121313] transition-colors duration-200 rounded-sm cursor-pointer shadow-sm"
           >
             Start exploring
           </button>
           <button
             type="button"
-            onClick={() => close(true)}
-            className="border border-white/15 px-6 py-3 font-stencil text-[11.5px] uppercase tracking-[0.18em] text-ivory/60 hover:border-ivory/40 hover:text-ivory hover:bg-white/5 transition-colors duration-200 rounded-sm cursor-pointer"
+            onClick={() => {
+              close()
+              dispatch({ type: 'TOGGLE_SETTINGS', open: true })
+            }}
+            className="border border-white/20 px-6 py-3 font-stencil text-[12px] uppercase tracking-[0.18em] text-ivory hover:border-ivory/50 hover:bg-white/5 transition-colors duration-200 rounded-sm cursor-pointer"
           >
-            Don't show again this session
+            Display &amp; access
           </button>
         </div>
       </div>

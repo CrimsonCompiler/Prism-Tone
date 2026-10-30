@@ -15,7 +15,8 @@
     "motion": "^12.0.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "three": "^0.178.0"
+    "three": "^0.178.0",
+    "tone": "^15.1.22"
   },
   "devDependencies": {
     "@tailwindcss/vite": "^4.1.0",

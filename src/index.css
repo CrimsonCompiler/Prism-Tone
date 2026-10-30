@@ -217,6 +217,41 @@ input[type='range'].pt-range:focus-visible {
   }
 }
 
+/* Preview page — display & access preferences.
+   The attributes live on <html> only while the preview page is mounted, so
+   nothing here can leak into the other pages. */
+
+[data-pt-contrast='high'] [class*='text-beige'],
+[data-pt-contrast='high'] [class*='text-parchment'],
+[data-pt-contrast='high'] [class*='text-cream/'],
+[data-pt-contrast='high'] [class*='text-ivory/'] {
+  color: #f2ede3 !important;
+}
+
+[data-pt-contrast='high'] [class*='border-ivory/'] {
+  border-color: rgba(242, 237, 227, 0.42) !important;
+}
+
+[data-pt-contrast='high'] [class*='bg-coal/'] {
+  background-color: #191a1a !important;
+}
+
+[data-pt-motion='reduced'] *,
+[data-pt-motion='reduced'] *::before,
+[data-pt-motion='reduced'] *::after {
+  animation-duration: 0.001ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.001ms !important;
+  scroll-behavior: auto !important;
+}
+
+/* The caption size preference drives this variable from React state. */
+.pt-caption-text {
+  font-size: var(--pt-caption-size, 23px);
+  line-height: 1.5;
+  max-width: 65ch;
+}
+
 /* Reference-style cosmic background — 8 stacked layers over a deep ink
    base. Mirrors the landing page's CosmicBackground system but is rebuilt
    in the existing ink/ivory palette only. No new colors introduced. */
