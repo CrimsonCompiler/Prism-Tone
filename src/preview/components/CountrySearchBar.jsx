@@ -171,10 +171,10 @@ export default function CountrySearchBar() {
   }
 
   return (
-    <div ref={containerRef} className="relative z-50 flex items-center">
+    <div ref={containerRef} className="relative z-50 flex w-full items-center sm:w-auto">
       {/* Search Input Box */}
       <div
-        className={`group flex items-center rounded border bg-[#141617] px-3 py-1.5 transition-all duration-200 shadow-md ${isListening
+        className={`group flex w-full items-center rounded border bg-[#141617] px-3 py-1.5 transition-all duration-200 shadow-md sm:w-auto ${isListening
           ? 'border-ember shadow-[0_0_12px_rgba(212,165,91,0.35)] ring-1 ring-ember/60'
           : isOpen
             ? 'border-ivory/60 shadow-lg'
@@ -209,7 +209,7 @@ export default function CountrySearchBar() {
             if (query.trim() && suggestions.length > 0) setIsOpen(true)
           }}
           placeholder={isListening ? 'Listening for country name...' : 'Search country (e.g. Chile, Japan)...'}
-          className="w-40 sm:w-52 md:w-64 bg-transparent font-ui text-[12.5px] text-ivory placeholder:text-cream/40 focus:outline-none tracking-normal"
+          className="w-full min-w-0 flex-1 bg-transparent font-ui text-[12.5px] text-ivory placeholder:text-cream/40 focus:outline-none tracking-normal sm:w-52 sm:flex-none md:w-64"
           aria-label="Search country by name or voice"
         />
 

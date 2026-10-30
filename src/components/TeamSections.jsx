@@ -1,6 +1,242 @@
 import { useState, useEffect, useRef, memo } from 'react'
-import { motion, useInView } from 'motion/react'
+import { motion, useReducedMotion, useInView } from 'motion/react'
 
+/* =========================================================================
+   1. TEAM INTRO — Cosmic Cloud Logo & Scrapbook Entrance
+   ========================================================================= */
+const ASSETS = {
+  bg: '/images/cosmic-cloud-bg.jpg',
+  sparkle: '/images/sparkle-galaxy.png',
+  cloud: '/images/cosmic-cloud.png',
+  earth: '/images/earth.png',
+  notes: '/images/notes.png',
+  text: '/images/text.png',
+}
+
+const SPRING_EASE = [0.16, 1, 0.3, 1]
+
+const PIECES = [
+  {
+    id: 'text',
+    name: 'Cosmic Cloud Title',
+    src: ASSETS.text,
+    zIndex: 5,
+    entrance: {
+      x: 0,
+      y: '-18vh',
+      rotate: 8,
+      scale: 0.35,
+      opacity: 0,
+    },
+    delay: 0.2,
+    duration: 1.25,
+    wiggle: {
+      y: [-2, 2.5, -1.8, 2, -2],
+      rotate: [-0.6, 0.6, -0.4, 0.4, -0.6],
+    },
+    wiggleDuration: 6.2,
+    hoverRotate: 1,
+    hoverScale: 1.03,
+  },
+  {
+    id: 'sparkle',
+    name: 'Stars & Moon Doodles',
+    src: ASSETS.sparkle,
+    zIndex: 4,
+    entrance: {
+      x: '-65vw',
+      y: '-55vh',
+      rotate: -45,
+      scale: 0.5,
+      opacity: 0,
+    },
+    delay: 0.38,
+    duration: 1.35,
+    wiggle: {
+      rotate: [-2.5, 3, -1.5, 2.5, -2.5],
+      y: [-4, 4, -3, 3, -4],
+      x: [-3, 2, -1, 3, -3],
+    },
+    wiggleDuration: 5.4,
+    hoverRotate: -6,
+    hoverScale: 1.08,
+  },
+  {
+    id: 'cloud',
+    name: 'Hand-drawn Cloud',
+    src: ASSETS.cloud,
+    zIndex: 3,
+    entrance: {
+      x: '65vw',
+      y: '-50vh',
+      rotate: 35,
+      scale: 0.5,
+      opacity: 0,
+    },
+    delay: 0.5,
+    duration: 1.35,
+    wiggle: {
+      y: [-6, 6, -3, 5, -6],
+      rotate: [1.8, -2.2, 1.2, -1.6, 1.8],
+      x: [-3, 3, -1, 2, -3],
+    },
+    wiggleDuration: 6.5,
+    hoverRotate: 4,
+    hoverScale: 1.06,
+  },
+  {
+    id: 'earth',
+    name: 'Earth Horizon',
+    src: ASSETS.earth,
+    zIndex: 2,
+    entrance: {
+      x: 0,
+      y: '60vh',
+      rotate: -12,
+      scale: 0.7,
+      opacity: 0,
+    },
+    delay: 0.62,
+    duration: 1.4,
+    wiggle: {
+      y: [-3, 3, -2, 2, -3],
+      rotate: [-0.7, 0.7, -0.4, 0.4, -0.7],
+    },
+    wiggleDuration: 7.8,
+    hoverRotate: -1,
+    hoverScale: 1.03,
+  },
+  {
+    id: 'notes',
+    name: 'Musical Notes Wave',
+    src: ASSETS.notes,
+    zIndex: 4,
+    entrance: {
+      x: '65vw',
+      y: '55vh',
+      rotate: 40,
+      scale: 0.4,
+      opacity: 0,
+    },
+    delay: 0.75,
+    duration: 1.4,
+    wiggle: {
+      y: [-7, 6, -5, 4, -7],
+      x: [4, -4, 2, -3, 4],
+      rotate: [2.5, -2.5, 1.8, -1.8, 2.5],
+      scale: [1, 1.025, 0.99, 1.015, 1],
+    },
+    wiggleDuration: 4.8,
+    hoverRotate: 5,
+    hoverScale: 1.08,
+  },
+]
+
+export const TeamIntro = memo(function TeamIntro() {
+  const reduce = useReducedMotion()
+  const [replayKey] = useState(0)
+
+  return (
+    <section
+      key={replayKey}
+      className="relative flex min-h-[75vh] sm:min-h-[83vh] md:min-h-[90vh] w-full items-center justify-center overflow-hidden px-4 pt-16 pb-12 sm:px-6 md:px-12"
+      aria-label="Cosmic Cloud Logo"
+    >
+      <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden bg-ink select-none">
+        <motion.img
+          initial={{ opacity: 0, scale: 1.08 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 1.8, ease: 'easeOut' }}
+          src={ASSETS.bg}
+          alt="Cosmic Cloud Galaxy Background"
+          className="h-full w-full object-cover object-center [filter:brightness(0.92)_contrast(1.05)]"
+          draggable="false"
+        />
+        <div className="absolute inset-0 bg-radial-gradient from-transparent via-transparent to-ink/60" />
+        <div className="absolute inset-0 bg-gradient-to-b from-ink/50 via-transparent to-ink" />
+      </div>
+
+      <div className="relative z-10 w-full max-w-[760px] md:max-w-[820px] aspect-[625/375]">
+        {PIECES.map((p) => (
+          <motion.div
+            key={p.id}
+            style={{ zIndex: p.zIndex, willChange: 'transform' }}
+            className="absolute inset-0 pointer-events-none"
+            initial={reduce ? { opacity: 0 } : p.entrance}
+            animate={{
+              x: 0,
+              y: 0,
+              rotate: 0,
+              scale: 1,
+              opacity: 1,
+            }}
+            transition={{
+              duration: p.duration,
+              delay: p.delay,
+              ease: SPRING_EASE,
+            }}
+          >
+            <motion.div
+              className="relative h-full w-full"
+              animate={reduce ? undefined : p.wiggle}
+              transition={{
+                duration: p.wiggleDuration,
+                delay: p.delay + p.duration,
+                repeat: Infinity,
+                ease: 'easeInOut',
+              }}
+              whileHover={
+                reduce
+                  ? undefined
+                  : {
+                    scale: p.hoverScale,
+                    rotate: p.hoverRotate,
+                    transition: { duration: 0.35, ease: 'easeOut' },
+                  }
+              }
+            >
+              <img
+                src={p.src}
+                alt={p.name}
+                className="h-full w-full object-contain pointer-events-auto cursor-pointer drop-shadow-[0_2px_18px_rgba(255,255,255,0.06)]"
+                draggable="false"
+              />
+            </motion.div>
+          </motion.div>
+        ))}
+      </div>
+
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 2.1, duration: 0.9 }}
+        className="absolute bottom-6 left-1/2 -translate-x-1/2 z-20 flex flex-col items-center gap-1.5 cursor-pointer pointer-events-auto group"
+        onClick={() => {
+          const el = document.getElementById('members-start')
+          if (el) el.scrollIntoView({ behavior: 'smooth' })
+        }}
+      >
+        <span className="font-data text-[9.5px] uppercase tracking-[0.28em] text-ivory/50 transition-colors group-hover:text-ivory">
+          Scroll to explore team
+        </span>
+        <motion.svg
+          animate={{ y: [0, 4, 0] }}
+          transition={{ duration: 1.8, repeat: Infinity, ease: 'easeInOut' }}
+          className="h-3.5 w-3.5 text-ivory/40 transition-colors group-hover:text-ivory/80"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+        </motion.svg>
+      </motion.div>
+    </section>
+  )
+})
+
+/* =========================================================================
+   2. TEAM PLANETARY SECTIONS — 5 Members Horizon Stage & Planetary Stations
+   ========================================================================= */
 const HUES = {
   aurora: {
     name: 'Aurora',
@@ -54,7 +290,6 @@ const HUES = {
   },
 }
 
-// Sequence: 01 Shifa -> 02 Senjuti -> 03 Tousif -> 04 Samiha -> 05 Nahian
 const MEMBERS = [
   {
     n: '01',
@@ -146,21 +381,11 @@ function getStars(seed, count = 65) {
   return STARS_CACHE[seed]
 }
 
-/* 
- * Planetary Horizon Stage SVG:
- * Matches the Netlify reference:
- * - A massive sweeping planetary curve across the screen whose bottom extends far below the viewport.
- * - ZERO bottom rims cutting across the member's body.
- * - Ethereal atmospheric corona glow along the rim.
- * - Delicate continental contour curves & geodesic orbital arcs inside the sphere.
- * - Twinkling cosmic stars in the sky above.
- */
 const PlanetaryHorizonStage = memo(function PlanetaryHorizonStage({ hueKey, seed, side = 'left' }) {
   const theme = HUES[hueKey] || HUES.aurora
   const stars = getStars(seed, 65)
   const idSuffix = `${hueKey}-${seed}`
 
-  // Center the planetary sphere low so its horizon arc peaks around waist/stomach level (matching sketch)
   const cx = side === 'left' ? 24 : 76
   const cy = 97
   const r = 36
@@ -173,27 +398,23 @@ const PlanetaryHorizonStage = memo(function PlanetaryHorizonStage({ hueKey, seed
       aria-hidden="true"
     >
       <defs>
-        {/* Deep sky celestial background */}
         <radialGradient id={`bg-${idSuffix}`} cx={side === 'left' ? '30%' : '70%'} cy="40%" r="85%">
           <stop offset="0%" stopColor={theme.a} stopOpacity="0.8" />
           <stop offset="55%" stopColor={theme.b} stopOpacity="0.65" />
           <stop offset="100%" stopColor="#04050f" stopOpacity="0.95" />
         </radialGradient>
 
-        {/* Soft atmospheric cloud glow */}
         <radialGradient id={`glow-${idSuffix}`} cx="50%" cy="50%" r="50%">
           <stop offset="0%" stopColor={theme.glow} />
           <stop offset="100%" stopColor="rgba(0,0,0,0)" />
         </radialGradient>
 
-        {/* Planet body interior gradient */}
         <radialGradient id={`planet-${idSuffix}`} cx={side === 'left' ? '35%' : '65%'} cy="30%" r="75%">
           <stop offset="0%" stopColor={theme.planet} stopOpacity="0.95" />
           <stop offset="55%" stopColor="#08121f" stopOpacity="0.98" />
           <stop offset="100%" stopColor="#02040b" stopOpacity="1" />
         </radialGradient>
 
-        {/* Corona blur filter */}
         <filter id={`blur-corona-${idSuffix}`} x="-20%" y="-20%" width="140%" height="140%">
           <feGaussianBlur stdDeviation="2.8" />
         </filter>
@@ -202,16 +423,13 @@ const PlanetaryHorizonStage = memo(function PlanetaryHorizonStage({ hueKey, seed
           <feGaussianBlur stdDeviation="4.5" />
         </filter>
 
-        {/* Clip path inside the sweeping planet horizon */}
         <clipPath id={`clip-horizon-${idSuffix}`}>
           <circle cx={cx} cy={cy} r={r} />
         </clipPath>
       </defs>
 
-      {/* 1. Deep celestial space fill */}
       <rect width="100" height="100" fill={`url(#bg-${idSuffix})`} />
 
-      {/* 2. Soft atmospheric aurora glow in sky */}
       <ellipse
         cx={side === 'left' ? 30 : 70}
         cy={38}
@@ -222,7 +440,6 @@ const PlanetaryHorizonStage = memo(function PlanetaryHorizonStage({ hueKey, seed
         opacity="0.65"
       />
 
-      {/* 3. Cosmic twinkling stars above the horizon */}
       {stars.map((s, idx) => (
         <circle
           key={idx}
@@ -234,7 +451,6 @@ const PlanetaryHorizonStage = memo(function PlanetaryHorizonStage({ hueKey, seed
         />
       ))}
 
-      {/* 4. Planetary Outer Corona Glow along the horizon rim */}
       <circle
         cx={cx}
         cy={cy}
@@ -246,12 +462,9 @@ const PlanetaryHorizonStage = memo(function PlanetaryHorizonStage({ hueKey, seed
         filter={`url(#blur-corona-${idSuffix})`}
       />
 
-      {/* 5. Main Planetary Sphere — curves upward to form the horizon */}
       <circle cx={cx} cy={cy} r={r} fill={`url(#planet-${idSuffix})`} />
 
-      {/* 6. Hand-drawn continental curves & geodesic arcs inside the horizon */}
       <g clipPath={`url(#clip-horizon-${idSuffix})`} opacity="0.45">
-        {/* Organic continental doodle curves scaled to new planetary radius */}
         <path
           d={`M ${cx - 32} ${cy - 6} Q ${cx - 12} ${cy - 18} ${cx + 3} ${cy - 8} T ${cx + 30} ${cy - 14}`}
           fill="none"
@@ -272,7 +485,6 @@ const PlanetaryHorizonStage = memo(function PlanetaryHorizonStage({ hueKey, seed
           strokeWidth="0.18"
           strokeOpacity="0.85"
         />
-        {/* Geodesic meridian arc */}
         <ellipse
           cx={cx}
           cy={cy}
@@ -285,7 +497,6 @@ const PlanetaryHorizonStage = memo(function PlanetaryHorizonStage({ hueKey, seed
         />
       </g>
 
-      {/* 7. Fine glowing horizon rim line */}
       <circle
         cx={cx}
         cy={cy}
@@ -299,7 +510,6 @@ const PlanetaryHorizonStage = memo(function PlanetaryHorizonStage({ hueKey, seed
   )
 })
 
-/* Individual Member Section */
 const MemberSection = memo(function MemberSection({ member }) {
   const ref = useRef(null)
   const isInView = useInView(ref, { once: false, margin: '-15% 0px -15% 0px' })
@@ -312,7 +522,6 @@ const MemberSection = memo(function MemberSection({ member }) {
       className="relative min-h-[75vh] lg:min-h-[82vh] w-full flex items-center overflow-hidden py-8 sm:py-10 md:py-12 lg:py-14 scroll-mt-24 sm:scroll-mt-28 md:scroll-mt-32"
       aria-label={`${member.name} — ${member.role}`}
     >
-      {/* 1. Deep Sweeping Planetary Horizon Stage */}
       <PlanetaryHorizonStage
         hueKey={member.hue}
         seed={member.seed}
@@ -320,10 +529,7 @@ const MemberSection = memo(function MemberSection({ member }) {
       />
 
       <div className="relative z-10 mx-auto w-full max-w-7xl px-6 sm:px-10 md:px-16 lg:px-20">
-        {/* Generous gap and items-end baseline alignment */}
         <div className="grid grid-cols-1 lg:grid-cols-12 items-end gap-12 lg:gap-16 xl:gap-24">
-
-          {/* 2. Visual Stage: Portrait standing on top of the sweeping planetary horizon */}
           <div
             className={`flex items-end justify-center lg:col-span-5 ${isLeftPlanet ? 'lg:order-1' : 'lg:order-2'
               }`}
@@ -335,16 +541,12 @@ const MemberSection = memo(function MemberSection({ member }) {
                 transition={{ duration: 0.9, delay: 0.15, ease: [0.16, 1, 0.3, 1] }}
                 className="relative z-10 flex items-end justify-center w-full"
               >
-                {/* 
-                  Clean solid portrait without premature bottom fading.
-                  Enlarged and highlighted with grounded bottom alignment.
-                */}
                 <motion.img
                   animate={{ y: [-3, 3, -3] }}
                   transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
                   src={member.photo}
                   alt={member.name}
-                  className={`max-h-[500px] sm:max-h-[560px] md:max-h-[640px] lg:max-h-[700px] xl:max-h-[740px] w-auto object-contain select-none drop-shadow-[0_16px_50px_rgba(0,0,0,0.75)] [mask-image:linear-gradient(to_bottom,black_95%,transparent)] origin-bottom ${member.photoScale || 'scale-105 lg:scale-110'
+                  className={`max-h-[500px] sm:max-h-[560px] md:max-h-[640px] lg:max-h-[700px] xl:max-h-[740px] max-w-full w-auto object-contain select-none drop-shadow-[0_16px_50px_rgba(0,0,0,0.75)] [mask-image:linear-gradient(to_bottom,black_95%,transparent)] origin-bottom ${member.photoScale || 'scale-105 lg:scale-110'
                     }`}
                   draggable="false"
                   loading="lazy"
@@ -353,19 +555,17 @@ const MemberSection = memo(function MemberSection({ member }) {
             </div>
           </div>
 
-          {/* 3. Typography & Information Column with generous breathing distance */}
           <div
             className={`w-full max-w-2xl lg:col-span-7 flex flex-col justify-end pb-2 ${isLeftPlanet
               ? 'lg:order-2 lg:text-left lg:pl-6 xl:pl-12'
               : 'lg:order-1 lg:text-right lg:pr-6 xl:pr-12'
               }`}
           >
-            {/* Index & Domain Header */}
             <motion.div
               initial={{ opacity: 0, y: 16 }}
               animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 16 }}
               transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-              className={`flex items-center gap-3 font-stencil text-[11px] md:text-[12px] uppercase tracking-[0.32em] text-ivory/60 mb-3 ${isLeftPlanet ? 'lg:justify-start' : 'lg:justify-end'
+              className={`flex flex-wrap items-center gap-x-3 gap-y-1 font-stencil text-[11px] md:text-[12px] uppercase tracking-[0.32em] text-ivory/60 mb-3 ${isLeftPlanet ? 'lg:justify-start' : 'lg:justify-end'
                 }`}
             >
               <span>{member.code}</span>
@@ -373,7 +573,6 @@ const MemberSection = memo(function MemberSection({ member }) {
               <span className="text-amber-200/80 font-data text-[10px] tracking-[0.2em]">{member.coord}</span>
             </motion.div>
 
-            {/* Role Subtitle / Banner */}
             <motion.p
               initial={{ opacity: 0, y: 18 }}
               animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 18 }}
@@ -383,7 +582,6 @@ const MemberSection = memo(function MemberSection({ member }) {
               {member.role}
             </motion.p>
 
-            {/* Large Display Typography Name */}
             <motion.h2
               initial={{ opacity: 0, y: 22 }}
               animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 22 }}
@@ -397,7 +595,6 @@ const MemberSection = memo(function MemberSection({ member }) {
               ))}
             </motion.h2>
 
-            {/* Narrative / Domain Tagline */}
             <motion.p
               initial={{ opacity: 0, y: 20 }}
               animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
@@ -408,12 +605,11 @@ const MemberSection = memo(function MemberSection({ member }) {
               {member.tagline}
             </motion.p>
 
-            {/* Metadata Footer baseline — aligned horizontally with the bottom of the portrait */}
             <motion.div
               initial={{ opacity: 0 }}
               animate={isInView ? { opacity: 1 } : { opacity: 0 }}
               transition={{ duration: 1, delay: 0.4 }}
-              className={`mt-6 pt-5 border-t border-ivory/15 flex items-center gap-6 text-[10px] uppercase font-data tracking-[0.25em] text-ivory/50 ${isLeftPlanet ? 'lg:justify-start' : 'lg:justify-end'
+              className={`mt-6 pt-5 border-t border-ivory/15 flex flex-wrap items-center gap-x-6 gap-y-2 text-[10px] uppercase font-data tracking-[0.25em] text-ivory/50 ${isLeftPlanet ? 'lg:justify-start' : 'lg:justify-end'
                 }`}
             >
               <span>{member.stat}</span>
@@ -427,9 +623,20 @@ const MemberSection = memo(function MemberSection({ member }) {
   )
 })
 
-/* Master Planetary Sections Component */
-export default function TeamPlanetarySections() {
+export const TeamPlanetarySections = memo(function TeamPlanetarySections() {
   const [activeMember, setActiveMember] = useState('01')
+  const subnavRef = useRef(null)
+
+  useEffect(() => {
+    const bar = subnavRef.current
+    if (!bar || bar.scrollWidth <= bar.clientWidth + 1) return
+    const item = bar.querySelector(`[data-member="${activeMember}"]`)
+    if (!item) return
+    const barLeft = bar.getBoundingClientRect().left
+    const itemLeft = item.getBoundingClientRect().left
+    const target = itemLeft - barLeft + bar.scrollLeft - (bar.clientWidth - item.offsetWidth) / 2
+    bar.scrollTo({ left: Math.max(0, target), behavior: 'smooth' })
+  }, [activeMember])
 
   useEffect(() => {
     let ticking = false
@@ -465,20 +672,20 @@ export default function TeamPlanetarySections() {
 
   return (
     <div id="members-start" className="relative z-20 w-full bg-ink">
-      {/* 1. Ambient transition connecting from the Cosmic Cloud logo above — reduced height */}
       <div className="relative h-12 sm:h-14 w-full bg-gradient-to-b from-transparent via-ink/80 to-ink pointer-events-none" />
 
-      {/* 2. Sticky Sub-Nav Header: Zero scrollbars, sits right below the main navbar with full names */}
       <div className="sticky top-18 sm:top-20 md:top-22 lg:top-24 z-40 w-full border-y border-ivory/15 bg-ink/90 backdrop-blur-md py-2.5 sm:py-3 px-4 sm:px-6 shadow-lg shadow-black/30">
         <div
+          ref={subnavRef}
           style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
-          className="mx-auto flex max-w-6xl items-center justify-center gap-5 sm:gap-7 md:gap-9 lg:gap-12 overflow-x-auto no-scrollbar scroll-smooth [&::-webkit-scrollbar]:hidden"
+          className="mx-auto flex max-w-6xl items-center justify-start gap-5 sm:gap-7 md:gap-9 lg:gap-12 overflow-x-auto no-scrollbar scroll-smooth xl:justify-center [&::-webkit-scrollbar]:hidden"
         >
           {MEMBERS.map((m) => {
             const isActive = activeMember === m.n
             return (
               <button
                 key={m.n}
+                data-member={m.n}
                 onClick={() => scrollToMember(m.n)}
                 className={`group relative flex items-center gap-2 whitespace-nowrap font-ui text-[10.5px] sm:text-[11.5px] md:text-[12px] uppercase tracking-[0.16em] sm:tracking-[0.2em] transition-all duration-300 py-1 ${isActive
                   ? 'text-ivory font-semibold'
@@ -505,12 +712,10 @@ export default function TeamPlanetarySections() {
         </div>
       </div>
 
-      {/* 3. The 5 Member Sections */}
       {MEMBERS.map((member) => (
         <MemberSection key={member.n} member={member} />
       ))}
 
-      {/* 4. Elegant closing sign-off footer — tightened spacing */}
       <footer className="relative border-t border-ivory/15 px-6 py-14 text-center md:py-18">
         <div className="mx-auto max-w-2xl">
           <div className="font-stencil text-[10px] uppercase tracking-[0.34em] text-ivory/50 mb-3">
@@ -526,4 +731,7 @@ export default function TeamPlanetarySections() {
       </footer>
     </div>
   )
-}
+})
+
+export default { TeamIntro, TeamPlanetarySections }
+

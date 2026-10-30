@@ -3,10 +3,12 @@ import { useLenisScroll } from './hooks/useLenisScroll'
 
 import Nav from './components/Nav'
 import Hero from './components/Hero'
-import PhenomenologicalConversion from './components/PhenomenologicalConversion'
-import Translation from './components/Translation'
-import ExperiencePreview from './components/ExperiencePreview'
-import Accessibility from './components/Accessibility'
+import {
+  PhenomenologicalConversion,
+  Translation,
+  ExperiencePreview,
+  Accessibility,
+} from './components/LandingSections'
 
 function Grain() {
   return <div className="grain" aria-hidden="true" />
