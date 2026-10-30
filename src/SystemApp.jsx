@@ -2,8 +2,7 @@ import { MotionConfig, motion, useScroll } from 'motion/react'
 import { useLenisScroll } from './hooks/useLenisScroll'
 
 import Nav from './components/Nav'
-import EarthBackground from './components/EarthBackground'
-import { PrismSystem, Pipeline, SonificationFormulas, SystemQuotes } from './components/SystemSections'
+import { EarthBackground, PrismSystem, Pipeline, SonificationFormulas, SystemQuotes } from './components/SystemSections'
 
 function ProgressLine() {
   const { scrollYProgress } = useScroll()

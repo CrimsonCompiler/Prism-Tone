@@ -2,8 +2,7 @@ import { MotionConfig, motion } from 'motion/react'
 import { useLenisScroll } from './hooks/useLenisScroll'
 
 import Nav from './components/Nav'
-import TeamIntro from './components/TeamIntro'
-import TeamPlanetarySections from './components/TeamPlanetarySections'
+import { TeamIntro, TeamPlanetarySections } from './components/TeamSections'
 
 function Grain() {
   return <div className="grain" aria-hidden="true" />
