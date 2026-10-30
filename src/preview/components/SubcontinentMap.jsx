@@ -19,8 +19,7 @@ import { fmtValue } from '../lib/format'
 import worldGeoJson from '../data/world-regions.json'
 import worldCountriesGeoJson from '../data/world-countries.json'
 import { findCountry, MICRO_STATES } from '../lib/countries'
-import Timeline from './Timeline'
-import MapAudioControls from './MapAudioControls'
+import { Timeline, MapAudioControls } from './MapControls'
 
 // Register worker bundle explicitly for Vite bundler compatibility
 if (typeof maplibregl.setWorkerUrl === 'function') {

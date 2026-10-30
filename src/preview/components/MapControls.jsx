@@ -1,25 +1,19 @@
-/**
- * Compact Map Audio Transport Controls.
- * Floating directly on the map screen (bottom-left, above the timeline dock).
- *
- * Behavior:
- * - Collapsed state: ONLY the sound icon button is visible.
- * - Hover behavior: 1-second intentional delay followed by a soft, luxurious
- *   motion animation revealing the full audio controls (Vol slider, Play, Stop, Speed).
- * - Mouse leave: Smooth, soft transition collapsing back to the sound icon button.
- */
-
 import { useState, useRef, useEffect } from 'react'
 import { motion, AnimatePresence } from 'motion/react'
 import { usePreview } from '../state/PreviewContext'
+import { YEAR_MIN, YEAR_MAX } from '../data/datasets'
+import { MONTHS_SHORT } from '../lib/processing'
 
+/* =========================================================================
+   1. MapAudioControls — Floating audio controls on the map
+   ========================================================================= */
 const RATES = [
   [0.5, '0.5×'],
   [1, '1×'],
   [2, '2×'],
 ]
 
-export default function MapAudioControls() {
+export function MapAudioControls() {
   const { state, dispatch, actions } = usePreview()
   const { playState, volume, rate } = state
 
@@ -33,8 +27,6 @@ export default function MapAudioControls() {
   const paused = playState === 'paused'
   const idle = playState === 'idle'
 
-  // On small screens the timeline dock grows taller when its controls wrap.
-  // Keep the floating transport just above it instead of using a fixed offset.
   useEffect(() => {
     const dock = document.querySelector('[data-preview-dock]')
     if (!dock) return
@@ -52,7 +44,6 @@ export default function MapAudioControls() {
     }
   }, [])
 
-  // Clean up timers on unmount
   useEffect(() => {
     return () => {
       if (openTimerRef.current) clearTimeout(openTimerRef.current)
@@ -66,7 +57,6 @@ export default function MapAudioControls() {
       closeTimerRef.current = null
     }
     if (!isOpen && !openTimerRef.current) {
-      // 0.25-second fast & smooth delay before revealing
       openTimerRef.current = setTimeout(() => {
         setIsOpen(true)
         openTimerRef.current = null
@@ -80,20 +70,11 @@ export default function MapAudioControls() {
       openTimerRef.current = null
     }
     if (!isDraggingRef.current) {
-      // Soft 250ms buffer before fading out so it doesn't vanish abruptly
       closeTimerRef.current = setTimeout(() => {
         setIsOpen(false)
         closeTimerRef.current = null
       }, 250)
     }
-  }
-
-  const handleImmediateOpen = () => {
-    if (openTimerRef.current) {
-      clearTimeout(openTimerRef.current)
-      openTimerRef.current = null
-    }
-    setIsOpen(true)
   }
 
   return (
@@ -107,7 +88,6 @@ export default function MapAudioControls() {
     >
       <AnimatePresence mode="wait">
         {!isOpen ? (
-          /* Collapsed State: Play / Pause Icon Button */
           <motion.button
             key="collapsed-play-btn"
             initial={{ opacity: 0, scale: 0.9 }}
@@ -126,20 +106,17 @@ export default function MapAudioControls() {
             className="flex h-9 w-9 items-center justify-center rounded-lg border border-white/40 bg-black/85 backdrop-blur-md text-ivory transition-all duration-200 hover:border-white hover:scale-105 active:scale-95 cursor-pointer shadow-xl shadow-black/90"
           >
             {playing ? (
-              /* Pause Icon */
               <svg width="12" height="13" viewBox="0 0 10 12" aria-hidden="true">
                 <rect x="1" y="1" width="3" height="10" rx="0.5" fill="currentColor" />
                 <rect x="6" y="1" width="3" height="10" rx="0.5" fill="currentColor" />
               </svg>
             ) : (
-              /* Play Icon */
               <svg width="13" height="14" viewBox="0 0 10 12" aria-hidden="true" className="translate-x-[0.5px]">
                 <path d="M1 1 L9 6 L1 11 Z" fill="currentColor" />
               </svg>
             )}
           </motion.button>
         ) : (
-          /* Expanded State: Soft animation floating in full audio controls */
           <motion.div
             key="expanded-audio-controls"
             initial={{ opacity: 0, scale: 0.94, y: 5 }}
@@ -148,7 +125,6 @@ export default function MapAudioControls() {
             transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
             className="flex flex-col gap-2 origin-bottom-left w-[228px]"
           >
-            {/* Row 1: Single unified Volume box containing Vol label, slider, and percentage */}
             <div className="flex h-8 items-center px-2.5 rounded border border-white/25 bg-black/85 backdrop-blur-md shadow-md shadow-black/80 w-full">
               <label
                 htmlFor="map-volume"
@@ -173,9 +149,7 @@ export default function MapAudioControls() {
               </span>
             </div>
 
-            {/* Row 2: Play/Pause, Stop, Speed — Equal height (h-8) and aligned */}
             <div className="flex items-center w-full">
-              {/* Play / Pause Icon Button */}
               <button
                 type="button"
                 onClick={idle ? actions.play : paused ? actions.resume : actions.pause}
@@ -197,7 +171,6 @@ export default function MapAudioControls() {
 
               <div className="w-1.5 shrink-0" />
 
-              {/* Stop Icon Button */}
               <button
                 type="button"
                 onClick={actions.stop}
@@ -211,7 +184,6 @@ export default function MapAudioControls() {
                 </svg>
               </button>
 
-              {/* Speed Buttons — widened gaps (ml-3 & gap-3) to align with Vol/80% row */}
               <div className="flex-1 flex items-center gap-3 ml-3" role="group" aria-label="Playback speed">
                 {RATES.map(([r, label]) => (
                   <button
@@ -235,3 +207,141 @@ export default function MapAudioControls() {
     </div>
   )
 }
+
+/* =========================================================================
+   2. Timeline — Time selector and playback progress scrubber
+   ========================================================================= */
+const MODES = [
+  ['year', 'Year'],
+  ['range', 'Range'],
+]
+
+const YEARS = []
+for (let y = YEAR_MIN; y <= YEAR_MAX; y++) YEARS.push(y)
+
+function YearSelect({ value, onChange, label }) {
+  return (
+    <label className="flex items-center gap-2.5">
+      <span className="font-stencil text-[12px] uppercase tracking-[0.2em] text-ivory font-medium">{label}</span>
+      <select
+        value={value}
+        onChange={(e) => onChange(Number(e.target.value))}
+        className="border border-white/20 bg-[#252830] px-3.5 py-1.5 font-data text-[14px] tracking-[0.06em] text-ivory font-medium focus-visible:outline focus-visible:outline-1 focus-visible:outline-ivory/70 cursor-pointer rounded-sm"
+      >
+        {YEARS.map((y) => (
+          <option key={y} value={y} className="bg-[#252830] text-ivory">
+            {y}
+          </option>
+        ))}
+      </select>
+    </label>
+  )
+}
+
+export function Timeline() {
+  const { state, dispatch, actions, steps } = usePreview()
+  const { timeMode, year, month, range, playState, position } = state
+
+  const playing = playState === 'playing' || playState === 'paused'
+
+  const stepIndexFor = (y, m) => steps.findIndex((s) => s.key === `${y}${String(m).padStart(2, '0')}`)
+
+  return (
+    <div
+      className="border-t border-white/20 bg-[#1e2126]/95 backdrop-blur-xl p-3.5 md:p-4 shadow-[0_-10px_35px_rgba(0,0,0,0.5)]"
+      onClick={(e) => e.stopPropagation()}
+      onMouseDown={(e) => e.stopPropagation()}
+    >
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <div className="flex flex-wrap items-center gap-3">
+          <div className="flex gap-2" role="tablist" aria-label="Time selection mode">
+            {MODES.map(([id, label]) => (
+              <button
+                key={id}
+                type="button"
+                role="tab"
+                aria-selected={timeMode === id}
+                onClick={() => dispatch({ type: 'SET_TIME_MODE', mode: id })}
+                className={`border px-4 py-1.5 font-stencil text-[12.5px] md:text-[13px] uppercase tracking-[0.22em] transition-colors duration-200 focus-visible:outline focus-visible:outline-1 focus-visible:outline-ivory/70 cursor-pointer rounded-sm ${timeMode === id
+                  ? 'border-[#e2d9c6] bg-[#e2d9c6]/20 text-ivory font-semibold shadow-[0_0_12px_rgba(226,217,198,0.14)]'
+                  : 'border-white/20 bg-white/[0.04] text-ivory/80 hover:border-ivory/40 hover:text-ivory hover:bg-white/[0.08] font-medium'
+                  }`}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
+
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
+            {timeMode !== 'range' && (
+              <YearSelect
+                label="Year"
+                value={year}
+                onChange={(y) => dispatch({ type: 'SET_YEAR', year: y })}
+              />
+            )}
+
+            {timeMode === 'range' && (
+              <>
+                <YearSelect
+                  label="From"
+                  value={range.startYear}
+                  onChange={(y) =>
+                    dispatch({ type: 'SET_RANGE', range: { ...range, startYear: Math.min(y, range.endYear) } })
+                  }
+                />
+                <YearSelect
+                  label="To"
+                  value={range.endYear}
+                  onChange={(y) =>
+                    dispatch({ type: 'SET_RANGE', range: { ...range, endYear: Math.max(y, range.startYear) } })
+                  }
+                />
+                <span className="font-data text-[13px] uppercase tracking-[0.14em] text-ivory font-medium">
+                  {steps.length} months selected
+                </span>
+              </>
+            )}
+          </div>
+        </div>
+
+        <span className="font-ui text-[12px] md:text-[12.5px] uppercase tracking-[0.16em] text-ivory/70 font-medium">
+          monthly record · {YEAR_MIN}–{YEAR_MAX}
+        </span>
+      </div>
+
+      {timeMode === 'year' && (
+        <div className="mt-3.5 grid grid-cols-6 gap-1.5 sm:grid-cols-12" role="group" aria-label="Months of the selected year">
+          {MONTHS_SHORT.map((m, i) => {
+            const idx = stepIndexFor(year, i + 1)
+            const active = playing ? position === idx : month === i + 1
+            const isCurrent = playing && position === idx
+            return (
+              <button
+                key={m}
+                type="button"
+                aria-pressed={active}
+                aria-label={`${m} ${year}${isCurrent ? ' — currently playing' : ''}`}
+                onClick={() => {
+                  if (!playing) dispatch({ type: 'SET_MONTH', month: i + 1 })
+                  else if (idx >= 0) actions.seek(idx)
+                }}
+                className={`border px-1 sm:px-2 py-2 font-data text-[13px] md:text-[13.5px] uppercase tracking-[0.1em] sm:tracking-[0.14em] transition-colors duration-150 focus-visible:outline focus-visible:outline-1 focus-visible:outline-ivory/70 cursor-pointer rounded-sm ${active
+                  ? isCurrent
+                    ? 'border-[#e2d9c6] bg-[#e2d9c6]/30 text-ivory font-semibold shadow-[0_0_14px_rgba(226,217,198,0.22)]'
+                    : 'border-[#e2d9c6] bg-[#e2d9c6]/20 text-ivory font-semibold shadow-[0_0_10px_rgba(226,217,198,0.14)]'
+                  : 'border-white/15 bg-white/[0.05] text-ivory/80 hover:border-ivory/40 hover:bg-white/[0.12] hover:text-ivory font-medium'
+                  }`}
+              >
+                {m}
+              </button>
+            )
+          })}
+        </div>
+      )}
+    </div>
+  )
+}
+
+export default { MapAudioControls, Timeline }
+

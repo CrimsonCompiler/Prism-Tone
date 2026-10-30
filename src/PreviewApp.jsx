@@ -8,8 +8,7 @@ import VariableSelector from './preview/components/VariableSelector'
 import SubcontinentMap from './preview/components/SubcontinentMap'
 import { CaptionsPanel, SummaryPanel, MappingPanel } from './preview/components/Panels'
 import GraphPanel from './preview/components/GraphPanel'
-import GuideModal from './preview/components/GuideModal'
-import ContinentModal from './preview/components/ContinentModal'
+import { GuideModal, ContinentModal } from './preview/components/Modals'
 
 function ProgressLine() {
   const { scrollYProgress } = useScroll()
