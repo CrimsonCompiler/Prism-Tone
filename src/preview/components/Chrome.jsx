@@ -13,54 +13,58 @@ function regionName(id) {
   return entry ? entry.name : id
 }
 
-export function PreviewHero() {
+const TOOLBAR_BTN_CLASS =
+  'group flex h-[32px] items-center justify-center rounded border border-ivory/25 bg-[#141617] px-3.5 text-ivory transition-all hover:border-ivory/60 hover:bg-ivory/10 hover:shadow-lg hover:shadow-black/50 cursor-pointer shrink-0'
+
+const TOOLBAR_TEXT_CLASS =
+  'font-stencil text-[11px] uppercase tracking-[0.22em] text-ivory group-hover:text-white font-medium'
+
+export function PreviewToolbar() {
   const { dispatch } = usePreview()
 
   return (
-    <header className="relative z-40 border-b border-ivory/10 pt-4 sm:pt-6 md:pt-7 pb-5 md:pb-6">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <h1
-          className="font-meno font-light leading-[1.05] tracking-[-0.015em] text-ivory text-[clamp(1.75rem,3vw,2.75rem)] pl-0.5 sm:pl-1 shrink-0"
-          style={{ fontFamily: '"Meno Banner", Georgia, serif' }}
+    <div className="flex items-center justify-between gap-2.5">
+      <button
+        id="global-continents-hero-btn"
+        type="button"
+        onClick={() => dispatch({ type: 'CONTINENT_MODAL', open: true })}
+        className={TOOLBAR_BTN_CLASS}
+        title="Open Continent Selection Popup"
+      >
+        <span className={TOOLBAR_TEXT_CLASS}>
+          Select Continent ▾
+        </span>
+      </button>
+
+      <div className="flex items-center gap-2">
+        <button
+          type="button"
+          onClick={() => dispatch({ type: 'TOGGLE_SETTINGS', open: true })}
+          className={TOOLBAR_BTN_CLASS}
+          title="Display & Accessibility Settings"
+          aria-label="Display & Accessibility Settings"
         >
-          Listen to the World.
-        </h1>
-        <div className="flex flex-wrap items-center gap-3">
-          <CountrySearchBar />
-          <button
-            id="global-continents-hero-btn"
-            type="button"
-            onClick={() => dispatch({ type: 'CONTINENT_MODAL', open: true })}
-            className="group flex items-center justify-center rounded border border-ivory/25 bg-[#141617] px-4 py-2 transition-all hover:border-ivory/60 hover:bg-ivory/10 hover:shadow-lg hover:shadow-black/50 cursor-pointer shrink-0"
-            title="Open Continent Selection Popup"
-          >
-            <span className="font-stencil text-[11px] uppercase tracking-[0.24em] text-ivory group-hover:text-white font-medium">
-              Select Continent ▾
-            </span>
-          </button>
-          <button
-            type="button"
-            onClick={() => dispatch({ type: 'TOGGLE_SETTINGS', open: true })}
-            className="flex items-center justify-center rounded border border-ivory/25 bg-[#141617] px-3 py-2 text-ivory transition-all hover:border-ivory/60 hover:bg-ivory/10 hover:shadow-lg hover:shadow-black/50 cursor-pointer shrink-0"
-            title="Display & Accessibility Settings"
-            aria-label="Display & Accessibility Settings"
-          >
-            <span className="font-data text-[12px] font-semibold text-cream">Aa</span>
-          </button>
-          <button
-            type="button"
-            onClick={() => dispatch({ type: 'GUIDE', open: true })}
-            className="flex h-[35px] w-[35px] items-center justify-center rounded-full border border-ivory/25 bg-[#141617] text-ivory transition-all hover:border-ivory/60 hover:bg-ivory/10 hover:shadow-lg hover:shadow-black/50 cursor-pointer shrink-0"
-            title="How to use this page"
-            aria-label="How to use this page"
-          >
-            <span className="font-meno text-[15px] italic text-cream">?</span>
-          </button>
-        </div>
+          <span className={TOOLBAR_TEXT_CLASS}>
+            Display
+          </span>
+        </button>
+        <button
+          type="button"
+          onClick={() => dispatch({ type: 'GUIDE', open: true })}
+          className={TOOLBAR_BTN_CLASS}
+          title="How to use this page"
+          aria-label="How to use this page guide"
+        >
+          <span className={TOOLBAR_TEXT_CLASS}>
+            Guide
+          </span>
+        </button>
       </div>
-    </header>
+    </div>
   )
 }
+
+export const PreviewHero = () => null
 
 export function StatusBanner() {
   const { state, dispatch } = usePreview()

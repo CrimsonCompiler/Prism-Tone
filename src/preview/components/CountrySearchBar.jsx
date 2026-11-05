@@ -172,13 +172,13 @@ export default function CountrySearchBar() {
 
   return (
     <div ref={containerRef} className="relative z-50 flex w-full items-center sm:w-auto">
-      {/* Search Input Box */}
+      {/* Minimal Underline Search Input */}
       <div
-        className={`group flex w-full items-center rounded border bg-[#141617] px-3 py-1.5 transition-all duration-200 shadow-md sm:w-auto ${isListening
-          ? 'border-ember shadow-[0_0_12px_rgba(212,165,91,0.35)] ring-1 ring-ember/60'
+        className={`group relative flex w-full items-center border-b pb-1 pt-0.5 transition-all duration-200 sm:w-auto ${isListening
+          ? 'border-ember text-ember'
           : isOpen
-            ? 'border-ivory/60 shadow-lg'
-            : 'border-ivory/25 hover:border-ivory/50'
+            ? 'border-ivory text-ivory'
+            : 'border-ivory/35 hover:border-ivory/70 focus-within:border-ivory'
           }`}
       >
         {/* Search Icon */}
@@ -191,7 +191,7 @@ export default function CountrySearchBar() {
           strokeWidth="2.2"
           strokeLinecap="round"
           strokeLinejoin="round"
-          className="mr-2 text-ivory/60 group-hover:text-ivory transition-colors shrink-0"
+          className="mr-2 text-ivory/50 group-hover:text-ivory group-focus-within:text-ivory transition-colors shrink-0"
           aria-hidden="true"
         >
           <circle cx="11" cy="11" r="8" />
@@ -229,13 +229,13 @@ export default function CountrySearchBar() {
           </button>
         )}
 
-        {/* Microphone Voice Button */}
+        {/* Microphone Voice Button right at the end */}
         <button
           type="button"
           onClick={toggleVoiceSearch}
-          className={`flex items-center justify-center rounded p-1 transition-all duration-200 cursor-pointer shrink-0 ${isListening
+          className={`flex items-center justify-center rounded p-1 transition-all duration-200 cursor-pointer shrink-0 ml-1 ${isListening
             ? 'bg-ember text-black shadow-[0_0_8px_#d4a55b] animate-pulse'
-            : 'text-ivory/70 hover:text-white hover:bg-white/10'
+            : 'text-ivory/60 hover:text-white hover:bg-white/10'
             }`}
           title={isListening ? 'Listening... click to stop' : 'Search by Voice (Click and speak country name)'}
           aria-label={isListening ? 'Stop voice search' : 'Start voice search'}

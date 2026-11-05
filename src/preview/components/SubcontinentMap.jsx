@@ -20,6 +20,7 @@ import worldGeoJson from '../data/world-regions.json'
 import worldCountriesGeoJson from '../data/world-countries.json'
 import { findCountry, MICRO_STATES } from '../lib/countries'
 import { Timeline, MapAudioControls } from './MapControls'
+import CountrySearchBar from './CountrySearchBar'
 
 // Register worker bundle explicitly for Vite bundler compatibility
 if (typeof maplibregl.setWorkerUrl === 'function') {
@@ -954,12 +955,6 @@ export default function SubcontinentMap() {
             color: #ffffff;
             letter-spacing: 0.05em;
           ">${r.name}</span>
-          <span style="
-            font-family: 'Oxanium', monospace;
-            font-size: 11px;
-            font-weight: 700;
-            color: ${isSelected ? markerBorder : '#e4ddcf'};
-          ">${valStr}</span>
         </div>
       `
 
@@ -994,9 +989,9 @@ export default function SubcontinentMap() {
 
   return (
     <div className="relative flex w-full flex-col border border-ivory/15 bg-[#101212] shadow-2xl">
-      {/* Top Map HUD Bar */}
-      <div className="z-10 flex flex-wrap items-center justify-between gap-3 border-b border-ivory/10 bg-coal/75 px-4 py-3 backdrop-blur-md md:px-5">
-        <div className="flex flex-wrap items-center gap-2.5">
+      {/* Top Map HUD Bar with Centered Country Search */}
+      <div className="z-30 flex flex-wrap items-center justify-between gap-3 border-b border-ivory/10 bg-coal/75 px-4 py-2.5 backdrop-blur-md md:px-5">
+        <div className="flex items-center gap-2.5 shrink-0">
           <span className="font-stencil text-[11.5px] uppercase tracking-[0.26em] text-beige">
             {state.isolatedCountry
               ? `Isolated Country View · ${state.isolatedCountry.name}`
@@ -1006,7 +1001,12 @@ export default function SubcontinentMap() {
           </span>
         </div>
 
-        <div className="flex items-center gap-2">
+        {/* Center: Search country in the top middle of the map screen */}
+        <div className="order-last w-full sm:order-none sm:w-auto flex-1 max-w-sm flex justify-center">
+          <CountrySearchBar />
+        </div>
+
+        <div className="flex items-center gap-2 shrink-0">
           <span className="inline-flex items-center gap-1.5 font-stencil text-[9.5px] uppercase tracking-[0.16em] text-cream/75">
             <span className="h-1.5 w-1.5 rounded-full bg-sage" aria-hidden="true" />
             MapTiler Cloud · MapLibre GL JS

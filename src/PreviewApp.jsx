@@ -4,11 +4,11 @@ import { useLenisScroll } from './hooks/useLenisScroll'
 
 import Nav from './components/Nav'
 import { PreviewProvider, usePreview } from './preview/state/PreviewContext'
-import { PreviewHero, StatusBanner, SourceBar } from './preview/components/Chrome'
+import { PreviewToolbar, StatusBanner, SourceBar } from './preview/components/Chrome'
 import VariableSelector from './preview/components/VariableSelector'
 import SubcontinentMap from './preview/components/SubcontinentMap'
 import { SummaryPanel } from './preview/components/Panels'
-import GraphPanel, { scrollToTranscriptPanel } from './preview/components/GraphPanel'
+import GraphPanel from './preview/components/GraphPanel'
 import MappingPanel from './preview/components/MappingDiagram'
 import ImagePanel from './preview/components/ImagePanel'
 import NowSounding from './preview/components/NowSounding'
@@ -26,44 +26,6 @@ function ProgressLine() {
       className="fixed left-0 top-0 z-40 h-full w-px origin-top bg-ivory/30"
       aria-hidden="true"
     />
-  )
-}
-
-/** One slim row of session actions under the data-track card. */
-function SessionToolbar() {
-  const { state, dispatch } = usePreview()
-  const count = (state.transcript || []).length
-  const button =
-    'flex min-h-[44px] items-center justify-center gap-1.5 border border-ivory/20 bg-coal/40 px-2 font-ui text-[13px] text-ivory transition-colors hover:border-ivory/50 hover:bg-white/5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-ivory'
-
-  return (
-    <div role="group" aria-label="Session tools" className="grid grid-cols-3 gap-2">
-      <button
-        type="button"
-        onClick={() => dispatch({ type: 'TOGGLE_SETTINGS', open: true })}
-        className={button}
-      >
-        Display
-      </button>
-      <button
-        type="button"
-        onClick={() => {
-          dispatch({ type: 'SET_VIEW', view: 'transcript' })
-          scrollToTranscriptPanel()
-        }}
-        className={button}
-      >
-        Transcript
-        <span className="font-data text-[12px] text-cream">{count}</span>
-      </button>
-      <button
-        type="button"
-        onClick={() => dispatch({ type: 'GUIDE', open: true })}
-        className={button}
-      >
-        Guide
-      </button>
-    </div>
   )
 }
 
@@ -147,29 +109,22 @@ function PreviewStudio() {
 
   return (
     <div className="mx-auto w-full max-w-[1780px] 2xl:max-w-[1840px] px-3 sm:px-6 md:px-8 lg:px-10 xl:px-12 pb-24">
-      <PreviewHero />
-
       <StatusBanner />
 
-      <div className="mt-6 flex flex-col gap-6 md:mt-8 md:gap-8">
-        {/* Map block — captions dock to its bottom edge */}
+      <div className="mt-2 sm:mt-3 flex flex-col gap-6 md:mt-4 md:gap-8">
+        {/* Map block — map on left, data tracks and now sounding on right */}
         <section ref={mapBlockRef} aria-label="Map and captions">
-          <div className="grid items-start gap-x-6 gap-y-0 lg:grid-cols-12 xl:gap-x-8">
+          <div className="grid items-start gap-x-6 gap-y-6 lg:grid-cols-12 xl:gap-x-8">
             <div className="lg:col-span-8 lg:col-start-1 lg:row-start-1 xl:col-span-9">
               <SubcontinentMap />
             </div>
 
-            {/* Caption bar: directly under the map on small screens, a
-                full-width dock below both columns on large screens. */}
-            <div className="lg:col-span-12 lg:col-start-1 lg:row-start-2">
-              <NowSounding />
-            </div>
-
-            <div className="mt-6 flex flex-col gap-3 lg:col-span-4 lg:col-start-9 lg:row-start-1 lg:mt-0 xl:col-span-3 xl:col-start-10">
+            <div className="flex flex-col gap-3 lg:col-span-4 lg:col-start-9 lg:row-start-1 xl:col-span-3 xl:col-start-10">
+              <PreviewToolbar />
               <div className="relative z-30 border border-ivory/10 bg-coal/40 p-4 md:p-5">
                 <VariableSelector />
               </div>
-              <SessionToolbar />
+              <NowSounding />
             </div>
           </div>
         </section>
