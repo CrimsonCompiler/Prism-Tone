@@ -81,7 +81,11 @@ def test_coordinates_are_validated() -> None:
 
 
 def test_preview_series_serves_all_seven_divisions() -> None:
-    response = client.get("/api/preview/series", params={"parameters": "T2M,PRECTOTCORR,WS10M"})
+    params = {"parameters": "T2M,PRECTOTCORR,WS10M"}
+    # The persisted POWER cache has a 24 h TTL; warm it before asserting a hit
+    # so the test does not depend on the age of the committed cache files.
+    assert client.get("/api/preview/series", params=params).status_code == 200
+    response = client.get("/api/preview/series", params=params)
     assert response.status_code == 200
     data = response.json()
     assert data["count"] == 7

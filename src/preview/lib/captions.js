@@ -15,6 +15,7 @@
 import { keyToLabel, monthLong, baselineNormal, getMonthly } from './processing'
 import { fmtValue } from './format'
 import { describeSound, planForStep } from './music'
+import { scoreSoundSentence } from './score'
 import { BASELINE } from '../data/datasets'
 
 export function normalsFor(seriesMap) {
@@ -100,6 +101,8 @@ export function describeStep({
   scopeKind,
   range,
   prevValue,
+  scoreCaption,
+  scoreMeta,
 }) {
   const label = step && step.key ? keyToLabel(step.key) : ''
   const scope = scopeShort(scopeName, scopeKind)
@@ -132,7 +135,17 @@ export function describeStep({
   }
 
   const cmp = comparisonFor({ variable, value, normal: normalValue, label })
-  const sound = describeSound(plan, variable)
+  /* When a backend score is loaded or sounding, use its musical clause ("4
+     marimba notes") but keep the numbers above derived from the loaded series.
+     With only the score meta available (idle), state the one scale/tempo and
+     still make no per-month mode-change claim. */
+  const sound = scoreMeta
+    ? scoreSoundSentence({
+        caption: scoreCaption,
+        scaleLabel: scoreMeta.scaleLabel,
+        tempo: scoreMeta.tempo,
+      })
+    : describeSound(plan, variable)
 
   return {
     text: `${label} — ${scope}. ${valueSentence(variable, value)}, ${cmp.text}. ${sound} ${contextLine(scopeKind)}`,

@@ -13,6 +13,7 @@
  */
 
 import { usePreview } from '../state/PreviewContext'
+import { useDescribeView } from '../hooks/useDescribeView'
 import { displayKey } from '../lib/selectors'
 import { keyToLabel } from '../lib/processing'
 import { fmtValue, fmtDelta } from '../lib/format'
@@ -20,127 +21,120 @@ import { anomalyTone, anomalyWord } from '../lib/selectors'
 import { VARIABLE_BY_ID } from '../data/datasets'
 
 const toneClass = {
-  warm: 'text-ember border-ember/60 bg-ember/10',
-  cool: 'text-ice border-ice/60 bg-ice/10',
-  near: 'text-cream border-cream/40 bg-cream/5',
-  none: 'text-beige border-ivory/20 bg-white/[0.03]',
+  warm: 'text-ember',
+  cool: 'text-ice',
+  near: 'text-cream',
+  none: 'text-beige',
+}
+
+function cleanHistoryText(text) {
+  if (!text) return ''
+  return text.replace(/\s*vs\s+\d{4}[–-]\d{4}/gi, '').trim()
+}
+
+function stripDatePrefix(text, label) {
+  if (!text) return ''
+  if (label && text.startsWith(label)) {
+    const rest = text.slice(label.length).trim()
+    return rest.replace(/^(?:[—–-]|at)\s+/i, '').trim()
+  }
+  return text.replace(/^(?:(?:[A-Za-z]{3,9}\s+)?\d{4}(?:\s*[–-]\s*\d{4})?)\s*(?:[—–-]|at)\s+/i, '').trim()
 }
 
 export default function NowSounding() {
-  const { state, steps, variable } = usePreview()
+  const { state, variable } = usePreview()
   const caption = state.caption || {}
-  const plan = state.soundPlan || caption.plan || null
-  const key = displayKey(state, steps, state.position, state.playState)
   const tone = anomalyTone(variable, caption.delta, caption.normal)
   const captionsOn = state.settings.captionsVisible !== false
 
-  const currentText = caption.text || 'Nothing selected yet.'
+  const rawText = caption.text || 'Nothing selected yet.'
+  const currentText = stripDatePrefix(rawText, caption.label)
   const history = (state.transcript || [])
-    .filter((entry) => entry.text !== currentText)
-    .slice(-3)
+    .filter((entry) => entry.text !== rawText && entry.text !== currentText)
+    .slice(-2)
   const activeLayers = (state.selectedVariableIds || [state.variableId])
     .map((id) => VARIABLE_BY_ID[id])
     .filter((v) => v && v.status === 'live')
 
-  const label = caption.label || (state.timeMode === 'range'
-    ? `${state.range.startYear}–${state.range.endYear}`
-    : key
-      ? keyToLabel(key)
-      : 'Selected period')
-
-  const kind = caption.cls === 'derived' || state.scope.type === 'national' ? 'derived' : 'measured'
-
   return (
     <section
       aria-label="Now sounding captions"
-      className="relative z-30 -mt-px border-x border-b border-ivory/15 bg-[#161819] shadow-[0_18px_40px_rgba(0,0,0,0.45)]"
+      className="relative z-30 border border-ivory/10 bg-coal/40 p-4 md:p-5"
     >
-      <div className="grid gap-4 px-4 py-4 md:grid-cols-[190px_minmax(0,1fr)_240px] md:gap-6 md:px-6 md:py-5">
-        {/* time */}
-        <div className="min-w-0">
-          <p className="font-stencil text-[12px] uppercase tracking-[0.22em] text-beige">Now sounding</p>
-          <p className="mt-1.5 font-ui text-[22px] leading-tight text-ivory font-semibold">
-            {label}
-          </p>
-          <p className="mt-1 font-ui text-[13px] leading-relaxed text-beige">
-            {state.playState === 'playing' ? 'playing' : state.playState === 'paused' ? 'paused' : 'ready to play'}
-            {state.timeMode === 'range' ? ` · ${steps.length} months` : ''}
-          </p>
+      {/* Value and comparison bar at the top of the card */}
+      <div className="flex flex-wrap items-baseline justify-between gap-3 border-b border-ivory/10 pb-3">
+        <div className="flex items-baseline gap-2">
+          <span className="font-data text-[28px] leading-none text-ivory font-semibold tracking-tight">
+            {caption.value !== null && caption.value !== undefined ? fmtValue(caption.value, variable.decimals) : '—'}
+          </span>
+          <span className="font-ui text-[14px] text-cream">{variable.unit}</span>
         </div>
 
-        {/* captions */}
-        <div className="min-w-0">
-          {history.length > 0 && (
-            <ol className="mb-2 space-y-0.5" aria-label="Recent captions">
-              {history.map((entry) => (
-                <li key={entry.id} className="truncate font-ui text-[15px] leading-snug text-beige">
-                  {entry.shortText || entry.text}
-                </li>
-              ))}
-            </ol>
-          )}
-          {captionsOn ? (
-            <p
-              className="max-w-[65ch] font-ui leading-[1.5] text-ivory"
-              style={{ fontSize: 'var(--pt-caption-size, 23px)' }}
-            >
-              {currentText}
-            </p>
-          ) : (
-            <p className="max-w-[65ch] font-ui text-[17px] leading-[1.5] text-cream">
-              Captions are off. Press <kbd className="rounded border border-ivory/30 px-1.5 py-0.5 font-data text-[13px]">C</kbd> or open
-              <span className="text-ivory"> Display &amp; access</span> to show them again. The data and sound continue unchanged.
-            </p>
-          )}
-          {state.volume === 0 && (
-            <p className="mt-2 inline-flex items-center gap-2 border border-ivory/25 bg-white/[0.04] px-2.5 py-1 font-ui text-[13px] text-cream">
-              <span className="h-1.5 w-1.5 rounded-full bg-ember" aria-hidden="true" />
-              Sound is muted — captions continue.
-            </p>
-          )}
-          {activeLayers.length > 1 && (
-            <p className="mt-2 flex flex-wrap items-center gap-x-2 gap-y-1 font-ui text-[13px] text-beige">
-              <span className="font-stencil text-[12px] uppercase tracking-[0.16em]">Mix</span>
-              {activeLayers.map((layer, index) => (
-                <span key={layer.id} className="inline-flex items-center gap-1.5">
-                  {index > 0 && <span aria-hidden="true">+</span>}
-                  <span
-                    className="h-1.5 w-1.5 rounded-full"
-                    style={{ backgroundColor: layer.accent }}
-                    aria-hidden="true"
-                  />
-                  <span className="text-cream">
-                    {layer.name}
-                    {layer.id === state.variableId ? ' (lead)' : ''}
-                  </span>
-                </span>
-              ))}
-            </p>
-          )}
-        </div>
-
-        {/* value and comparison */}
-        <div className="flex flex-col items-start gap-2 border-t border-ivory/10 pt-3 md:border-l md:border-t-0 md:pl-5 md:pt-0">
-          <div className="flex items-baseline gap-1.5">
-            <span className="font-data text-[32px] leading-none text-ivory font-semibold tracking-tight">
-              {caption.value !== null && caption.value !== undefined ? fmtValue(caption.value, variable.decimals) : '—'}
-            </span>
-            <span className="font-ui text-[14px] text-cream">{variable.unit}</span>
-          </div>
-          <span className={`inline-flex items-center border px-2 py-1 font-ui text-[13px] ${toneClass[tone]}`}>
+        <div className="flex items-center">
+          <span className={`font-ui text-[12.5px] font-medium tracking-wide ${toneClass[tone]}`}>
             {caption.delta !== null && caption.delta !== undefined
               ? `${fmtDelta(caption.delta, variable.decimals, variable.unit)} · ${anomalyWord(variable, caption.delta, caption.normal)}`
               : 'no baseline comparison'}
           </span>
-          {plan && !plan.missing && (
-            <span className="font-ui text-[13px] leading-snug text-beige">
-              {plan.mode} · {plan.note}
-            </span>
-          )}
-          <span className="font-stencil text-[12px] uppercase tracking-[0.16em] text-beige">
-            {kind === 'derived' ? 'derived value' : 'measured value'} · NASA POWER
-          </span>
         </div>
+      </div>
+
+      {/* Captions narrative */}
+      <div className="mt-3 min-w-0">
+        {history.length > 0 && (
+          <div className="mb-2 flex flex-wrap items-center gap-x-2 gap-y-0.5 font-ui text-[12.5px] leading-snug text-beige" aria-label="Recent captions">
+            {history.map((entry, idx) => (
+              <span key={entry.id || idx} className="inline-flex items-center gap-2">
+                {idx > 0 && <span aria-hidden="true" className="text-cream/40">·</span>}
+                <span>{cleanHistoryText(entry.shortText || entry.text)}</span>
+              </span>
+            ))}
+          </div>
+        )}
+
+        {captionsOn ? (
+          <p className="font-ui text-[14.5px] leading-relaxed text-ivory">
+            {currentText}
+          </p>
+        ) : (
+          <p className="font-ui text-[13.5px] leading-relaxed text-cream">
+            Captions are off. Open <span className="text-ivory">Display &amp; access</span> to show them again.
+          </p>
+        )}
+
+        {state.volume === 0 && (
+          <p className="mt-2.5 inline-flex items-center gap-2 border border-ivory/25 bg-white/[0.04] px-2.5 py-1 font-ui text-[12px] text-cream">
+            <span className="h-1.5 w-1.5 rounded-full bg-ember" aria-hidden="true" />
+            Sound is muted — captions continue.
+          </p>
+        )}
+
+        {state.imagePlaying && (
+          <p className="mt-2.5 inline-flex items-center gap-2 border border-ember/40 bg-ember/10 px-2.5 py-1 font-ui text-[12px] text-cream">
+            <span className="h-1.5 w-1.5 rounded-full bg-ember" aria-hidden="true" />
+            An image score is sounding — data playback is paused until it stops.
+          </p>
+        )}
+
+        {activeLayers.length > 1 && (
+          <p className="mt-2.5 flex flex-wrap items-center gap-x-2 gap-y-1 font-ui text-[12px] text-cream">
+            <span className="text-beige">Mix</span>
+            {activeLayers.map((layer, index) => (
+              <span key={layer.id} className="inline-flex items-center gap-1.5">
+                {index > 0 && <span aria-hidden="true" className="text-beige">+</span>}
+                <span
+                  className="h-1.5 w-1.5 rounded-full"
+                  style={{ backgroundColor: layer.accent }}
+                  aria-hidden="true"
+                />
+                <span>
+                  {layer.name}
+                  {layer.id === state.variableId ? ' (lead)' : ''}
+                </span>
+              </span>
+            ))}
+          </p>
+        )}
       </div>
     </section>
   )

@@ -11,17 +11,16 @@
 import { useEffect, useRef } from 'react'
 import { createPortal } from 'react-dom'
 import { usePreview } from '../state/PreviewContext'
+import { useDescribeView } from '../hooks/useDescribeView'
 import { CAPTION_SIZES, DEFAULT_SETTINGS } from '../lib/settings'
-import { selectionSummary } from '../lib/selectors'
-import { describeView } from '../lib/captions'
-import { CONTINENT_BY_ID } from '../data/world'
 import { SHORTCUTS } from './Accessibility'
 
 const FOCUSABLE =
   'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), summary, [tabindex]:not([tabindex="-1"])'
 
 export default function SettingsDrawer() {
-  const { state, dispatch, actions, variable, seriesMap, steps } = usePreview()
+  const { state, dispatch, actions } = usePreview()
+  const describe = useDescribeView()
   const open = state.settingsOpen
   const panelRef = useRef(null)
   const closeRef = useRef(null)
@@ -71,30 +70,6 @@ export default function SettingsDrawer() {
 
   const set = (key, value) => dispatch({ type: 'SET_SETTING', key, value })
   const settings = state.settings || DEFAULT_SETTINGS
-
-  const describe = () => {
-    const summary = selectionSummary({
-      state,
-      variable,
-      seriesMap,
-      steps,
-      position: state.position,
-      playState: state.playState,
-    })
-    const scopeName =
-      state.scope.type === 'division' && CONTINENT_BY_ID[state.scope.id]
-        ? CONTINENT_BY_ID[state.scope.id].name
-        : 'World'
-    const text = describeView({
-      state,
-      variable,
-      steps,
-      seriesMap,
-      caption: state.caption,
-      summary: { ...summary, scopeName },
-    })
-    dispatch({ type: 'SET_DESCRIBE', text })
-  }
 
   const content = (
     <div

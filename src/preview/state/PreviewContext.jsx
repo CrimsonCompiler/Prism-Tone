@@ -21,6 +21,7 @@ import {
   backendRefreshDue,
   markBackendRefresh,
 } from '../api/power'
+import { fetchDataScore } from '../api/sonify'
 import {
   deriveNational,
   monthsInSelection,
@@ -60,7 +61,7 @@ const initialState = {
   volume: 0.8,
   rate: 1,
   layers: { pulse: true },
-  view: 'series', // series | waveform | notes
+  view: 'series', // series | waveform | transcript
   granularity: 'monthly', // monthly | annual
 
   data: {
@@ -77,6 +78,16 @@ const initialState = {
   transcript: [],
   live: { id: 0, text: '' },
   soundPlan: null,
+  score: {
+    status: 'local', // local | loading | ready | unavailable
+    available: false,
+    source: 'local', // local | score — the path actually sounding
+    scaleLabel: '',
+    tempo: null,
+    beatsPerStep: 2,
+    message: 'Local mapping.',
+  },
+  imagePlaying: false,
   describeText: '',
   settingsOpen: false,
   transcriptOpen: false,
@@ -91,7 +102,7 @@ const initialState = {
     ready: true,
   }), cls: 'interpretation' },
 
-  guideOpen: shouldOpenGuide(),
+  guideOpen: false,
   continentModalOpen: false,
   unavailableNoticeId: null,
   focusedCountry: null,
@@ -203,6 +214,7 @@ function idleSelectionFor(state) {
   }
 
   const key = monthKey(state.year, state.month)
+  const scoreReady = state.score && state.score.status === 'ready' && state.score.scaleLabel
   return normalizeCaption(describeStep({
     variable,
     step: { key, value: getMonthly(seriesMap, state.year, state.month) },
@@ -212,10 +224,15 @@ function idleSelectionFor(state) {
     scopeKind,
     range,
     prevValue: previousValue(seriesMap, key),
+    /* Idle text must agree with the score that will play next: one key/scale,
+       no local per-month mode change. */
+    scoreMeta: scoreReady
+      ? { scaleLabel: state.score.scaleLabel, tempo: state.score.tempo }
+      : null,
   }))
 }
 
-function stepCaptionFor(state, step) {
+function stepCaptionFor(state, step, score) {
   const variable = VARIABLE_BY_ID[state.variableId]
   const seriesMap = currentSeriesMap(state)
   const range = rangeOf(seriesMap)
@@ -228,6 +245,10 @@ function stepCaptionFor(state, step) {
     scopeKind: state.scope.type,
     range,
     prevValue: previousValue(seriesMap, step && step.key),
+    /* The score supplies the musical clause only; the value and comparison
+       above always come from the loaded series. */
+    scoreCaption: score ? score.scoreCaption : null,
+    scoreMeta: score ? score.scoreMeta : null,
   }))
 }
 
@@ -390,7 +411,7 @@ function reducer(state, action) {
     }
 
     case 'SET_VIEW':
-      return { ...state, view: action.view }
+      return { ...state, view: action.view, transcriptOpen: action.view === 'transcript' }
     case 'SET_GRANULARITY':
       return { ...state, granularity: action.granularity }
     case 'SET_VOLUME':
@@ -415,12 +436,32 @@ function reducer(state, action) {
       return { ...state, settings: { ...DEFAULT_SETTINGS } }
     case 'TOGGLE_SETTINGS':
       return { ...state, settingsOpen: action.open !== undefined ? action.open : !state.settingsOpen }
-    case 'TOGGLE_TRANSCRIPT':
-      return { ...state, transcriptOpen: action.open !== undefined ? action.open : !state.transcriptOpen }
+    case 'TOGGLE_TRANSCRIPT': {
+      const open = action.open !== undefined ? action.open : !state.transcriptOpen
+      return {
+        ...state,
+        transcriptOpen: open,
+        view: open ? 'transcript' : state.view === 'transcript' ? 'series' : state.view,
+      }
+    }
     case 'CLEAR_TRANSCRIPT':
       return { ...state, transcript: [] }
     case 'ANNOUNCE':
       return { ...state, live: { id: state.live.id + 1, text: action.text } }
+    case 'SCORE_STATUS': {
+      const next = { ...state, score: { ...state.score, ...(action.patch || {}) } }
+      /* An idle caption must describe the path that will actually play next.
+         While audio is sounding, leave the live caption untouched. */
+      if (
+        next.playState === 'idle'
+        && ['ready', 'local', 'unavailable'].includes(next.score.status)
+      ) {
+        return refreshIdle(next)
+      }
+      return next
+    }
+    case 'IMAGE_PLAYBACK':
+      return { ...state, imagePlaying: Boolean(action.active) }
     case 'SET_DESCRIBE':
       return {
         ...state,
@@ -433,7 +474,7 @@ function reducer(state, action) {
     case 'PAUSE':
       return { ...state, playState: 'paused' }
     case 'STOP': {
-      const next = { ...state, playState: 'idle', position: 0, soundPlan: null }
+      const next = { ...state, playState: 'idle', position: 0, soundPlan: null, imagePlaying: false }
       return { ...next, caption: { text: idleCaption({
         variable: VARIABLE_BY_ID[next.variableId],
         scopeName: scopeNameFor(next),
@@ -443,7 +484,7 @@ function reducer(state, action) {
       }), cls: 'interpretation' } }
     }
     case 'STOP_SELECTION_CHANGED': {
-      const next = { ...state, playState: 'idle', position: 0, soundPlan: null }
+      const next = { ...state, playState: 'idle', position: 0, soundPlan: null, imagePlaying: false }
       const idle = idleSelectionFor(next)
       return {
         ...next,
@@ -460,7 +501,7 @@ function reducer(state, action) {
       }
     }
     case 'STEP': {
-      const caption = stepCaptionFor(state, action.step)
+      const caption = stepCaptionFor(state, action.step, action)
       const transcript = transcriptEntry(state, caption, action.at)
       return {
         ...state,
@@ -469,6 +510,9 @@ function reducer(state, action) {
         soundPlan: caption.plan || null,
         transcript,
         live: liveFor(state, caption.text),
+        score: action.scoreSource
+          ? { ...state.score, source: action.scoreSource }
+          : state.score,
       }
     }
     case 'END': {
@@ -480,6 +524,7 @@ function reducer(state, action) {
         ...state,
         playState: 'idle',
         position: 0,
+        imagePlaying: false,
         soundPlan: idle.plan || null,
         caption: { text: endCaption({ variable }), cls: 'interpretation', label: '', value: null, delta: null, plan: null },
       }
@@ -733,33 +778,206 @@ export function PreviewProvider({ children }) {
     state.range.endYear,
   ].join('|')
   const layerKey = selectedVariableIds.join(',')
-  const lastAnalysisRef = useRef(null)
+  /* Data refreshes must invalidate a score too, even when the selection is
+     unchanged: the numbers the score was built from may have changed. */
+  const dataRevision = (state.data.meta && state.data.meta.fetchedAt) || state.data.status
+  const scoreKey = [analysisKey, layerKey, dataRevision].join('|')
+
+  /* The backend expands a single month to its whole calendar year, so a
+     one-month selection cannot share a timeline with the player. It keeps the
+     local mapping; year and range selections align month-for-month. */
+  const scoreLayers = useMemo(() => {
+    if (state.data.status !== 'ready' || steps.length <= 1) return []
+    const layers = engineLayers.filter(
+      (layer) => layer.variable && layer.variable.param
+        && (layer.steps || []).some((step) => step && Number.isFinite(step.value)),
+    )
+    if (!layers.length) return []
+    const lead = layers.find((layer) => layer.variable.id === state.variableId)
+    return lead ? [lead, ...layers.filter((layer) => layer !== lead)] : layers
+  }, [engineLayers, state.variableId, state.data.status, steps.length])
+
+  const scoreSeries = useMemo(() => {
+    const out = {}
+    for (const layer of scoreLayers) {
+      const map = {}
+      for (const step of layer.steps || []) {
+        if (!step || !step.key) continue
+        /* null is sent as-is: the backend renders a rest, never a guess. */
+        map[step.key] = Number.isFinite(step.value) ? step.value : null
+      }
+      out[layer.variable.param] = map
+    }
+    return out
+  }, [scoreLayers])
+
+  const scoreVariables = useMemo(
+    () => scoreLayers.map((layer) => layer.variable.param),
+    [scoreLayers],
+  )
+
+  const lastSelectionRef = useRef(null)
+  const scoreCacheRef = useRef(new Map())
+  const scoreAbortRef = useRef(null)
 
   useEffect(() => {
-    const leadChanged = lastAnalysisRef.current !== null && lastAnalysisRef.current !== analysisKey
-    /* A lead, scope or time change restarts the walk so audio and captions
-       agree. Adding or removing a layer simply re-balances the live mix. */
-    if (leadChanged && state.playState !== 'idle') {
+    const previous = lastSelectionRef.current
+    const changed = previous !== null
+      && (previous.analysisKey !== analysisKey || previous.layerKey !== layerKey)
+    /* A lead, scope, time or layer change restarts the walk so audio and
+       captions always agree with what is on screen. */
+    if (changed && (state.playState !== 'idle' || engine.state !== 'idle' || engine.imageActive)) {
       engine.stop()
       dispatch({ type: 'STOP_SELECTION_CHANGED' })
+      dispatch({ type: 'IMAGE_PLAYBACK', active: false })
     }
-    engine.configure({ primary: state.variableId, layers: engineLayers })
-    lastAnalysisRef.current = analysisKey
+    engine.configure({
+      primary: state.variableId,
+      layers: engineLayers,
+      selectionKey: scoreKey,
+    })
+    lastSelectionRef.current = { analysisKey, layerKey }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [analysisKey, layerKey, state.data.status, engineLayers])
+  }, [analysisKey, layerKey, scoreKey, state.data.status, engineLayers])
+
+  /* ---- score retrieval: debounced, cached, never during playback -------
+     A valid score replaces the local mapping from the next Play; an absent
+     score or an offline backend leaves the local mapping working. Nothing
+     here ever interrupts playback that is already sounding. */
+  useEffect(() => {
+    const noScore = (message, status = 'local') => {
+      engine.setScore(null, scoreKey)
+      dispatch({
+        type: 'SCORE_STATUS',
+        patch: {
+          status,
+          available: false,
+          source: 'local',
+          scaleLabel: '',
+          tempo: null,
+          beatsPerStep: 2,
+          message,
+        },
+      })
+    }
+
+    if (!scoreVariables.length || !Object.keys(scoreSeries).length) {
+      noScore(state.timeMode === 'month'
+        ? 'Local mapping — a single month is too short to score.'
+        : 'Local mapping.')
+      return undefined
+    }
+
+    const cached = scoreCacheRef.current.get(scoreKey)
+    if (cached) {
+      engine.setScore(cached, scoreKey)
+      dispatch({
+        type: 'SCORE_STATUS',
+        patch: {
+          status: 'ready',
+          available: true,
+          scaleLabel: (engine.scoreInfo && engine.scoreInfo.scaleLabel) || '',
+          tempo: engine.scoreInfo ? engine.scoreInfo.tempo : null,
+          beatsPerStep: engine.scoreInfo ? engine.scoreInfo.beatsPerStep : 2,
+          message: 'Score from project API.',
+        },
+      })
+      return undefined
+    }
+
+    /* Playback owns the audio; the next idle selection change fetches. */
+    if (state.playState !== 'idle' || engine.state !== 'idle' || engine.imageActive) {
+      return undefined
+    }
+
+    let cancelled = false
+    const timer = setTimeout(() => {
+      if (cancelled) return
+      const controller = new AbortController()
+      scoreAbortRef.current = controller
+      dispatch({
+        type: 'SCORE_STATUS',
+        patch: { status: 'loading', message: 'Loading project score — the local mapping plays meanwhile.' },
+      })
+      fetchDataScore({
+        series: scoreSeries,
+        variables: scoreVariables,
+        options: {},
+        signal: controller.signal,
+      }).then((result) => {
+        if (cancelled || controller.signal.aborted) return
+        scoreAbortRef.current = null
+        if (!result.ok) {
+          if (result.aborted) return
+          noScore('Local mapping — the project score service is unavailable.', 'unavailable')
+          return
+        }
+        const payload = {
+          score: result.score,
+          analysis: result.analysis,
+          source: result.source,
+          cache: result.cache,
+        }
+        /* Bounded in-memory cache: the last eight selections. */
+        scoreCacheRef.current.set(scoreKey, payload)
+        if (scoreCacheRef.current.size > 8) {
+          const oldest = scoreCacheRef.current.keys().next().value
+          scoreCacheRef.current.delete(oldest)
+        }
+        engine.setScore(payload, scoreKey)
+        dispatch({
+          type: 'SCORE_STATUS',
+          patch: {
+            status: 'ready',
+            available: true,
+            scaleLabel: (engine.scoreInfo && engine.scoreInfo.scaleLabel) || '',
+            tempo: engine.scoreInfo ? engine.scoreInfo.tempo : null,
+            message: 'Score from project API.',
+          },
+        })
+      }).catch(() => {
+        if (!cancelled) {
+          noScore('Local mapping — the project score service is unavailable.', 'unavailable')
+        }
+      })
+    }, 400)
+
+    return () => {
+      cancelled = true
+      clearTimeout(timer)
+      if (scoreAbortRef.current) {
+        scoreAbortRef.current.abort()
+        scoreAbortRef.current = null
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [scoreKey, state.data.status, state.playState, scoreVariables, scoreSeries, state.timeMode])
 
   useEffect(() => {
     engine.onstep = (index, step) => {
-      dispatch({ type: 'STEP', index, step, at: Date.now() })
+      const viaScore = engine.source === 'score'
+      dispatch({
+        type: 'STEP',
+        index,
+        step,
+        at: Date.now(),
+        scoreCaption: viaScore ? engine.scoreCaptionAt(index) : null,
+        scoreMeta: viaScore ? engine.scoreInfo : null,
+        scoreSource: engine.source,
+      })
       const settings = settingsRef.current
       if (settings.haptics && typeof navigator !== 'undefined' && navigator.vibrate && !document.hidden) {
         const valid = step && step.value !== null
         navigator.vibrate(valid ? 14 : 24)
       }
     }
-    engine.onend = () => dispatch({ type: 'END' })
+    engine.onend = () => {
+      dispatch({ type: 'END' })
+      dispatch({ type: 'IMAGE_PLAYBACK', active: false })
+    }
     engine.onerror = () => {
       dispatch({ type: 'PAUSE' })
+      dispatch({ type: 'IMAGE_PLAYBACK', active: false })
       dispatch({
         type: 'ANNOUNCE',
         text: 'Audio could not start in this browser. The data, captions and graphs remain available; try pressing play again or check that audio is allowed for this site.',
@@ -799,20 +1017,44 @@ export function PreviewProvider({ children }) {
   const actions = useMemo(
     () => ({
       play: () => {
+        if (engine.imageActive) {
+          dispatch({
+            type: 'ANNOUNCE',
+            text: 'An image score is playing. Stop it before playing the data view.',
+          })
+          return
+        }
+        const started = engine.play()
+        if (started === false) {
+          dispatch({
+            type: 'ANNOUNCE',
+            text: 'Another audio score is playing. Stop it before starting the data view.',
+          })
+          return
+        }
         dispatch({ type: 'PLAY' })
-        engine.play()
+        dispatch({ type: 'SCORE_STATUS', patch: { source: engine.source } })
       },
       pause: () => {
         engine.pause()
         dispatch({ type: 'PAUSE' })
       },
       resume: () => {
+        if (engine.imageActive) {
+          dispatch({
+            type: 'ANNOUNCE',
+            text: 'An image score is playing. Stop it before resuming the data view.',
+          })
+          return
+        }
         dispatch({ type: 'PLAY' })
         engine.resume()
+        dispatch({ type: 'SCORE_STATUS', patch: { source: engine.source } })
       },
       stop: () => {
         engine.stop()
         dispatch({ type: 'STOP' })
+        dispatch({ type: 'IMAGE_PLAYBACK', active: false })
       },
       seek: (index) => {
         engine.seek(index)
