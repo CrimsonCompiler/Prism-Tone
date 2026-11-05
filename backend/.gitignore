@@ -5,3 +5,5 @@ __pycache__/
 *.tmp
 .pytest_cache/
 data/cache/power/*.tmp
+data/cache/sonify/
+data/sonify/

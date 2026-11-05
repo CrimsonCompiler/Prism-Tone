@@ -204,13 +204,13 @@ async def fetch_point(
 
     memory = upstream_cache.get(key)
     if memory is not None and not refresh:
-        return {**memory, "cacheHit": True}
+        return {**memory, "cacheHit": True, "cached": True}
 
     lock = _locks.setdefault(key, asyncio.Lock())
     async with lock:
         memory = upstream_cache.get(key)
         if memory is not None and not refresh:
-            return {**memory, "cacheHit": True}
+            return {**memory, "cacheHit": True, "cached": True}
 
         disk = _read_disk(key)
         disk_age = time.time() - disk["at"] if disk else None

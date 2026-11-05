@@ -1,0 +1,698 @@
+{
+  "version": "1.0",
+  "source": {
+    "kind": "image",
+    "id": "d7343983bcf36a5e",
+    "meta": {
+      "width": 96,
+      "height": 54,
+      "grid": [
+        96,
+        54
+      ],
+      "scan": "columns",
+      "grid_tiles": null,
+      "color_source": "hue",
+      "legend": null,
+      "mean_hue_deg": 197.81,
+      "mean_saturation": 0.6369,
+      "mean_value": 0.618,
+      "mean_luminance": 0.3938,
+      "mean_edge": 0.0593,
+      "mean_height": 0.4096,
+      "tempo_bpm": 64,
+      "steps": 96,
+      "pixels": [
+        96,
+        54
+      ]
+    }
+  },
+  "musical_score": {
+    "version": "1.0",
+    "key": "D",
+    "scale": "Dorian",
+    "tempo_bpm": 64,
+    "time_sig": [
+      4,
+      4
+    ],
+    "tracks": [
+      {
+        "id": "pad:image",
+        "role": "pad",
+        "notes": [
+          {
+            "t_beats": 0.0,
+            "dur_beats": 16.0,
+            "midi": 50,
+            "vel": 0.27,
+            "pan": 0.0
+          },
+          {
+            "t_beats": 0.0,
+            "dur_beats": 16.0,
+            "midi": 53,
+            "vel": 0.27,
+            "pan": 0.0
+          },
+          {
+            "t_beats": 0.0,
+            "dur_beats": 16.0,
+            "midi": 57,
+            "vel": 0.27,
+            "pan": 0.0
+          },
+          {
+            "t_beats": 16.0,
+            "dur_beats": 16.0,
+            "midi": 52,
+            "vel": 0.27,
+            "pan": 0.0
+          },
+          {
+            "t_beats": 16.0,
+            "dur_beats": 16.0,
+            "midi": 55,
+            "vel": 0.27,
+            "pan": 0.0
+          },
+          {
+            "t_beats": 16.0,
+            "dur_beats": 16.0,
+            "midi": 59,
+            "vel": 0.27,
+            "pan": 0.0
+          },
+          {
+            "t_beats": 32.0,
+            "dur_beats": 15.925,
+            "midi": 53,
+            "vel": 0.27,
+            "pan": 0.0
+          },
+          {
+            "t_beats": 32.0,
+            "dur_beats": 15.925,
+            "midi": 57,
+            "vel": 0.27,
+            "pan": 0.0
+          },
+          {
+            "t_beats": 32.0,
+            "dur_beats": 15.925,
+            "midi": 60,
+            "vel": 0.27,
+            "pan": 0.0
+          }
+        ],
+        "params": {
+          "cutoff_hz": 1330.1,
+          "reverb_send": 0.36,
+          "detune_cents": 0.0,
+          "density": 0.0
+        }
+      },
+      {
+        "id": "lead:image",
+        "role": "lead",
+        "notes": [
+          {
+            "t_beats": 0.0,
+            "dur_beats": 0.425,
+            "midi": 55,
+            "vel": 0.4732,
+            "pan": -0.8
+          },
+          {
+            "t_beats": 0.5,
+            "dur_beats": 0.425,
+            "midi": 43,
+            "vel": 0.4732,
+            "pan": -0.783
+          },
+          {
+            "t_beats": 1.0,
+            "dur_beats": 0.425,
+            "midi": 43,
+            "vel": 0.4732,
+            "pan": -0.766
+          },
+          {
+            "t_beats": 1.5,
+            "dur_beats": 0.425,
+            "midi": 43,
+            "vel": 0.4732,
+            "pan": -0.749
+          },
+          {
+            "t_beats": 6.0,
+            "dur_beats": 0.425,
+            "midi": 45,
+            "vel": 0.4754,
+            "pan": -0.598
+          },
+          {
+            "t_beats": 6.5,
+            "dur_beats": 0.425,
+            "midi": 45,
+            "vel": 0.4761,
+            "pan": -0.581
+          },
+          {
+            "t_beats": 7.0,
+            "dur_beats": 0.425,
+            "midi": 45,
+            "vel": 0.4768,
+            "pan": -0.564
+          },
+          {
+            "t_beats": 7.5,
+            "dur_beats": 0.425,
+            "midi": 45,
+            "vel": 0.4775,
+            "pan": -0.547
+          },
+          {
+            "t_beats": 10.0,
+            "dur_beats": 0.425,
+            "midi": 47,
+            "vel": 0.4817,
+            "pan": -0.463
+          },
+          {
+            "t_beats": 10.5,
+            "dur_beats": 0.425,
+            "midi": 47,
+            "vel": 0.4827,
+            "pan": -0.446
+          },
+          {
+            "t_beats": 11.0,
+            "dur_beats": 0.425,
+            "midi": 47,
+            "vel": 0.4837,
+            "pan": -0.429
+          },
+          {
+            "t_beats": 11.5,
+            "dur_beats": 0.425,
+            "midi": 59,
+            "vel": 0.4847,
+            "pan": -0.413
+          },
+          {
+            "t_beats": 14.0,
+            "dur_beats": 0.425,
+            "midi": 71,
+            "vel": 0.538,
+            "pan": -0.328
+          },
+          {
+            "t_beats": 14.5,
+            "dur_beats": 0.425,
+            "midi": 71,
+            "vel": 0.5387,
+            "pan": -0.312
+          },
+          {
+            "t_beats": 15.0,
+            "dur_beats": 0.425,
+            "midi": 71,
+            "vel": 0.5395,
+            "pan": -0.295
+          },
+          {
+            "t_beats": 15.5,
+            "dur_beats": 0.425,
+            "midi": 71,
+            "vel": 0.5403,
+            "pan": -0.278
+          },
+          {
+            "t_beats": 18.0,
+            "dur_beats": 0.425,
+            "midi": 71,
+            "vel": 0.5451,
+            "pan": -0.194
+          },
+          {
+            "t_beats": 18.5,
+            "dur_beats": 0.425,
+            "midi": 71,
+            "vel": 0.5462,
+            "pan": -0.177
+          },
+          {
+            "t_beats": 19.0,
+            "dur_beats": 0.425,
+            "midi": 71,
+            "vel": 0.5474,
+            "pan": -0.16
+          },
+          {
+            "t_beats": 19.5,
+            "dur_beats": 0.425,
+            "midi": 71,
+            "vel": 0.5486,
+            "pan": -0.143
+          },
+          {
+            "t_beats": 22.0,
+            "dur_beats": 0.425,
+            "midi": 71,
+            "vel": 0.5552,
+            "pan": -0.059
+          },
+          {
+            "t_beats": 22.5,
+            "dur_beats": 0.425,
+            "midi": 71,
+            "vel": 0.5567,
+            "pan": -0.042
+          },
+          {
+            "t_beats": 23.0,
+            "dur_beats": 0.425,
+            "midi": 71,
+            "vel": 0.5582,
+            "pan": -0.025
+          },
+          {
+            "t_beats": 23.5,
+            "dur_beats": 0.425,
+            "midi": 71,
+            "vel": 0.5598,
+            "pan": -0.008
+          },
+          {
+            "t_beats": 26.0,
+            "dur_beats": 0.425,
+            "midi": 50,
+            "vel": 0.5334,
+            "pan": 0.076
+          },
+          {
+            "t_beats": 26.5,
+            "dur_beats": 0.425,
+            "midi": 50,
+            "vel": 0.5359,
+            "pan": 0.093
+          },
+          {
+            "t_beats": 27.0,
+            "dur_beats": 0.425,
+            "midi": 50,
+            "vel": 0.5384,
+            "pan": 0.109
+          },
+          {
+            "t_beats": 27.5,
+            "dur_beats": 0.425,
+            "midi": 50,
+            "vel": 0.541,
+            "pan": 0.126
+          },
+          {
+            "t_beats": 30.0,
+            "dur_beats": 0.425,
+            "midi": 62,
+            "vel": 0.5675,
+            "pan": 0.211
+          },
+          {
+            "t_beats": 30.5,
+            "dur_beats": 0.425,
+            "midi": 62,
+            "vel": 0.57,
+            "pan": 0.227
+          },
+          {
+            "t_beats": 31.0,
+            "dur_beats": 0.425,
+            "midi": 62,
+            "vel": 0.5725,
+            "pan": 0.244
+          },
+          {
+            "t_beats": 31.5,
+            "dur_beats": 0.425,
+            "midi": 62,
+            "vel": 0.5751,
+            "pan": 0.261
+          },
+          {
+            "t_beats": 34.0,
+            "dur_beats": 0.425,
+            "midi": 62,
+            "vel": 0.5889,
+            "pan": 0.345
+          },
+          {
+            "t_beats": 34.5,
+            "dur_beats": 0.425,
+            "midi": 62,
+            "vel": 0.5919,
+            "pan": 0.362
+          },
+          {
+            "t_beats": 35.0,
+            "dur_beats": 0.425,
+            "midi": 62,
+            "vel": 0.5949,
+            "pan": 0.379
+          },
+          {
+            "t_beats": 35.5,
+            "dur_beats": 0.425,
+            "midi": 62,
+            "vel": 0.5979,
+            "pan": 0.396
+          },
+          {
+            "t_beats": 38.0,
+            "dur_beats": 0.425,
+            "midi": 74,
+            "vel": 0.6133,
+            "pan": 0.48
+          },
+          {
+            "t_beats": 38.5,
+            "dur_beats": 0.425,
+            "midi": 74,
+            "vel": 0.6165,
+            "pan": 0.497
+          },
+          {
+            "t_beats": 39.0,
+            "dur_beats": 0.425,
+            "midi": 74,
+            "vel": 0.6196,
+            "pan": 0.514
+          },
+          {
+            "t_beats": 39.5,
+            "dur_beats": 0.425,
+            "midi": 74,
+            "vel": 0.6227,
+            "pan": 0.531
+          },
+          {
+            "t_beats": 42.0,
+            "dur_beats": 0.425,
+            "midi": 74,
+            "vel": 0.6375,
+            "pan": 0.615
+          },
+          {
+            "t_beats": 42.5,
+            "dur_beats": 0.425,
+            "midi": 62,
+            "vel": 0.6414,
+            "pan": 0.632
+          },
+          {
+            "t_beats": 43.0,
+            "dur_beats": 0.425,
+            "midi": 62,
+            "vel": 0.6452,
+            "pan": 0.648
+          },
+          {
+            "t_beats": 43.5,
+            "dur_beats": 0.425,
+            "midi": 62,
+            "vel": 0.649,
+            "pan": 0.665
+          },
+          {
+            "t_beats": 46.0,
+            "dur_beats": 0.425,
+            "midi": 62,
+            "vel": 0.6684,
+            "pan": 0.749
+          },
+          {
+            "t_beats": 46.5,
+            "dur_beats": 0.425,
+            "midi": 62,
+            "vel": 0.6723,
+            "pan": 0.766
+          },
+          {
+            "t_beats": 47.0,
+            "dur_beats": 0.425,
+            "midi": 62,
+            "vel": 0.6763,
+            "pan": 0.783
+          },
+          {
+            "t_beats": 47.5,
+            "dur_beats": 0.425,
+            "midi": 62,
+            "vel": 0.6803,
+            "pan": 0.8
+          }
+        ],
+        "params": {
+          "cutoff_hz": 2510.7,
+          "reverb_send": 0.2,
+          "detune_cents": 0.0,
+          "density": 0.059
+        }
+      },
+      {
+        "id": "bass:image",
+        "role": "bass",
+        "notes": [
+          {
+            "t_beats": 0.0,
+            "dur_beats": 1.5,
+            "midi": 38,
+            "vel": 0.3,
+            "pan": 0.0
+          },
+          {
+            "t_beats": 4.0,
+            "dur_beats": 1.5,
+            "midi": 38,
+            "vel": 0.3,
+            "pan": 0.0
+          },
+          {
+            "t_beats": 8.0,
+            "dur_beats": 1.5,
+            "midi": 38,
+            "vel": 0.3,
+            "pan": 0.0
+          },
+          {
+            "t_beats": 12.0,
+            "dur_beats": 1.5,
+            "midi": 38,
+            "vel": 0.3,
+            "pan": 0.0
+          },
+          {
+            "t_beats": 16.0,
+            "dur_beats": 1.5,
+            "midi": 38,
+            "vel": 0.3,
+            "pan": 0.0
+          },
+          {
+            "t_beats": 20.0,
+            "dur_beats": 1.5,
+            "midi": 38,
+            "vel": 0.3,
+            "pan": 0.0
+          },
+          {
+            "t_beats": 24.0,
+            "dur_beats": 1.5,
+            "midi": 38,
+            "vel": 0.3,
+            "pan": 0.0
+          },
+          {
+            "t_beats": 28.0,
+            "dur_beats": 1.5,
+            "midi": 38,
+            "vel": 0.3,
+            "pan": 0.0
+          },
+          {
+            "t_beats": 32.0,
+            "dur_beats": 1.5,
+            "midi": 38,
+            "vel": 0.3,
+            "pan": 0.0
+          },
+          {
+            "t_beats": 36.0,
+            "dur_beats": 1.5,
+            "midi": 38,
+            "vel": 0.3,
+            "pan": 0.0
+          },
+          {
+            "t_beats": 40.0,
+            "dur_beats": 1.5,
+            "midi": 38,
+            "vel": 0.3,
+            "pan": 0.0
+          },
+          {
+            "t_beats": 44.0,
+            "dur_beats": 1.5,
+            "midi": 38,
+            "vel": 0.3,
+            "pan": 0.0
+          }
+        ],
+        "params": {
+          "cutoff_hz": 400.0,
+          "reverb_send": 0.12,
+          "detune_cents": 0.0,
+          "density": 0.0
+        }
+      },
+      {
+        "id": "texture:image",
+        "role": "texture",
+        "notes": [],
+        "params": {
+          "cutoff_hz": 2638.1,
+          "reverb_send": 0.24,
+          "detune_cents": 0.0,
+          "density": 0.059
+        }
+      },
+      {
+        "id": "perc:image",
+        "role": "perc",
+        "notes": [],
+        "params": {
+          "cutoff_hz": 4200.0,
+          "reverb_send": 0.16,
+          "detune_cents": 0.0,
+          "density": 0.3
+        }
+      }
+    ],
+    "captions": [
+      {
+        "t_beats": 0.0,
+        "text": "Bar 1 — hue 107°, value 41%, edge 4%; 4 notes."
+      },
+      {
+        "t_beats": 4.0,
+        "text": "Bar 2 — hue 133°, value 42%, edge 4%; 4 notes."
+      },
+      {
+        "t_beats": 8.0,
+        "text": "Bar 3 — hue 159°, value 44%, edge 6%; 4 notes."
+      },
+      {
+        "t_beats": 12.0,
+        "text": "Bar 4 — hue 177°, value 58%, edge 12%; 4 notes."
+      },
+      {
+        "t_beats": 16.0,
+        "text": "Bar 5 — hue 186°, value 60%, edge 9%; 4 notes."
+      },
+      {
+        "t_beats": 20.0,
+        "text": "Bar 6 — hue 193°, value 62%, edge 11%; 4 notes."
+      },
+      {
+        "t_beats": 24.0,
+        "text": "Bar 7 — hue 207°, value 57%, edge 6%; 4 notes."
+      },
+      {
+        "t_beats": 28.0,
+        "text": "Bar 8 — hue 216°, value 64%, edge 4%; 4 notes."
+      },
+      {
+        "t_beats": 32.0,
+        "text": "Bar 9 — hue 223°, value 70%, edge 4%; 4 notes."
+      },
+      {
+        "t_beats": 36.0,
+        "text": "Bar 10 — hue 226°, value 75%, edge 4%; 4 notes."
+      },
+      {
+        "t_beats": 40.0,
+        "text": "Bar 11 — hue 225°, value 81%, edge 4%; 4 notes."
+      },
+      {
+        "t_beats": 44.0,
+        "text": "Bar 12 — hue 223°, value 87%, edge 4%; 4 notes."
+      }
+    ],
+    "provenance": {
+      "stats": {
+        "events_in": 96,
+        "notes_out": 48,
+        "bars": 12,
+        "tempo_bpm": 64,
+        "grid": "eighth-note grid (0.5 beat)",
+        "caption_cadence": "one per 4/4 bar",
+        "width": 96,
+        "height": 54,
+        "analysis_grid": [
+          96,
+          54
+        ],
+        "scan": "columns",
+        "color_source": "hue",
+        "legend_supplied": false,
+        "mean_hue_deg": 197.81,
+        "mean_saturation": 0.6369,
+        "mean_value": 0.618,
+        "mean_edge": 0.0593,
+        "mean_height": 0.4096
+      },
+      "mapping": {
+        "pitch": "hue → scale degree; a supplied legend overrides hue with colour-ramp position.",
+        "luminance_proxy": "when saturation is below 0.15 and no legend is supplied, luminance stands in for hue and is labelled.",
+        "octave": "value > 0.75 adds an octave; value < 0.25 removes one.",
+        "register": "dominant luminance-gradient row: high in frame adds an octave, low removes one.",
+        "amplitude": "value^1.5, scaled 0.12–0.67 before velocity compression.",
+        "brightness": "0.55 × saturation + 0.45 × Sobel edge density.",
+        "pan": "horizontal position in the frame or region centroid.",
+        "density": "edge density and brightness raise velocity; bars are thinned to four notes.",
+        "scan": "left → right"
+      },
+      "missing_policy": "An image has no missing values. Any region with no pixels is skipped rather than assigned a colour; no value is invented."
+    }
+  },
+  "cache": {
+    "hit": false,
+    "key": "11d98922772904354aa9ea7a2028773ef5294b36a3bab302768e8a1aebdf5fd8"
+  },
+  "analysis": {
+    "width": 96,
+    "height": 54,
+    "grid": [
+      96,
+      54
+    ],
+    "scan": "columns",
+    "grid_tiles": null,
+    "color_source": "hue",
+    "legend": null,
+    "mean_hue_deg": 197.81,
+    "mean_saturation": 0.6369,
+    "mean_value": 0.618,
+    "mean_luminance": 0.3938,
+    "mean_edge": 0.0593,
+    "mean_height": 0.4096,
+    "tempo_bpm": 64,
+    "steps": 96,
+    "pixels": [
+      96,
+      54
+    ]
+  }
+}
