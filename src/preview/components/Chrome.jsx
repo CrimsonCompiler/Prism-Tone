@@ -4,8 +4,14 @@
 
 import { usePreview } from '../state/PreviewContext'
 import { SOURCE } from '../data/datasets'
+import { REGION_BY_ID, DIVISION_BY_ID } from '../data/world'
 import { fmtTime } from '../lib/format'
 import CountrySearchBar from './CountrySearchBar'
+
+function regionName(id) {
+  const entry = REGION_BY_ID[id] || DIVISION_BY_ID[id]
+  return entry ? entry.name : id
+}
 
 export function PreviewHero() {
   const { dispatch } = usePreview()
@@ -32,6 +38,24 @@ export function PreviewHero() {
               Select Continent ▾
             </span>
           </button>
+          <button
+            type="button"
+            onClick={() => dispatch({ type: 'TOGGLE_SETTINGS', open: true })}
+            className="flex items-center justify-center rounded border border-ivory/25 bg-[#141617] px-3 py-2 text-ivory transition-all hover:border-ivory/60 hover:bg-ivory/10 hover:shadow-lg hover:shadow-black/50 cursor-pointer shrink-0"
+            title="Display & Accessibility Settings"
+            aria-label="Display & Accessibility Settings"
+          >
+            <span className="font-data text-[12px] font-semibold text-cream">Aa</span>
+          </button>
+          <button
+            type="button"
+            onClick={() => dispatch({ type: 'GUIDE', open: true })}
+            className="flex h-[35px] w-[35px] items-center justify-center rounded-full border border-ivory/25 bg-[#141617] text-ivory transition-all hover:border-ivory/60 hover:bg-ivory/10 hover:shadow-lg hover:shadow-black/50 cursor-pointer shrink-0"
+            title="How to use this page"
+            aria-label="How to use this page"
+          >
+            <span className="font-meno text-[15px] italic text-cream">?</span>
+          </button>
         </div>
       </div>
     </header>
@@ -56,15 +80,15 @@ export function StatusBanner() {
           ? 'The NASA POWER service did not answer in time — it may be busy. Retry in a moment.'
           : 'The NASA POWER service could not be reached. Retry, or check whether a network filter blocks power.larc.nasa.gov.'
     return (
-      <div className="border border-ember/40 bg-ember/5 px-4 py-3 md:px-5" role="alert">
-        <p className="font-stencil text-[12px] uppercase tracking-[0.2em] text-ember">
+      <div className="mt-6 border-l-2 border-l-ember bg-ember/[0.05] px-4 py-3 md:pl-5" role="alert">
+        <p className="font-ui text-[14px] text-ember">
           Live data unavailable ({kind})
         </p>
-        <p className="mt-1 font-ui text-[14px] leading-relaxed text-cream">{hint}</p>
+        <p className="mt-1 font-ui text-[14px] leading-relaxed text-ivory">{hint}</p>
         <button
           type="button"
           onClick={() => dispatch({ type: 'DATA_RETRY' })}
-          className="mt-2.5 border border-ivory/30 px-4 py-2 font-ui text-[13px] text-ivory transition-colors duration-200 hover:bg-ivory/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-ivory"
+          className="mt-2.5 border border-ivory/30 px-4 py-2 font-ui text-[14px] text-ivory transition-colors duration-200 hover:bg-ivory/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-ivory"
         >
           Retry
         </button>
@@ -74,21 +98,21 @@ export function StatusBanner() {
 
   const failed = Object.entries(data.outcomes)
     .filter(([, o]) => !o.ok)
-    .map(([id]) => id)
+    .map(([id]) => regionName(id))
 
   return (
     <>
       {failed.length > 0 && (
-        <div className="border border-ember/30 bg-ember/5 px-4 py-2.5 md:px-5" role="status">
-          <p className="font-ui text-[13px] leading-relaxed text-cream">
+        <div className="mt-6 border-l-2 border-l-ember bg-ember/[0.05] px-4 py-3 md:pl-5" role="status">
+          <p className="font-ui text-[14px] leading-relaxed text-ivory">
             Partial retrieval — {failed.join(', ')} failed; the national mean uses the remaining division
             samples and the affected region is marked on the map.
           </p>
         </div>
       )}
       {geo.status === 'error' && (
-        <div className="border border-ivory/15 bg-coal/40 px-4 py-2.5 md:px-5" role="status">
-          <p className="font-ui text-[13px] leading-relaxed text-cream">
+        <div className="mt-6 border-l-2 border-l-ivory/40 bg-white/[0.02] px-4 py-3 md:pl-5" role="status">
+          <p className="font-ui text-[14px] leading-relaxed text-ivory">
             Division boundaries failed to load — the region list below remains fully usable.
           </p>
         </div>
@@ -114,7 +138,7 @@ export function SourceBar() {
   const { meta } = state.data
   return (
     <footer className="border-t border-ivory/10 pt-5">
-      <div className="flex flex-wrap items-baseline justify-between gap-x-8 gap-y-2 font-ui text-[13px] leading-relaxed text-beige">
+      <div className="flex flex-wrap items-baseline justify-between gap-x-8 gap-y-2 font-ui text-[14px] leading-relaxed text-cream">
         <span>
           {SOURCE.name} — {SOURCE.dataset}
           {meta && meta.apiVersion ? ` — API ${meta.apiVersion}` : ''}

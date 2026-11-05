@@ -38,8 +38,7 @@ export default function VariableSelector() {
       </div>
 
       <p className="mt-1.5 font-ui text-[13px] leading-relaxed text-cream">
-        Choose two or three datasets to layer them. Each keeps its own scale and voice; the lead
-        dataset sets the tempo and drives the map, graphs and captions.
+        Layer up to three live tracks; the lead sets the tempo and drives the map.
       </p>
 
       <div role="group" aria-label="NASA data tracks" className="mt-3 flex flex-col gap-2">
@@ -167,8 +166,7 @@ export default function VariableSelector() {
       </div>
 
       <p className="mt-3 font-ui text-[12.5px] leading-relaxed text-beige">
-        Only live NASA POWER tracks can join the mix; nothing is simulated. A missing month adds no
-        new note to any layer.
+        Only live NASA POWER tracks join the mix; missing months add no note.
       </p>
     </section>
   )

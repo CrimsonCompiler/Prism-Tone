@@ -1,3 +1,4 @@
+import { useEffect, useRef, useState } from 'react'
 import { MotionConfig, motion, useScroll } from 'motion/react'
 import { useLenisScroll } from './hooks/useLenisScroll'
 
@@ -7,13 +8,15 @@ import { PreviewHero, StatusBanner, SourceBar } from './preview/components/Chrom
 import VariableSelector from './preview/components/VariableSelector'
 import SubcontinentMap from './preview/components/SubcontinentMap'
 import { SummaryPanel } from './preview/components/Panels'
-import GraphPanel from './preview/components/GraphPanel'
+import GraphPanel, { scrollToTranscriptPanel } from './preview/components/GraphPanel'
 import MappingPanel from './preview/components/MappingDiagram'
+import ImagePanel from './preview/components/ImagePanel'
 import NowSounding from './preview/components/NowSounding'
-import Transcript from './preview/components/Transcript'
-import SettingsDrawer, { SettingsTrigger } from './preview/components/SettingsDrawer'
+import SettingsDrawer from './preview/components/SettingsDrawer'
 import { GuideModal, ContinentModal } from './preview/components/Modals'
 import { LiveRegion, usePreviewKeys } from './preview/components/Accessibility'
+import { displayKey } from './preview/lib/selectors'
+import { keyToLabel } from './preview/lib/processing'
 
 function ProgressLine() {
   const { scrollYProgress } = useScroll()
@@ -26,61 +29,121 @@ function ProgressLine() {
   )
 }
 
-/** Small persistent utilities that sit beside the variable selector. */
-function StudioTools() {
+/** One slim row of session actions under the data-track card. */
+function SessionToolbar() {
   const { state, dispatch } = usePreview()
-  const count = state.transcript.length
+  const count = (state.transcript || []).length
+  const button =
+    'flex min-h-[44px] items-center justify-center gap-1.5 border border-ivory/20 bg-coal/40 px-2 font-ui text-[13px] text-ivory transition-colors hover:border-ivory/50 hover:bg-white/5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-ivory'
 
   return (
-    <section aria-label="Session tools" className="border border-ivory/10 bg-coal/40 p-4 md:p-5">
-      <h2 className="font-stencil text-[12px] uppercase tracking-[0.24em] text-beige">Session tools</h2>
-      <div className="mt-3 flex flex-col gap-2">
-        <button
-          type="button"
-          onClick={() => dispatch({ type: 'TOGGLE_SETTINGS', open: true })}
-          className="flex items-center justify-between gap-3 border border-ivory/20 px-3 py-2.5 text-left font-ui text-[14px] text-ivory transition-colors hover:border-ivory/50 hover:bg-white/5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-ivory"
-        >
-          <span>Display &amp; access</span>
-          <span aria-hidden="true" className="font-data text-[13px] text-beige">
-            Aa
-          </span>
-        </button>
-        <button
-          type="button"
-          onClick={() => dispatch({ type: 'TOGGLE_TRANSCRIPT' })}
-          aria-expanded={state.transcriptOpen}
-          aria-controls="pt-transcript-body"
-          className="flex items-center justify-between gap-3 border border-ivory/20 px-3 py-2.5 text-left font-ui text-[14px] text-ivory transition-colors hover:border-ivory/50 hover:bg-white/5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-ivory"
-        >
-          <span>Transcript</span>
-          <span aria-hidden="true" className="font-data text-[13px] text-beige">
-            {count}
-          </span>
-        </button>
-        <button
-          type="button"
-          onClick={() => dispatch({ type: 'GUIDE', open: true })}
-          className="flex items-center justify-between gap-3 border border-ivory/20 px-3 py-2.5 text-left font-ui text-[14px] text-ivory transition-colors hover:border-ivory/50 hover:bg-white/5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-ivory"
-        >
-          <span>How to use this page</span>
-          <span aria-hidden="true" className="font-data text-[13px] text-beige">
-            ?
-          </span>
-        </button>
-      </div>
+    <div role="group" aria-label="Session tools" className="grid grid-cols-3 gap-2">
+      <button
+        type="button"
+        onClick={() => dispatch({ type: 'TOGGLE_SETTINGS', open: true })}
+        className={button}
+      >
+        Display
+      </button>
+      <button
+        type="button"
+        onClick={() => {
+          dispatch({ type: 'SET_VIEW', view: 'transcript' })
+          scrollToTranscriptPanel()
+        }}
+        className={button}
+      >
+        Transcript
+        <span className="font-data text-[12px] text-cream">{count}</span>
+      </button>
+      <button
+        type="button"
+        onClick={() => dispatch({ type: 'GUIDE', open: true })}
+        className={button}
+      >
+        Guide
+      </button>
+    </div>
+  )
+}
 
-      <p className="mt-4 border-t border-ivory/10 pt-3 font-ui text-[13px] leading-relaxed text-beige">
-        Captions stay readable with the sound muted. Press{' '}
-        <kbd className="rounded border border-ivory/30 px-1 font-data text-[12px] text-ivory">C</kbd> to show or
-        hide them, <kbd className="rounded border border-ivory/30 px-1 font-data text-[12px] text-ivory">T</kbd>{' '}
-        for the transcript.
-      </p>
-    </section>
+/**
+ * A slim transport that appears only while the map block is offscreen. It sits
+ * bottom-left, clear of the floating Display and Guide buttons, and reads from
+ * the same state and actions as the map controls.
+ */
+function MapMiniPlayer({ visible }) {
+  const { state, actions, steps } = usePreview()
+  if (!visible || state.guideOpen || state.settingsOpen || state.continentModalOpen) return null
+
+  const key = displayKey(state, steps, state.position, state.playState)
+  const label = state.timeMode === 'range' && !key
+    ? `${state.range.startYear}–${state.range.endYear}`
+    : key
+      ? keyToLabel(key)
+      : 'Selected period'
+  const caption = state.caption || {}
+  const line = caption.shortText || caption.text || 'No caption yet.'
+  const playing = state.playState === 'playing'
+  const idle = state.playState === 'idle'
+
+  return (
+    <div
+      className="fixed bottom-4 inset-x-3 sm:inset-x-auto sm:left-6 sm:bottom-6 z-40 flex max-w-lg sm:w-[420px] items-center gap-3 border border-ivory/25 bg-[#141617]/95 px-3 py-2.5 shadow-xl shadow-black/80 backdrop-blur-md"
+      role="region"
+      aria-label="Compact playback controls"
+    >
+      <button
+        type="button"
+        onClick={playing ? actions.pause : idle ? actions.play : actions.resume}
+        aria-label={playing ? 'Pause playback' : idle ? 'Play playback' : 'Resume playback'}
+        className="flex h-10 w-10 shrink-0 items-center justify-center border border-ivory/30 text-ivory transition-colors hover:border-ivory/70 hover:bg-white/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-ivory"
+      >
+        {playing ? (
+          <svg width="10" height="12" viewBox="0 0 10 12" aria-hidden="true">
+            <rect x="1" y="1" width="3" height="10" fill="currentColor" />
+            <rect x="6" y="1" width="3" height="10" fill="currentColor" />
+          </svg>
+        ) : (
+          <svg width="11" height="12" viewBox="0 0 10 12" aria-hidden="true">
+            <path d="M1 1 L9 6 L1 11 Z" fill="currentColor" />
+          </svg>
+        )}
+      </button>
+      <button
+        type="button"
+        onClick={actions.stop}
+        disabled={idle}
+        aria-label="Stop playback"
+        className="flex h-10 w-10 shrink-0 items-center justify-center border border-ivory/25 text-ivory transition-colors hover:border-ivory/60 hover:bg-white/10 disabled:cursor-not-allowed disabled:opacity-30 focus-visible:outline focus-visible:outline-2 focus-visible:outline-ivory"
+      >
+        <svg width="9" height="9" viewBox="0 0 10 10" aria-hidden="true">
+          <rect width="10" height="10" fill="currentColor" />
+        </svg>
+      </button>
+      <div className="min-w-0 flex-1">
+        <p className="truncate font-data text-[13px] text-ivory">{label}</p>
+        <p className="truncate font-ui text-[13px] text-cream">{line}</p>
+      </div>
+    </div>
   )
 }
 
 function PreviewStudio() {
   usePreviewKeys()
+  const mapBlockRef = useRef(null)
+  const [mapInView, setMapInView] = useState(true)
+
+  useEffect(() => {
+    const node = mapBlockRef.current
+    if (!node || typeof IntersectionObserver === 'undefined') return
+    const io = new IntersectionObserver(
+      ([entry]) => setMapInView(entry.isIntersecting),
+      { threshold: 0.04, rootMargin: '-72px 0px 0px 0px' },
+    )
+    io.observe(node)
+    return () => io.disconnect()
+  }, [])
 
   return (
     <div className="mx-auto w-full max-w-[1780px] 2xl:max-w-[1840px] px-3 sm:px-6 md:px-8 lg:px-10 xl:px-12 pb-24">
@@ -88,58 +151,54 @@ function PreviewStudio() {
 
       <StatusBanner />
 
-      {/* Map section — captions dock to its bottom edge */}
-      <div className="mt-6 md:mt-8">
-        <div className="grid items-start gap-x-6 gap-y-0 lg:grid-cols-12 xl:gap-x-8">
-          <div className="lg:col-span-8 lg:col-start-1 lg:row-start-1 xl:col-span-9">
-            <SubcontinentMap />
-          </div>
-
-          {/* Caption bar: directly under the map on small screens, a
-              full-width dock below both columns on large screens. */}
-          <div className="lg:col-span-12 lg:col-start-1 lg:row-start-2">
-            <NowSounding />
-          </div>
-
-          <div className="mt-6 flex flex-col gap-4 lg:col-span-4 lg:col-start-9 lg:row-start-1 lg:mt-0 xl:col-span-3 xl:col-start-10">
-            <div className="relative z-30 border border-ivory/10 bg-coal/40 p-4 md:p-5">
-              <VariableSelector />
+      <div className="mt-6 flex flex-col gap-6 md:mt-8 md:gap-8">
+        {/* Map block — captions dock to its bottom edge */}
+        <section ref={mapBlockRef} aria-label="Map and captions">
+          <div className="grid items-start gap-x-6 gap-y-0 lg:grid-cols-12 xl:gap-x-8">
+            <div className="lg:col-span-8 lg:col-start-1 lg:row-start-1 xl:col-span-9">
+              <SubcontinentMap />
             </div>
-            <StudioTools />
+
+            {/* Caption bar: directly under the map on small screens, a
+                full-width dock below both columns on large screens. */}
+            <div className="lg:col-span-12 lg:col-start-1 lg:row-start-2">
+              <NowSounding />
+            </div>
+
+            <div className="mt-6 flex flex-col gap-3 lg:col-span-4 lg:col-start-9 lg:row-start-1 lg:mt-0 xl:col-span-3 xl:col-start-10">
+              <div className="relative z-30 border border-ivory/10 bg-coal/40 p-4 md:p-5">
+                <VariableSelector />
+              </div>
+              <SessionToolbar />
+            </div>
           </div>
-        </div>
-      </div>
+        </section>
 
-      {/* Insight deck — summary and graphs read from the same loaded record */}
-      <div className="mt-6 grid gap-4 md:gap-6 lg:grid-cols-12">
-        <div className="lg:col-span-4">
-          <SummaryPanel />
-        </div>
-        <div className="lg:col-span-8">
-          <GraphPanel />
-        </div>
-      </div>
+        {/* Insight deck — summary and graphs read from the same loaded record */}
+        <section aria-label="Insight deck" className="grid gap-4 md:gap-6 lg:grid-cols-12">
+          <div className="lg:col-span-4">
+            <SummaryPanel />
+          </div>
+          <div className="lg:col-span-8">
+            <GraphPanel />
+          </div>
+        </section>
 
-      {/* How the current variable becomes sound */}
-      <div className="mt-10 md:mt-12">
+        {/* Image score — the same player, fed by one still image */}
+        <ImagePanel />
+
+        {/* How the current variable becomes sound */}
         <MappingPanel />
-      </div>
 
-      {/* Full session transcript */}
-      <div className="mt-8 md:mt-10">
-        <Transcript />
-      </div>
-
-      {/* Attribution & sources */}
-      <div className="mt-10 md:mt-14">
+        {/* Attribution & sources */}
         <SourceBar />
       </div>
 
       <LiveRegion />
-      <SettingsTrigger />
       <SettingsDrawer />
       <GuideModal />
       <ContinentModal />
+      <MapMiniPlayer visible={!mapInView} />
     </div>
   )
 }

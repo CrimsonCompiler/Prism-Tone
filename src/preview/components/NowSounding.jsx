@@ -13,6 +13,7 @@
  */
 
 import { usePreview } from '../state/PreviewContext'
+import { useDescribeView } from '../hooks/useDescribeView'
 import { displayKey } from '../lib/selectors'
 import { keyToLabel } from '../lib/processing'
 import { fmtValue, fmtDelta } from '../lib/format'
@@ -28,8 +29,8 @@ const toneClass = {
 
 export default function NowSounding() {
   const { state, steps, variable } = usePreview()
+  const describe = useDescribeView()
   const caption = state.caption || {}
-  const plan = state.soundPlan || caption.plan || null
   const key = displayKey(state, steps, state.position, state.playState)
   const tone = anomalyTone(variable, caption.delta, caption.normal)
   const captionsOn = state.settings.captionsVisible !== false
@@ -50,6 +51,22 @@ export default function NowSounding() {
 
   const kind = caption.cls === 'derived' || state.scope.type === 'national' ? 'derived' : 'measured'
 
+  /* The badge names the path that is actually sounding. A score that has
+     loaded but not yet played is "ready", never "sounding". */
+  const score = state.score || {}
+  const scoreDetail = [score.scaleLabel, score.tempo ? `${Math.round(score.tempo)} bpm` : null]
+    .filter(Boolean)
+    .join(' · ')
+  const scoreBadge = state.imagePlaying
+    ? { label: 'Image score sounding', detail: 'data playback paused' }
+    : state.playState !== 'idle' && score.source === 'score'
+      ? { label: 'Score from project API', detail: scoreDetail }
+      : score.status === 'ready'
+        ? { label: 'Score ready', detail: `${scoreDetail ? `${scoreDetail} · ` : ''}plays on next start` }
+        : score.status === 'loading'
+          ? { label: 'Local mapping', detail: 'loading project score' }
+          : { label: 'Local mapping', detail: score.status === 'unavailable' ? 'project score unavailable' : '' }
+
   return (
     <section
       aria-label="Now sounding captions"
@@ -58,13 +75,38 @@ export default function NowSounding() {
       <div className="grid gap-4 px-4 py-4 md:grid-cols-[190px_minmax(0,1fr)_240px] md:gap-6 md:px-6 md:py-5">
         {/* time */}
         <div className="min-w-0">
-          <p className="font-stencil text-[12px] uppercase tracking-[0.22em] text-beige">Now sounding</p>
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <p className="font-stencil text-[12px] uppercase tracking-[0.2em] text-beige">Now sounding</p>
+            <button
+              type="button"
+              onClick={describe}
+              className="border border-ivory/25 px-2.5 py-1 font-ui text-[13px] text-cream transition-colors hover:border-ivory/60 hover:bg-white/5 hover:text-ivory focus-visible:outline focus-visible:outline-2 focus-visible:outline-ivory"
+              title="Read a plain-language description of this view"
+            >
+              Describe view
+            </button>
+          </div>
           <p className="mt-1.5 font-ui text-[22px] leading-tight text-ivory font-semibold">
             {label}
           </p>
-          <p className="mt-1 font-ui text-[13px] leading-relaxed text-beige">
+          <p className="mt-1 font-ui text-[13px] leading-relaxed text-cream">
             {state.playState === 'playing' ? 'playing' : state.playState === 'paused' ? 'paused' : 'ready to play'}
             {state.timeMode === 'range' ? ` · ${steps.length} months` : ''}
+          </p>
+          <p className="mt-1 flex flex-wrap items-center gap-x-1.5 font-ui text-[13px] leading-relaxed text-beige">
+            <span
+              className={`h-1.5 w-1.5 rounded-full ${
+                state.imagePlaying || (state.playState !== 'idle' && score.source === 'score')
+                  ? 'bg-ember'
+                  : score.status === 'ready'
+                    ? 'bg-cream'
+                    : 'bg-beige/70'
+              }`}
+              aria-hidden="true"
+            />
+            <span className="text-cream">{scoreBadge.label}</span>
+            {scoreBadge.detail && <span aria-hidden="true">·</span>}
+            {scoreBadge.detail && <span>{scoreBadge.detail}</span>}
           </p>
         </div>
 
@@ -88,8 +130,8 @@ export default function NowSounding() {
             </p>
           ) : (
             <p className="max-w-[65ch] font-ui text-[17px] leading-[1.5] text-cream">
-              Captions are off. Press <kbd className="rounded border border-ivory/30 px-1.5 py-0.5 font-data text-[13px]">C</kbd> or open
-              <span className="text-ivory"> Display &amp; access</span> to show them again. The data and sound continue unchanged.
+              Captions are off. Open <span className="text-ivory">Display &amp; access</span> to show them
+              again. The data and sound continue unchanged.
             </p>
           )}
           {state.volume === 0 && (
@@ -98,18 +140,24 @@ export default function NowSounding() {
               Sound is muted — captions continue.
             </p>
           )}
+          {state.imagePlaying && (
+            <p className="mt-2 inline-flex items-center gap-2 border border-ember/40 bg-ember/10 px-2.5 py-1 font-ui text-[13px] text-cream">
+              <span className="h-1.5 w-1.5 rounded-full bg-ember" aria-hidden="true" />
+              An image score is sounding — data playback is paused until it stops.
+            </p>
+          )}
           {activeLayers.length > 1 && (
-            <p className="mt-2 flex flex-wrap items-center gap-x-2 gap-y-1 font-ui text-[13px] text-beige">
-              <span className="font-stencil text-[12px] uppercase tracking-[0.16em]">Mix</span>
+            <p className="mt-2 flex flex-wrap items-center gap-x-2 gap-y-1 font-ui text-[13px] text-cream">
+              <span className="text-beige">Mix</span>
               {activeLayers.map((layer, index) => (
                 <span key={layer.id} className="inline-flex items-center gap-1.5">
-                  {index > 0 && <span aria-hidden="true">+</span>}
+                  {index > 0 && <span aria-hidden="true" className="text-beige">+</span>}
                   <span
                     className="h-1.5 w-1.5 rounded-full"
                     style={{ backgroundColor: layer.accent }}
                     aria-hidden="true"
                   />
-                  <span className="text-cream">
+                  <span>
                     {layer.name}
                     {layer.id === state.variableId ? ' (lead)' : ''}
                   </span>
@@ -132,13 +180,8 @@ export default function NowSounding() {
               ? `${fmtDelta(caption.delta, variable.decimals, variable.unit)} · ${anomalyWord(variable, caption.delta, caption.normal)}`
               : 'no baseline comparison'}
           </span>
-          {plan && !plan.missing && (
-            <span className="font-ui text-[13px] leading-snug text-beige">
-              {plan.mode} · {plan.note}
-            </span>
-          )}
-          <span className="font-stencil text-[12px] uppercase tracking-[0.16em] text-beige">
-            {kind === 'derived' ? 'derived value' : 'measured value'} · NASA POWER
+          <span className="font-ui text-[13px] text-cream">
+            {kind === 'derived' ? 'Derived value' : 'Measured value'} · NASA POWER
           </span>
         </div>
       </div>

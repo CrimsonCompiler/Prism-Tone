@@ -16,6 +16,7 @@
 import { useEffect, useRef } from 'react'
 import { usePreview } from '../state/PreviewContext'
 import { YEAR_MIN, YEAR_MAX } from '../data/datasets'
+import { scrollToTranscriptPanel } from './GraphPanel'
 
 export function LiveRegion() {
   const { state } = usePreview()
@@ -126,8 +127,10 @@ export function usePreviewKeys() {
       }
       if (key === 't') {
         if (native) return
+        const opening = !state.transcriptOpen
         dispatch({ type: 'TOGGLE_TRANSCRIPT' })
-        actions.announce(state.transcriptOpen ? 'Transcript closed.' : 'Transcript opened.')
+        actions.announce(opening ? 'Transcript opened.' : 'Transcript closed.')
+        if (opening) scrollToTranscriptPanel()
         return
       }
       if (e.key === '?' || (e.key === '/' && e.shiftKey)) {

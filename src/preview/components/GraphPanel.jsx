@@ -1,12 +1,14 @@
 /**
  * Graph panel — three honest views:
  *
- *  Series    the actual environmental record at the current scope, with the
- *            selection shaded, the sounding month drawn as a playhead, and
- *            hover / keyboard inspection of exact values.
- *  Waveform  a live tap of the generated audio. Flat and labelled when silent.
- *  Notes     the audible layers, their note, mode and activity — the same
- *            plan the engine is playing (lib/music.js).
+ *  Series      the actual environmental record at the current scope, with the
+ *              selection shaded, the sounding month drawn as a playhead, and
+ *              hover / keyboard inspection of exact values.
+ *  Waveform    a live tap of the generated audio. Flat and labelled when silent.
+ *  Transcript  every caption spoken this session, with copy and download.
+ *
+ * The audible-layer list lives only in the mapping diagram, so nothing here
+ * repeats it.
  *
  * Canvas performance: DPR capped at 1.5, the waveform runs at 30 fps and
  * pauses when the tab is hidden or the panel is offscreen. The series view
@@ -16,69 +18,135 @@
 
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { usePreview } from '../state/PreviewContext'
-import { monthlyArray, annualArray, keyToLabel, parseMonthKey, getMonthly } from '../lib/processing'
+import { monthlyArray, annualArray, keyToLabel, parseMonthKey } from '../lib/processing'
 import { fmtValue } from '../lib/format'
 import { engine } from '../lib/sonify'
-import { planForStep, layerPlan, describeSound, midiToName } from '../lib/music'
-import { displayKey } from '../lib/selectors'
-import { YEAR_MIN, YEAR_MAX, VARIABLE_BY_ID } from '../data/datasets'
+import { planForStep } from '../lib/music'
+import { YEAR_MIN, YEAR_MAX } from '../data/datasets'
+import Panel from './Panel'
+import Transcript from './Transcript'
 
 const IVORY = 'rgba(242,237,227,'
 const EMBER = 'rgba(193,154,91,'
 
+const GRAPH_PANEL_ID = 'pt-graph-panel'
+
+const TABS = [
+  { id: 'series', label: 'Series' },
+  { id: 'waveform', label: 'Waveform' },
+  { id: 'transcript', label: 'Transcript' },
+]
+
+/** Scroll the graph panel into view when the transcript is selected. */
+export function scrollToTranscriptPanel() {
+  if (typeof document === 'undefined') return
+  const el = document.getElementById(GRAPH_PANEL_ID)
+  if (!el) return
+  const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches
+  el.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' })
+}
+
 export default function GraphPanel() {
   const { state, dispatch } = usePreview()
   const { view } = state
-  const tabs = [
-    ['series', 'Series'],
-    ['waveform', 'Waveform'],
-    ['notes', 'Notes'],
-  ]
+  const activeView = TABS.some((tab) => tab.id === view) ? view : 'series'
+  const transcriptCount = (state.transcript || []).length
+  const tabRefs = useRef({})
+
+  const select = (id) => {
+    dispatch({ type: 'SET_VIEW', view: id })
+    /* Tabs are never remounted by a view change, so focusing the existing
+       button immediately is safe and does not wait on a frame. */
+    tabRefs.current[id]?.focus()
+  }
+
+  const onTabKeyDown = (event, index) => {
+    const keys = ['ArrowRight', 'ArrowLeft', 'Home', 'End']
+    if (!keys.includes(event.key)) return
+    event.preventDefault()
+    let next = index
+    if (event.key === 'ArrowRight') next = (index + 1) % TABS.length
+    else if (event.key === 'ArrowLeft') next = (index - 1 + TABS.length) % TABS.length
+    else if (event.key === 'Home') next = 0
+    else if (event.key === 'End') next = TABS.length - 1
+    select(TABS[next].id)
+  }
+
+  const tabs = (
+    <div
+      className="no-scrollbar flex max-w-full items-center gap-1 overflow-x-auto"
+      role="tablist"
+      aria-label="Panel view"
+    >
+      {TABS.map((tab, index) => {
+        const selected = activeView === tab.id
+        return (
+          <button
+            key={tab.id}
+            ref={(node) => {
+              tabRefs.current[tab.id] = node
+            }}
+            id={`pt-tab-${tab.id}`}
+            type="button"
+            role="tab"
+            aria-selected={selected}
+            aria-controls={`pt-panel-${tab.id}`}
+            aria-label={
+              tab.id === 'transcript'
+                ? transcriptCount === 0
+                  ? 'Transcript, empty'
+                  : `Transcript, ${transcriptCount} caption${transcriptCount === 1 ? '' : 's'}`
+                : undefined
+            }
+            tabIndex={selected ? 0 : -1}
+            onClick={() => dispatch({ type: 'SET_VIEW', view: tab.id })}
+            onKeyDown={(event) => onTabKeyDown(event, index)}
+            className={`shrink-0 border px-3 py-1.5 font-ui text-[13px] transition-colors duration-150 focus-visible:outline focus-visible:outline-2 focus-visible:outline-ivory ${
+              selected
+                ? 'border-ivory/60 bg-ivory/12 text-ivory'
+                : 'border-ivory/15 text-cream hover:border-ivory/40 hover:bg-white/5 hover:text-ivory'
+            }`}
+          >
+            {tab.label}
+            {tab.id === 'transcript' && (
+              <span aria-hidden="true" className="ml-1.5 font-data text-[12px] text-beige">{transcriptCount}</span>
+            )}
+          </button>
+        )
+      })}
+    </div>
+  )
 
   return (
-    <section className="flex h-full flex-col border border-ivory/15 bg-coal/50" aria-label="Graphs">
-      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-ivory/10 px-4 py-3 md:px-5">
-        <div>
-          <h2 className="font-stencil text-[13px] uppercase tracking-[0.24em] text-beige">Graphs</h2>
-          <p className="mt-0.5 font-ui text-[13px] text-cream">{YEAR_MIN}–{YEAR_MAX} · NASA POWER</p>
-        </div>
-        <div className="flex flex-wrap items-center gap-1.5" role="tablist" aria-label="Graph view">
-          {tabs.map(([id, label]) => (
-            <button
-              key={id}
-              type="button"
-              role="tab"
-              aria-selected={view === id}
-              onClick={() => dispatch({ type: 'SET_VIEW', view: id })}
-              className={`border px-3 py-1.5 font-stencil text-[12px] uppercase tracking-[0.16em] transition-colors duration-150 focus-visible:outline focus-visible:outline-2 focus-visible:outline-ivory ${
-                view === id
-                  ? 'border-ivory/60 bg-ivory/12 text-ivory'
-                  : 'border-ivory/15 text-beige hover:border-ivory/40 hover:text-cream'
-              }`}
-            >
-              {label}
-            </button>
-          ))}
-        </div>
-      </div>
-
-      <div className="flex-1 p-4 md:p-5" role="tabpanel">
-        {view === 'series' && <SeriesGraph />}
-        {view === 'waveform' && <WaveformGraph />}
-        {view === 'notes' && <NotesGraph />}
-      </div>
-    </section>
+    <div id={GRAPH_PANEL_ID} className="scroll-mt-24">
+      <Panel title="Graphs" meta={`${YEAR_MIN}–${YEAR_MAX} · NASA POWER`} actions={tabs}>
+        {activeView === 'series' && (
+          <div role="tabpanel" id="pt-panel-series" aria-labelledby="pt-tab-series" tabIndex={0}>
+            <SeriesGraph />
+          </div>
+        )}
+        {activeView === 'waveform' && (
+          <div role="tabpanel" id="pt-panel-waveform" aria-labelledby="pt-tab-waveform" tabIndex={0}>
+            <WaveformGraph />
+          </div>
+        )}
+        {activeView === 'transcript' && (
+          <div role="tabpanel" id="pt-panel-transcript" aria-labelledby="pt-tab-transcript" tabIndex={0}>
+            <Transcript />
+          </div>
+        )}
+      </Panel>
+    </div>
   )
 }
 
 /* ---------------- series ---------------- */
 
 function SeriesGraph() {
-  const { state, dispatch, seriesMap, variable, mappingRange, normalByMonth } = usePreview()
+  const { state, dispatch, seriesMap, variable, mappingRange, normalByMonth, steps } = usePreview()
   const { granularity } = state
   const canvasRef = useRef(null)
   const [cursor, setCursor] = useState(null)
-  const { steps } = usePreview()
 
   const points = useMemo(() => {
     if (!seriesMap) return []
@@ -338,10 +406,10 @@ function SeriesGraph() {
               type="button"
               aria-pressed={granularity === id}
               onClick={() => dispatch({ type: 'SET_GRANULARITY', granularity: id })}
-              className={`border px-2.5 py-1.5 font-stencil text-[12px] uppercase tracking-[0.14em] transition-colors duration-150 focus-visible:outline focus-visible:outline-2 focus-visible:outline-ivory ${
+              className={`border px-2.5 py-1.5 font-ui text-[13px] transition-colors duration-150 focus-visible:outline focus-visible:outline-2 focus-visible:outline-ivory ${
                 granularity === id
                   ? 'border-ivory/60 bg-ivory/12 text-ivory'
-                  : 'border-ivory/15 text-beige hover:border-ivory/40 hover:text-cream'
+                  : 'border-ivory/15 text-cream hover:border-ivory/40 hover:text-ivory'
               }`}
             >
               {label}
@@ -383,7 +451,7 @@ function SeriesGraph() {
         )}
       </div>
 
-      <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1 font-ui text-[12px] text-beige">
+      <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1 font-ui text-[13px] text-cream">
         <span><span className="mr-1 inline-block h-0.5 w-4 bg-ivory/90 align-middle" />monthly value</span>
         <span><span className="mr-1 inline-block h-2 w-3 bg-ivory/20 align-middle" />selected period</span>
         <span><span className="mr-1 inline-block h-2 w-0.5 bg-ember align-middle" />sounding month</span>
@@ -391,7 +459,7 @@ function SeriesGraph() {
       </div>
 
       <div className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-2 sm:flex-nowrap">
-        <label htmlFor="pt-inspect" className="shrink-0 font-stencil text-[12px] uppercase tracking-[0.16em] text-beige">
+        <label htmlFor="pt-inspect" className="shrink-0 font-ui text-[14px] text-cream">
           Inspect
         </label>
         <input
@@ -404,6 +472,7 @@ function SeriesGraph() {
           onChange={(e) => {
             const next = Number(e.target.value)
             setCursor(next)
+            previewCursor(next)
           }}
           aria-label="Inspect a point in the series"
         />
@@ -412,27 +481,27 @@ function SeriesGraph() {
         </span>
       </div>
 
-      <details className="mt-3 border border-ivory/15">
-        <summary className="cursor-pointer px-3 py-2 font-ui text-[14px] text-ivory focus-visible:outline focus-visible:outline-2 focus-visible:outline-ivory">
+      <details className="mt-3 border-t border-ivory/10">
+        <summary className="cursor-pointer py-2 font-ui text-[14px] text-ivory focus-visible:outline focus-visible:outline-2 focus-visible:outline-ivory">
           Data table — annual means ({annualTable.filter((p) => p.value !== null).length} years)
         </summary>
         <div className="max-h-64 overflow-auto border-t border-ivory/10">
           <table className="w-full border-collapse font-ui text-[14px]">
-            <caption className="px-3 py-2 text-left text-[13px] text-beige">
+            <caption className="py-2 text-left text-[13px] text-cream">
               Annual means. The source's own year value is used when present; otherwise the mean of that year's
               monthly values is computed. Years with fewer than 10 valid months are left blank.
             </caption>
             <thead>
               <tr className="border-b border-ivory/15 text-left">
-                <th scope="col" className="px-3 py-2 font-stencil text-[12px] uppercase tracking-[0.14em] text-beige">Year</th>
-                <th scope="col" className="px-3 py-2 text-right font-stencil text-[12px] uppercase tracking-[0.14em] text-beige">{variable.name} ({variable.unit})</th>
+                <th scope="col" className="py-2 pr-3 font-ui text-[13px] text-cream">Year</th>
+                <th scope="col" className="py-2 text-right font-ui text-[13px] text-cream">{variable.name} ({variable.unit})</th>
               </tr>
             </thead>
             <tbody>
               {annualTable.map((p) => (
                 <tr key={p.year} className="border-b border-ivory/8">
-                  <th scope="row" className="px-3 py-1.5 text-left font-data text-[13px] text-cream">{p.year}</th>
-                  <td className="px-3 py-1.5 text-right font-data text-[13px] text-ivory">
+                  <th scope="row" className="py-1.5 pr-3 text-left font-data text-[13px] text-cream">{p.year}</th>
+                  <td className="py-1.5 text-right font-data text-[13px] text-ivory">
                     {p.value !== null ? fmtValue(p.value, variable.decimals) : '—'}
                   </td>
                 </tr>
@@ -566,7 +635,7 @@ function WaveformGraph() {
 
   return (
     <div>
-      <p className="mb-3 font-ui text-[13px] leading-relaxed text-cream">
+      <p className="mb-3 font-ui text-[14px] leading-relaxed text-cream">
         A live tap of the audio after the limiter and volume stage — not a decorative animation. Silence draws a flat line.
       </p>
       <canvas
@@ -575,84 +644,6 @@ function WaveformGraph() {
         role="img"
         aria-label="Real-time waveform of the generated sonification audio. When playback is stopped or paused, the line is flat."
       />
-    </div>
-  )
-}
-
-/* ---------------- notes ---------------- */
-
-function NotesGraph() {
-  const { state, variable, mappingRange, steps, seriesMap, normalByMonth } = usePreview()
-  /* While suspended the engine's current plan is authoritative; when idle,
-     derive the plan for the month the map is showing, with its real normal,
-     so the notes cannot describe a different scale from the sound. */
-  const key = displayKey(state, steps, state.position, state.playState)
-  const point = key ? parseMonthKey(key) : null
-  const value = point ? getMonthly(seriesMap, point.year, point.month) : null
-  const normal = point && normalByMonth ? normalByMonth[point.month] ?? null : null
-  const plan = state.soundPlan || planForStep({
-    variable,
-    step: { key, value },
-    normal,
-    range: mappingRange,
-    prevValue: null,
-  })
-  const layers = layerPlan(plan, variable)
-  const scaleNotes = plan.scaleMidi || []
-  const active = plan.note
-  const selectedLayers = (state.selectedVariableIds || [state.variableId])
-    .map((id) => VARIABLE_BY_ID[id])
-    .filter((v) => v && v.status === 'live')
-
-  return (
-    <div>
-      <div className="flex flex-wrap items-start justify-between gap-4">
-        <div>
-          <p className="font-stencil text-[12px] uppercase tracking-[0.18em] text-beige">Sounding now</p>
-          <p className="mt-1 flex items-baseline gap-2">
-            <span className="font-data text-[34px] leading-none text-ivory font-semibold">{active || 'rest'}</span>
-            <span className="font-ui text-[14px] text-cream">{plan.mode}</span>
-          </p>
-          <p className="mt-1 font-ui text-[14px] leading-relaxed text-cream">{describeSound(plan, variable)}</p>
-        </div>
-        <div className="flex flex-wrap gap-1" role="img" aria-label={`${plan.mode} scale; sounding note ${active || 'none'}`}>
-          {scaleNotes.map((midi) => (
-            <span
-              key={midi}
-              className={`inline-flex min-w-[36px] justify-center border px-1.5 py-1 font-data text-[12px] ${
-                midi === plan.midi ? 'border-ember bg-ember/20 text-ivory' : 'border-ivory/15 text-beige'
-              }`}
-            >
-              {midiToName(midi)}
-            </span>
-          ))}
-        </div>
-      </div>
-
-      <ul className="mt-4 grid gap-2 sm:grid-cols-2">
-        {layers.map((layer) => (
-          <li key={layer.id} className="border border-ivory/15 bg-white/[0.02] p-3">
-            <div className="flex items-baseline justify-between gap-2">
-              <span className="font-ui text-[14px] text-ivory">{layer.label}</span>
-              <span className="font-data text-[12px] text-beige">{layer.detail}</span>
-            </div>
-            <div className="mt-2 h-1.5 w-full bg-white/[0.07]" aria-hidden="true">
-              <div className="h-1.5 bg-ember/80" style={{ width: `${Math.round(layer.level * 100)}%` }} />
-            </div>
-            <p className="mt-1.5 font-ui text-[12px] text-beige">{layer.meta}</p>
-          </li>
-        ))}
-      </ul>
-
-      <p className="mt-3 font-ui text-[13px] leading-relaxed text-beige">
-        {steps.length} months in this selection. One month is two beats, two months make a bar; the
-        pad holds its chord while the bass restates on each bar line.
-        {selectedLayers.length > 1
-          ? ` ${selectedLayers.map((v) => v.name).join(' + ')} are layered; ${variable.name} leads the tempo and the captions.`
-          : ''}
-        {' '}The plan updates with every sounding month.
-        {plan.missing ? ' This month has no valid value, so this layer adds no new note.' : ''}
-      </p>
     </div>
   )
 }

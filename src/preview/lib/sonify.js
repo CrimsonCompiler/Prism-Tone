@@ -37,6 +37,12 @@
  */
 
 import { MONTH_BEATS, planForStep, phraseForSteps, quantize } from './music'
+import {
+  isValidScore,
+  scoreBeatsPerStep,
+  scoreCaptionMap,
+  scoreScaleLabel,
+} from './score'
 import { VARIABLE_BY_ID } from '../data/datasets'
 
 const VOLUME_HEADROOM = 0.52
@@ -62,7 +68,7 @@ function midiToName(midi) {
   return `${names[((m % 12) + 12) % 12]}${Math.floor(m / 12) - 1}`
 }
 
-export class SonificationEngine {
+class LocalEngine {
   constructor() {
     this.Tone = null
     this.ctx = null
@@ -727,6 +733,364 @@ export class SonificationEngine {
   _pulse(step) {
     /* deterministic, gently uneven pattern — no allocation, like qoder V2 */
     return Math.abs(Math.sin((step + 1) * 12.9898) * 43758.5453) % 1
+  }
+}
+
+/* ------------------------------------------------------------------------ */
+/* Facade                                                                    */
+/* ------------------------------------------------------------------------ */
+
+/**
+ * The public engine surface, unchanged for every existing caller. Behind it:
+ *
+ *   • the local month-by-month mapper above (works offline, always ready);
+ *   • a score player that realises a backend MusicalScore when one is
+ *     available for the current selection.
+ *
+ * A score is chosen at Play time. A score that arrives while the local
+ * mapping is sounding is kept for the next Play, never swapped mid-run, and
+ * the local path remains the fallback whenever the project API is absent or
+ * returns an invalid score.
+ */
+class SonificationEngine {
+  constructor() {
+    this.local = new LocalEngine()
+    this.player = null
+    this._playerPromise = null
+
+    this._onstep = null
+    this._onend = null
+    this._onerror = null
+    this._oncaption = null
+
+    this._scorePayload = null
+    this._scoreKey = null
+    this._scoreCaptions = []
+    this._scoreMeta = null
+
+    this._active = 'local' // local | player
+    this._imageActive = false
+    this._imageEndHandler = null
+    this._playToken = 0
+    this._lastPreview = 0
+    this._config = null
+  }
+
+  /* ---- callbacks: one setter feeds whichever path is active ---- */
+
+  set onstep(fn) {
+    this._onstep = fn
+    this.local.onstep = fn
+    if (this.player) this.player.onstep = fn
+  }
+
+  get onstep() {
+    return this._onstep
+  }
+
+  set onend(fn) {
+    this._onend = fn
+    this.local.onend = fn
+  }
+
+  get onend() {
+    return this._onend
+  }
+
+  set onerror(fn) {
+    this._onerror = fn
+    this.local.onerror = fn
+  }
+
+  get onerror() {
+    return this._onerror
+  }
+
+  /* ---- read-only state, delegated to the sounding path ---- */
+
+  get state() {
+    if (this._active === 'player') return this.player ? this.player.state : 'idle'
+    return this.local.state
+  }
+
+  get position() {
+    if (this._active === 'player' && this.player) return this.player.position
+    return this.local.position
+  }
+
+  get analyser() {
+    if (this._active === 'player' && this.player && this.player.analyser) return this.player.analyser
+    return this.local.analyser
+  }
+
+  get source() {
+    return this._active === 'player' ? 'score' : 'local'
+  }
+
+  get imageActive() {
+    return this._imageActive
+  }
+
+  get scoreInfo() {
+    return {
+      available: Boolean(this._scorePayload && this._scorePayload.score),
+      source: this.source,
+      key: this._scoreKey,
+      scaleLabel: this._scoreMeta ? this._scoreMeta.scaleLabel : '',
+      tempo: this._scoreMeta ? this._scoreMeta.tempo : null,
+      beatsPerStep: this._scoreMeta ? this._scoreMeta.beatsPerStep : null,
+      cache: this._scoreMeta ? this._scoreMeta.cache : null,
+      image: this._imageActive,
+    }
+  }
+
+  /* ---- configuration ---- */
+
+  configure(args) {
+    this._config = args || {}
+    if (this._config.selectionKey && this._config.selectionKey !== this._scoreKey) {
+      /* The selection moved on; the old score must not leak into it. The
+         caller follows this with setScore() from its cache or a fetch. */
+      this.setScore(null, this._config.selectionKey)
+    }
+    this.local.configure(this._config)
+  }
+
+  /**
+   * Set the score to use from the next Play. Passing null (or an invalid
+   * payload) selects the local mapping. Playback is never interrupted here.
+   */
+  setScore(payload, key) {
+    if (key !== undefined && key !== null) this._scoreKey = key
+    const valid = payload && payload.score && isValidScore(payload.score)
+    if (valid) {
+      this._scorePayload = payload
+      this._scoreCaptions = scoreCaptionMap(payload.score)
+      this._scoreMeta = {
+        scaleLabel: scoreScaleLabel(payload.score),
+        tempo: payload.score.tempo_bpm,
+        beatsPerStep: scoreBeatsPerStep(payload.score),
+        cache: payload.cache || null,
+      }
+    } else {
+      this._scorePayload = null
+      this._scoreCaptions = []
+      this._scoreMeta = null
+    }
+  }
+
+  /** The score caption for a step, or null to keep the data sentence. */
+  scoreCaptionAt(index) {
+    return this._scoreCaptions[index] || null
+  }
+
+  _leadSteps() {
+    return Array.isArray(this.local.steps) ? this.local.steps : []
+  }
+
+  _ensurePlayer() {
+    if (this.player) return Promise.resolve(this.player)
+    if (this._playerPromise) return this._playerPromise
+    this._playerPromise = import('./scorePlayer')
+      .then(({ ScorePlayer }) => {
+        const player = new ScorePlayer()
+        player.onstep = (index, step) => {
+          this._active = 'player'
+          if (this._onstep) this._onstep(index, step)
+        }
+        player.onend = () => {
+          this._active = 'local'
+          this._imageActive = false
+          this._oncaption = null
+          const imageEnd = this._imageEndHandler
+          this._imageEndHandler = null
+          player.mode = 'data'
+          if (imageEnd) imageEnd()
+          if (this._onend) this._onend()
+        }
+        player.onerror = (err) => {
+          this._active = 'local'
+          this._imageActive = false
+          this._oncaption = null
+          if (this._onerror) this._onerror(err)
+        }
+        player.oncaption = (text, at) => {
+          if (this._oncaption) this._oncaption(text, at)
+        }
+        this.player = player
+        return player
+      })
+      .catch((err) => {
+        this._playerPromise = null
+        if (this._onerror) this._onerror(err)
+        return null
+      })
+    return this._playerPromise
+  }
+
+  _fallbackToLocal() {
+    this._active = 'local'
+    this._imageActive = false
+    try { if (this.player) this.player.stop() } catch { /* ignore */ }
+    this.local.play()
+  }
+
+  /* ---- transport ---- */
+
+  play() {
+    /* An image score owns the audio while it plays; the caller announces why
+       the data transport is unavailable. */
+    if (this.imageActive) return false
+
+    const payload = this._scorePayload
+    const token = (this._playToken += 1)
+
+    if (payload && isValidScore(payload.score)) {
+      this._active = 'player'
+      this._imageActive = false
+      this._ensurePlayer().then((player) => {
+        if (token !== this._playToken) return
+        if (!player) {
+          this._fallbackToLocal()
+          return
+        }
+        player.play({
+          score: payload.score,
+          steps: this._leadSteps(),
+          mode: 'data',
+          rate: this.local.rate,
+          volume: this.local.volume,
+          beatsPerStep: scoreBeatsPerStep(payload.score),
+        }).then((ok) => {
+          if (token !== this._playToken) return
+          if (!ok) this._fallbackToLocal()
+        })
+      })
+      return true
+    }
+
+    this._active = 'local'
+    this.local.play()
+    return true
+  }
+
+  pause() {
+    if (this._active === 'player' && this.player) this.player.pause()
+    else this.local.pause()
+  }
+
+  resume() {
+    if (this._active === 'player' && this.player) this.player.resume()
+    else this.local.resume()
+  }
+
+  stop() {
+    this._playToken += 1
+    this._imageActive = false
+    this._imageEndHandler = null
+    this._oncaption = null
+    try { if (this.player) this.player.stop() } catch { /* ignore */ }
+    this.local.stop()
+    this._active = 'local'
+  }
+
+  seek(index) {
+    if (this._active === 'player' && this.player && this.player.mode === 'data') {
+      this.player.seek(index)
+      return
+    }
+    this.local.seek(index)
+  }
+
+  setVolume(value) {
+    this.local.setVolume(value)
+    if (this.player) this.player.setVolume(value)
+  }
+
+  setRate(value) {
+    this.local.setRate(value)
+    if (this.player) this.player.setRate(value)
+  }
+
+  setLayers(layers) {
+    this.local.setLayers(layers)
+  }
+
+  /** A single soft note for graph hover/focus sonification. */
+  previewPoint(plan) {
+    if (!plan || plan.missing || !plan.note) return
+    if (this._scorePayload) {
+      const now = typeof performance !== 'undefined' ? performance.now() : Date.now()
+      if (now - this._lastPreview < 120) return
+      this._lastPreview = now
+      this._ensurePlayer().then((player) => {
+        if (player) player.previewNote(plan.note)
+      })
+      return
+    }
+    this.local.previewPoint(plan)
+  }
+
+  /* ---- image score (same player, same analyser) ---- */
+
+  async playImage(payload, { oncaption, onend } = {}) {
+    if (!payload || !isValidScore(payload.score)) return false
+    const token = (this._playToken += 1)
+    this.local.stop()
+    this._imageActive = true
+    this._imageEndHandler = onend || null
+    this._oncaption = oncaption || null
+    this._active = 'player'
+
+    const player = await this._ensurePlayer()
+    if (token !== this._playToken) return false
+    if (!player) {
+      this._active = 'local'
+      this._imageActive = false
+      this._oncaption = null
+      if (onend) onend()
+      return false
+    }
+
+    player.oncaption = (text, at) => {
+      if (this._oncaption) this._oncaption(text, at)
+    }
+    const ok = await player.play({
+      score: payload.score,
+      steps: [],
+      mode: 'image',
+      rate: 1,
+      volume: this.local.volume,
+    })
+    if (token !== this._playToken) return false
+    if (!ok) {
+      this._active = 'local'
+      this._imageActive = false
+      this._oncaption = null
+      if (onend) onend()
+    }
+    return ok
+  }
+
+  stopImage() {
+    this.stop()
+  }
+
+  release() {
+    this._playToken += 1
+    try { if (this.player) this.player.release() } catch { /* ignore */ }
+    this.player = null
+    this._playerPromise = null
+    this.local.release()
+    this._scorePayload = null
+    this._scoreCaptions = []
+    this._scoreMeta = null
+    this._scoreKey = null
+    this._config = null
+    this._active = 'local'
+    this._imageActive = false
+    this._imageEndHandler = null
+    this._oncaption = null
   }
 }
 

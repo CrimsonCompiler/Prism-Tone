@@ -186,28 +186,9 @@ export function GuideModal() {
     </div>
   ) : null
 
-  return (
-    <>
-      {/* Fixed bottom-right '?' guide trigger button */}
-      <button
-        type="button"
-        onClick={() => dispatch({ type: 'GUIDE', open: true })}
-        aria-label="Open guide"
-        title="Open guide"
-        className="fixed bottom-6 right-6 z-40 flex h-11 w-11 items-center justify-center rounded-full border border-ivory/25 bg-[#161818]/90 text-ivory shadow-lg shadow-black/60 backdrop-blur-md transition-all duration-200 hover:scale-105 hover:border-ivory/70 hover:bg-ivory/15 hover:text-white focus-visible:outline focus-visible:outline-1 focus-visible:outline-ivory/70 active:scale-95 cursor-pointer group"
-      >
-        <span
-          className="font-meno text-xl font-light leading-none select-none transition-transform duration-200 group-hover:scale-110"
-          style={{ fontFamily: '"Meno Banner", "Source Serif 4", Georgia, serif' }}
-        >
-          ?
-        </span>
-      </button>
-
-      {/* Render modal directly in document.body via Portal to prevent z-index clipping */}
-      {typeof document !== 'undefined' && modalContent ? createPortal(modalContent, document.body) : modalContent}
-    </>
-  )
+  return typeof document !== 'undefined' && modalContent
+    ? createPortal(modalContent, document.body)
+    : modalContent
 }
 
 /* =========================================================================
