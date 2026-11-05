@@ -1,0 +1,399 @@
+{
+  "version": "1.0",
+  "key": "D",
+  "scale": "Dorian",
+  "tempo_bpm": 60,
+  "time_sig": [
+    4,
+    4
+  ],
+  "tracks": [
+    {
+      "id": "pad:T2M",
+      "role": "pad",
+      "notes": [
+        {
+          "t_beats": 0.0,
+          "dur_beats": 8.0,
+          "midi": 52,
+          "vel": 0.2832,
+          "pan": 0.0
+        },
+        {
+          "t_beats": 0.0,
+          "dur_beats": 8.0,
+          "midi": 55,
+          "vel": 0.2832,
+          "pan": 0.0
+        },
+        {
+          "t_beats": 0.0,
+          "dur_beats": 8.0,
+          "midi": 59,
+          "vel": 0.2832,
+          "pan": 0.0
+        },
+        {
+          "t_beats": 8.0,
+          "dur_beats": 8.0,
+          "midi": 57,
+          "vel": 0.3145,
+          "pan": 0.0
+        },
+        {
+          "t_beats": 8.0,
+          "dur_beats": 8.0,
+          "midi": 60,
+          "vel": 0.3145,
+          "pan": 0.0
+        },
+        {
+          "t_beats": 8.0,
+          "dur_beats": 8.0,
+          "midi": 64,
+          "vel": 0.3145,
+          "pan": 0.0
+        },
+        {
+          "t_beats": 16.0,
+          "dur_beats": 7.8,
+          "midi": 57,
+          "vel": 0.3066,
+          "pan": 0.0
+        },
+        {
+          "t_beats": 16.0,
+          "dur_beats": 7.8,
+          "midi": 60,
+          "vel": 0.3066,
+          "pan": 0.0
+        },
+        {
+          "t_beats": 16.0,
+          "dur_beats": 7.8,
+          "midi": 64,
+          "vel": 0.3066,
+          "pan": 0.0
+        }
+      ],
+      "params": {
+        "cutoff_hz": 1396.4,
+        "reverb_send": 0.34,
+        "detune_cents": 0.0,
+        "density": 0.0
+      }
+    },
+    {
+      "id": "lead:T2M",
+      "role": "lead",
+      "notes": [
+        {
+          "t_beats": 0.0,
+          "dur_beats": 1.6,
+          "midi": 64,
+          "vel": 0.3235,
+          "pan": 0.0
+        },
+        {
+          "t_beats": 2.0,
+          "dur_beats": 0.5,
+          "midi": 64,
+          "vel": 0.3408,
+          "pan": 0.0
+        },
+        {
+          "t_beats": 2.5,
+          "dur_beats": 0.45,
+          "midi": 67,
+          "vel": 0.2808,
+          "pan": 0.0
+        },
+        {
+          "t_beats": 4.0,
+          "dur_beats": 0.5,
+          "midi": 67,
+          "vel": 0.3925,
+          "pan": 0.0
+        },
+        {
+          "t_beats": 4.5,
+          "dur_beats": 0.45,
+          "midi": 74,
+          "vel": 0.3325,
+          "pan": 0.0
+        },
+        {
+          "t_beats": 6.0,
+          "dur_beats": 0.5,
+          "midi": 74,
+          "vel": 0.4745,
+          "pan": 0.0
+        },
+        {
+          "t_beats": 6.5,
+          "dur_beats": 0.45,
+          "midi": 79,
+          "vel": 0.4145,
+          "pan": 0.0
+        },
+        {
+          "t_beats": 8.0,
+          "dur_beats": 0.5,
+          "midi": 79,
+          "vel": 0.5613,
+          "pan": 0.0
+        },
+        {
+          "t_beats": 8.5,
+          "dur_beats": 0.45,
+          "midi": 79,
+          "vel": 0.5013,
+          "pan": 0.0
+        },
+        {
+          "t_beats": 10.0,
+          "dur_beats": 1.6,
+          "midi": 79,
+          "vel": 0.6097,
+          "pan": 0.0
+        },
+        {
+          "t_beats": 12.0,
+          "dur_beats": 0.5,
+          "midi": 79,
+          "vel": 0.6134,
+          "pan": 0.0
+        },
+        {
+          "t_beats": 12.5,
+          "dur_beats": 0.45,
+          "midi": 79,
+          "vel": 0.5534,
+          "pan": 0.0
+        },
+        {
+          "t_beats": 14.0,
+          "dur_beats": 1.6,
+          "midi": 79,
+          "vel": 0.6112,
+          "pan": 0.0
+        },
+        {
+          "t_beats": 16.0,
+          "dur_beats": 1.6,
+          "midi": 79,
+          "vel": 0.6236,
+          "pan": 0.0
+        },
+        {
+          "t_beats": 18.0,
+          "dur_beats": 0.5,
+          "midi": 79,
+          "vel": 0.5878,
+          "pan": 0.0
+        },
+        {
+          "t_beats": 18.5,
+          "dur_beats": 0.45,
+          "midi": 74,
+          "vel": 0.5278,
+          "pan": 0.0
+        },
+        {
+          "t_beats": 20.0,
+          "dur_beats": 0.5,
+          "midi": 74,
+          "vel": 0.5242,
+          "pan": 0.0
+        },
+        {
+          "t_beats": 20.5,
+          "dur_beats": 0.45,
+          "midi": 69,
+          "vel": 0.4642,
+          "pan": 0.0
+        },
+        {
+          "t_beats": 22.0,
+          "dur_beats": 1.6,
+          "midi": 72,
+          "vel": 0.4447,
+          "pan": 0.0
+        }
+      ],
+      "params": {
+        "cutoff_hz": 1763.1,
+        "reverb_send": 0.18,
+        "detune_cents": 0.0,
+        "density": 0.402
+      }
+    },
+    {
+      "id": "bass:T2M",
+      "role": "bass",
+      "notes": [
+        {
+          "t_beats": 0.0,
+          "dur_beats": 1.5,
+          "midi": 38,
+          "vel": 0.3,
+          "pan": 0.0
+        },
+        {
+          "t_beats": 4.0,
+          "dur_beats": 1.5,
+          "midi": 38,
+          "vel": 0.3,
+          "pan": 0.0
+        },
+        {
+          "t_beats": 8.0,
+          "dur_beats": 1.5,
+          "midi": 38,
+          "vel": 0.3,
+          "pan": 0.0
+        },
+        {
+          "t_beats": 12.0,
+          "dur_beats": 1.5,
+          "midi": 38,
+          "vel": 0.3,
+          "pan": 0.0
+        },
+        {
+          "t_beats": 16.0,
+          "dur_beats": 1.5,
+          "midi": 38,
+          "vel": 0.3,
+          "pan": 0.0
+        },
+        {
+          "t_beats": 20.0,
+          "dur_beats": 1.5,
+          "midi": 38,
+          "vel": 0.3,
+          "pan": 0.0
+        }
+      ],
+      "params": {
+        "cutoff_hz": 568.7,
+        "reverb_send": 0.12,
+        "detune_cents": 0.0,
+        "density": 0.0
+      }
+    },
+    {
+      "id": "texture:T2M",
+      "role": "texture",
+      "notes": [],
+      "params": {
+        "cutoff_hz": 728.2,
+        "reverb_send": 0.22,
+        "detune_cents": 0.0,
+        "density": 0.497
+      }
+    }
+  ],
+  "captions": [
+    {
+      "t_beats": 0.0,
+      "text": "Jan 2016 — 18.0 °C, -6.2 °C vs the labelled record normal (z -1.4); Dorian colour."
+    },
+    {
+      "t_beats": 2.0,
+      "text": "Feb 2016 — 19.5 °C, -4.7 °C vs the labelled record normal (z -1.1); Dorian colour."
+    },
+    {
+      "t_beats": 4.0,
+      "text": "Mar 2016 — 23.0 °C, -1.2 °C vs the labelled record normal (z -0.3); Dorian colour."
+    },
+    {
+      "t_beats": 6.0,
+      "text": "Apr 2016 — 27.2 °C, +3.0 °C vs the labelled record normal (z +0.7); Dorian colour."
+    },
+    {
+      "t_beats": 8.0,
+      "text": "May 2016 — 30.1 °C, +5.9 °C vs the labelled record normal (z +1.4); Dorian colour."
+    },
+    {
+      "t_beats": 10.0,
+      "text": "Jun 2016 — 29.4 °C, +5.2 °C vs the labelled record normal (z +1.2); Dorian colour."
+    },
+    {
+      "t_beats": 12.0,
+      "text": "Jul 2016 — 27.0 °C, +2.8 °C vs the labelled record normal (z +0.7); Dorian colour."
+    },
+    {
+      "t_beats": 14.0,
+      "text": "Aug 2016 — 26.6 °C, +2.4 °C vs the labelled record normal (z +0.6); Dorian colour."
+    },
+    {
+      "t_beats": 16.0,
+      "text": "Sep 2016 — 27.8 °C, +3.6 °C vs the labelled record normal (z +0.8); Dorian colour."
+    },
+    {
+      "t_beats": 18.0,
+      "text": "Oct 2016 — 24.0 °C, -0.2 °C vs the labelled record normal (z -0.0); Dorian colour."
+    },
+    {
+      "t_beats": 20.0,
+      "text": "Nov 2016 — 20.5 °C, -3.7 °C vs the labelled record normal (z -0.9); Dorian colour."
+    },
+    {
+      "t_beats": 22.0,
+      "text": "Dec 2016 — 17.2 °C, -7.0 °C vs the labelled record normal (z -1.6); Dorian colour."
+    }
+  ],
+  "provenance": {
+    "stats": {
+      "input_months": 12,
+      "sounding_months": 12,
+      "missing_months": 0,
+      "events_in": 12,
+      "notes_out": 25,
+      "dropped_events": 0,
+      "merged_short_notes": 0,
+      "range_by_variable": {
+        "T2M": {
+          "lo": 17.288,
+          "hi": 30.023,
+          "method": "p1/p99",
+          "valid": 12,
+          "missing": 0
+        }
+      },
+      "normal_baseline": "1991-2020",
+      "normal_source": "fallback (record outside the 1991-2020 baseline)",
+      "baseline_coverage": 0.033,
+      "anomaly_z": {
+        "mean": 0.0,
+        "min": -1.625,
+        "max": 1.373
+      },
+      "tempo_bpm": 60,
+      "grid": "eighth-note grid (0.5 beat); five-note rain figures add a sixteenth-note offset",
+      "beats_per_month": 2,
+      "months_per_bar": 2,
+      "caption_cadence": "one per sounding month (two months per 4/4 bar)",
+      "variables": [
+        "T2M"
+      ],
+      "scale_by_variable": {
+        "T2M": "D Dorian"
+      }
+    },
+    "mapping": {
+      "value_to_pitch": "midi = 48 + n*24, quantised to the score scale; an EMA smooths n before mapping.",
+      "range": "1st–99th percentile of the loaded record (min/max only when degenerate).",
+      "normal": "per-calendar-month mean over 1991–2020; a month needs 75% baseline coverage.",
+      "anomaly": "z = (value - monthly normal) / monthly sigma; z>2 Phrygian, z>1 minor, z<-1 major for temperature.",
+      "tempo": "60 bpm, bounded 52–96; one month is 2 beats.",
+      "velocity": "compressed to 0.25–0.8; consecutive change capped at 0.3.",
+      "pad": "three-note chords on scale degrees 0-2-4, held for two bars.",
+      "bass": "scale root on every bar line.",
+      "rain_figure": "1–5 marimba notes per month, from the precipitation rate and density option.",
+      "wind": "one ripple note per month over a two-oscillator drone."
+    },
+    "missing_policy": "Missing months are rests: they add no note, no caption and no imputed value. The score says how many months were missing; nothing is filled in."
+  }
+}

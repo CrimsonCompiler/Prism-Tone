@@ -7,6 +7,7 @@ Routes:
   * /api/preview/series, /api/power/series  full-record NASA POWER (Preview page)
   * /api/layers, /api/series, /api/hotspots, /api/describe  cached companion tracks
   * /api/data  NDVI records for the Bangladesh divisions
+  * /api/sonify/*  data, image and video sonification scores (JSON, no audio)
   * /api/health
 
 Every endpoint degrades to the prepared cache in `data/cache/`; live NASA
@@ -30,14 +31,16 @@ load_dotenv(ROOT / ".env")
 from api.earth_routes import router as earth_router  # noqa: E402
 from api.ndvi_routes import router as ndvi_router  # noqa: E402
 from api.preview_routes import router as preview_router  # noqa: E402
+from api.sonify_routes import router as sonify_router  # noqa: E402
 
-APP_VERSION = "2.0.0"
+APP_VERSION = "2.1.0"
 
 app = FastAPI(
     title="Prism Tone API",
     description=(
-        "NASA Earth observation series, cached thermal hotspots and plain-language "
-        "descriptions for the Prism Tone preview experience."
+        "NASA Earth observation series, cached thermal hotspots, plain-language "
+        "descriptions and two-stage sonification scores for the Prism Tone "
+        "preview experience."
     ),
     version=APP_VERSION,
 )
@@ -75,6 +78,7 @@ async def missing_cache_handler(_request: Request, exc: FileNotFoundError) -> JS
 app.include_router(preview_router)
 app.include_router(earth_router)
 app.include_router(ndvi_router)
+app.include_router(sonify_router)
 
 
 @app.get("/")
